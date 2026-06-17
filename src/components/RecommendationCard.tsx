@@ -58,6 +58,23 @@ export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
   );
 }
 
+export function CandidateCard({ iconUrl, recommendation }: AvoidCardProps) {
+  return (
+    <article className="candidate-card">
+      <img src={iconUrl} alt="" />
+      <div>
+        <strong>
+          {recommendation.champion.nameJa} / {recommendation.champion.nameEn}
+        </strong>
+        <span>
+          コンボ {Math.round(recommendation.comboScore)}% ・ 勝率 {recommendation.displayWinRate.toFixed(1)}%
+        </span>
+      </div>
+      <LabelRow recommendation={recommendation} compact />
+    </article>
+  );
+}
+
 function ScoreBreakdown({ recommendation }: { recommendation: Recommendation }) {
   const rows: Array<{
     label: string;
@@ -106,11 +123,12 @@ function ScoreBreakdown({ recommendation }: { recommendation: Recommendation }) 
   );
 }
 
-function LabelRow({ recommendation }: { recommendation: Recommendation }) {
+function LabelRow({ compact = false, recommendation }: { compact?: boolean; recommendation: Recommendation }) {
   return (
-    <div className="label-row">
+    <div className={`label-row ${compact ? "is-compact" : ""}`}>
       {recommendation.isBeginnerFriendly ? <span className="label good">初心者おすすめ</span> : null}
       {recommendation.synergySource === "profile" ? <span className="label info">推定相性</span> : null}
+      {recommendation.isExpandedData ? <span className="label data">補完データ</span> : null}
       {recommendation.isOffMeta ? <span className="label warn">オフメタ</span> : null}
       {recommendation.isLowData ? <span className="label caution">データ少</span> : null}
     </div>

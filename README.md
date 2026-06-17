@@ -61,6 +61,7 @@ pnpm check:data
 - `src/utils/`: 共有URLやクリップボードなどの小さな処理
 - `src/scoring.ts`: おすすめ順位とスコア計算
 - `src/synergyProfiles.ts`: 相性データが無い場合のチャンピオン性質ベース推定
+- `src/roleCatalog.ts`: Data Dragonから取得した全チャンピオンをロール候補へ広げる分類
 
 ## GitHub Pagesで公開する
 
@@ -79,5 +80,6 @@ pnpm check:data
 特に相性精度を上げたい組み合わせは、`data/manual/pairSynergies.csv` に直接相性データを追加するとおすすめ結果へ強く反映されます。
 同じ味方チャンピオン/味方ロール/自分ロールの直接相性データが3件以上ある場合、おすすめ3体はCSVに書いた順番の上位3件をそのまま表示します。
 OP.GGのシナジー欄を使う場合は、表示したい3体を上から順に `pairSynergies.csv` へ転記します。
+CSV未登録のチャンピオンも、Data Dragonのタグ/難易度/戦闘プロフィールと `src/roleCatalog.ts` のロール分類から補完候補として表示されます。補完候補は「補完データ」「データ少」ラベルを付け、実データより強いペナルティをかけます。
 
 RiftSync is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.

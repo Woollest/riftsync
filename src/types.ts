@@ -42,6 +42,7 @@ export interface RoleStat {
   metaScore: number;
   sampleSize: number;
   tier: "S" | "A" | "B" | "C" | "D";
+  source?: "manual" | "expanded";
 }
 
 export interface PairSynergy {
@@ -83,6 +84,7 @@ export interface Recommendation {
   reason: string;
   difficulty: DifficultyLabel;
   isBeginnerFriendly: boolean;
+  isExpandedData: boolean;
   isOffMeta: boolean;
   isLowData: boolean;
 }

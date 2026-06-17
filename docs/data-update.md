@@ -107,7 +107,7 @@ pnpm validate:csv
 - `sampleSize` が0以上の整数か
 - `reasonType` が `reasonTemplates.csv` に存在するか
 - 同じチャンピオン/ロール、同じ相性データが重複していないか
-- おすすめ候補に対応する `roleStats.csv` の行が存在するか
+- おすすめ候補に対応する `roleStats.csv` の行が存在しない場合は警告を出す。アプリ側では補完候補として扱う
 
 CSVに問題がなければ、以下でJSONへ反映する。
 
@@ -145,7 +145,7 @@ pnpm validate:data
 - `sampleSize` が0以上の整数か
 - `reasonType` が `reasonTemplates.json` に存在するか
 - 同じ組み合わせの重複データがないか
-- おすすめ候補に対応する `roleStats.json` の行が存在するか
+- おすすめ候補に対応する `roleStats.json` の行が存在しない場合は警告を出す。アプリ側では補完候補として扱う
 
 ## よくあるエラー
 
@@ -156,14 +156,15 @@ pnpm validate:data
 - `unknown reasonType`
   - `reasonTemplates.csv` に同じ `reasonType` があるか確認する
 - `has no roleStats row`
-  - `pairSynergies.csv` のおすすめチャンピオンとロールが `roleStats.csv` に存在するか確認する
+  - 警告。実データとして扱いたい場合は `roleStats.csv` に行を追加する。未追加のままでも、アプリ側では補完候補として表示できる
 - `unknown championId`
   - Data DragonのID、または既存のアプリ内IDと表記がずれていないか確認する
 
 ## 注意点
 
 - `pairSynergies.json` にデータがない組み合わせでも、アプリはロール別データから仮のコンボ相性を計算する
-- `roleStats.json` に候補が少ないロールは、おすすめ結果の幅も狭くなる
+- `roleStats.json` に候補が少ないロールでも、Data Dragonと `src/roleCatalog.ts` の分類から補完候補を表示する
+- 補完候補は「補完データ」「データ少」ラベルを付け、スコア上も強いデータ不足ペナルティを受ける
 - 味方チャンピオン一覧の「ロールにマッチ」は `src/roleCatalog.ts` で管理する
-- 味方チャンピオン一覧には全チャンピオンを出すが、おすすめ候補は `roleStats.json` にあるチャンピオンから選ばれる
+- 味方チャンピオン一覧には全チャンピオンを出し、おすすめ候補は `roleStats.json` の実データを優先しつつ、未登録分を補完候補として広げる
 - CSV内でカンマを含む文章を入れる場合は `"..."` で囲む

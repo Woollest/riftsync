@@ -1,4 +1,5 @@
 import { champions, pairSynergies, reasonTemplates, roleStats } from "./data";
+import { roleChampionImageIds } from "./roleCatalog";
 import { getSynergyTraits, getTraitCompatibilityScore } from "./synergyProfiles";
 import type { Champion, DifficultyLabel, PairSynergy, Recommendation, Role, RoleStat } from "./types";
 
@@ -11,6 +12,23 @@ export const SCORE_WEIGHT = {
 };
 
 const championById = new Map(champions.map((champion) => [champion.id, champion]));
+const manualRoleStatByKey = new Map(roleStats.map((stat) => [`${stat.championId}:${stat.role}`, stat]));
+
+const roleTagWeights: Record<Role, Partial<Record<string, number>>> = {
+  top: { Fighter: 10, Tank: 10, Mage: 3, Marksman: 2, Assassin: 2 },
+  jungle: { Fighter: 10, Tank: 8, Assassin: 8, Mage: 4, Marksman: 1, Support: 1 },
+  mid: { Mage: 10, Assassin: 9, Fighter: 5, Marksman: 4, Support: 1 },
+  adc: { Marksman: 12, Mage: 5, Fighter: 2, Assassin: 1 },
+  support: { Support: 12, Tank: 9, Mage: 6, Fighter: 3, Marksman: 2 },
+};
+
+function roundToOne(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
 
 export function getChampion(championId: string, championMap?: Map<string, Champion>): Champion {
   const champion = championMap?.get(championId) ?? championById.get(championId);
@@ -34,8 +52,90 @@ export function getDifficultyLabel(riotDifficulty: number): DifficultyLabel {
   return "難しい";
 }
 
-export function getRoleStats(role: Role): RoleStat[] {
-  return roleStats.filter((stat) => stat.role === role);
+function getManualRoleStat(championId: string, role: Role): RoleStat | undefined {
+  return manualRoleStatByKey.get(`${championId}:${role}`);
+}
+
+function getTagFit(champion: Champion, role: Role): number {
+  const weights = roleTagWeights[role];
+
+  return Math.min(
+    18,
+    (champion.tags ?? []).reduce((total, tag) => total + (weights[tag] ?? 0), 0),
+  );
+}
+
+function getProfileFit(champion: Champion, role: Role): number {
+  const profile = champion.combatProfile;
+
+  if (!profile) {
+    return 0;
+  }
+
+  if (role === "top") {
+    return profile.defense * 1.1 + Math.max(profile.attack, profile.magic) * 0.5;
+  }
+
+  if (role === "jungle") {
+    return profile.attack * 0.8 + profile.defense * 0.6 + profile.magic * 0.35;
+  }
+
+  if (role === "mid") {
+    return profile.magic * 1.05 + profile.attack * 0.35;
+  }
+
+  if (role === "adc") {
+    return profile.attack * 1.25 + profile.magic * 0.35;
+  }
+
+  return profile.defense * 0.75 + profile.magic * 0.65;
+}
+
+function getExpandedRoleStat(champion: Champion, role: Role): RoleStat {
+  const tagFit = getTagFit(champion, role);
+  const profileFit = getProfileFit(champion, role);
+  const difficultyPenalty = champion.riotDifficulty >= 8 ? 4 : champion.riotDifficulty <= 3 ? -2 : 0;
+  const fitScore = clamp(tagFit + profileFit - difficultyPenalty, 8, 34);
+  const metaScore = Math.round(clamp(34 + fitScore * 1.25, 34, 78));
+  const winRate = roundToOne(clamp(47.6 + fitScore * 0.08, 47.8, 51.2));
+  const pickRate = roundToOne(clamp(0.35 + fitScore * 0.06, 0.4, 3.2));
+  const tier = metaScore >= 70 ? "B" : metaScore >= 58 ? "C" : "D";
+
+  return {
+    championId: champion.id,
+    role,
+    winRate,
+    pickRate,
+    metaScore,
+    sampleSize: 0,
+    source: "expanded",
+    tier,
+  };
+}
+
+function canExpandChampionForRole(champion: Champion, role: Role): boolean {
+  return roleChampionImageIds[role].has(champion.imageId);
+}
+
+export function getRoleStats(role: Role, championMap?: Map<string, Champion>): RoleStat[] {
+  const manualStats = roleStats.filter((stat) => stat.role === role);
+
+  if (!championMap || championMap.size === 0) {
+    return manualStats;
+  }
+
+  const seen = new Set(manualStats.map((stat) => stat.championId));
+  const expandedStats = [...championMap.values()]
+    .filter((champion) => !seen.has(champion.id) && canExpandChampionForRole(champion, role))
+    .map((champion) => getExpandedRoleStat(champion, role));
+
+  return [...manualStats, ...expandedStats].sort((a, b) => {
+    if ((a.source ?? "manual") !== (b.source ?? "manual")) {
+      return (a.source ?? "manual") === "manual" ? -1 : 1;
+    }
+
+    return b.pickRate - a.pickRate;
+  });
 }
 
 export function getAvailableAllyChampionIds(role: Role): string[] {
@@ -45,8 +145,24 @@ export function getAvailableAllyChampionIds(role: Role): string[] {
     .map((stat) => stat.championId);
 }
 
-export function getRoleStat(championId: string, role: Role): RoleStat | undefined {
-  return roleStats.find((stat) => stat.championId === championId && stat.role === role);
+export function getRoleStat(championId: string, role: Role, championMap?: Map<string, Champion>): RoleStat | undefined {
+  const manualStat = getManualRoleStat(championId, role);
+
+  if (manualStat) {
+    return manualStat;
+  }
+
+  const champion = championMap?.get(championId);
+
+  if (!champion) {
+    return undefined;
+  }
+
+  if (!canExpandChampionForRole(champion, role)) {
+    return undefined;
+  }
+
+  return getExpandedRoleStat(champion, role);
 }
 
 function getPairSynergy(allyChampionId: string, allyRole: Role, recommendedChampionId: string, recommendedRole: Role): PairSynergy | undefined {
@@ -113,6 +229,10 @@ function getFallbackReason(roleStat: RoleStat): string {
 }
 
 function normalizeWinRates(items: Array<{ displayWinRate: number }>): number[] {
+  if (items.length === 0) {
+    return [];
+  }
+
   const rates = items.map((item) => item.displayWinRate);
   const min = Math.min(...rates);
   const max = Math.max(...rates);
@@ -129,6 +249,10 @@ function getMetaFlames(metaScore: number): number {
 }
 
 function getDataPenalty(sampleSize: number): number {
+  if (sampleSize === 0) {
+    return 18;
+  }
+
   if (sampleSize < LOW_DATA_SAMPLE_SIZE) {
     return 10;
   }
@@ -150,6 +274,7 @@ function toRecommendation(
   const champion = getChampion(roleStat.championId, championMap);
   const allyChampion = championMap?.get(allyChampionId) ?? championById.get(allyChampionId);
   const synergy = getPairSynergy(allyChampionId, allyRole, roleStat.championId, roleStat.role);
+  const isExpandedData = (roleStat.source ?? "manual") === "expanded" && !synergy;
   const comboScore =
     synergy?.comboScore ?? getGenericComboScore(roleStat, allyChampion, champion, allyRole, roleStat.role);
   const displayWinRate = synergy?.pairWinRate ?? roleStat.winRate;
@@ -178,8 +303,9 @@ function toRecommendation(
     reason: synergy ? reasonTemplates[synergy.reasonType] : getFallbackReason(roleStat),
     difficulty,
     isBeginnerFriendly: difficulty === "簡単",
+    isExpandedData,
     isOffMeta: roleStat.pickRate < OFF_META_PICK_RATE,
-    isLowData: sampleSize < LOW_DATA_SAMPLE_SIZE,
+    isLowData: sampleSize < LOW_DATA_SAMPLE_SIZE || isExpandedData,
   };
 }
 
@@ -189,7 +315,7 @@ export function getRecommendations(
   allyChampionId: string,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
-  const candidateStats = getRoleStats(selfRole).filter((stat) => stat.championId !== allyChampionId);
+  const candidateStats = getRoleStats(selfRole, championMap).filter((stat) => stat.championId !== allyChampionId);
   const baseItems = candidateStats.map((roleStat) => {
     const synergy = getPairSynergy(allyChampionId, allyRole, roleStat.championId, selfRole);
 
@@ -205,7 +331,38 @@ export function getRecommendations(
     .sort((a, b) => b.totalScore - a.totalScore);
 }
 
-export function getTopRecommendations(
+function selectDiverseRecommendations(recommendations: Recommendation[], limit: number): Recommendation[] {
+  const selected: Recommendation[] = [];
+  const usedPrimaryTags = new Set<string>();
+  const topWindow = recommendations.slice(0, Math.max(limit * 4, 12));
+
+  for (const recommendation of topWindow) {
+    const primaryTag = recommendation.champion.tags?.[0] ?? "unknown";
+
+    if (!usedPrimaryTags.has(primaryTag)) {
+      selected.push(recommendation);
+      usedPrimaryTags.add(primaryTag);
+    }
+
+    if (selected.length >= limit) {
+      return selected;
+    }
+  }
+
+  for (const recommendation of recommendations) {
+    if (!selected.some((selectedRecommendation) => selectedRecommendation.champion.id === recommendation.champion.id)) {
+      selected.push(recommendation);
+    }
+
+    if (selected.length >= limit) {
+      return selected;
+    }
+  }
+
+  return selected;
+}
+
+function getDirectRecommendations(
   selfRole: Role,
   allyRole: Role,
   allyChampionId: string,
@@ -213,18 +370,52 @@ export function getTopRecommendations(
 ): Recommendation[] {
   const directSynergies = getDirectPairSynergies(allyChampionId, allyRole, selfRole);
 
-  if (directSynergies.length >= 3) {
-    const directRecommendations = directSynergies
-      .map((synergy) => getRoleStat(synergy.recommendedChampionId, synergy.recommendedRole))
-      .filter((roleStat): roleStat is RoleStat => Boolean(roleStat))
-      .map((roleStat) => toRecommendation(roleStat, allyChampionId, allyRole, 100, championMap));
-
-    if (directRecommendations.length >= 3) {
-      return directRecommendations.slice(0, 3);
-    }
+  if (directSynergies.length < 3) {
+    return [];
   }
 
-  return getRecommendations(selfRole, allyRole, allyChampionId, championMap).slice(0, 3);
+  return directSynergies
+    .map((synergy) => getRoleStat(synergy.recommendedChampionId, synergy.recommendedRole, championMap))
+    .filter((roleStat): roleStat is RoleStat => Boolean(roleStat))
+    .map((roleStat) => toRecommendation(roleStat, allyChampionId, allyRole, 100, championMap));
+}
+
+export function getTopRecommendations(
+  selfRole: Role,
+  allyRole: Role,
+  allyChampionId: string,
+  championMap?: Map<string, Champion>,
+): Recommendation[] {
+  const directRecommendations = getDirectRecommendations(selfRole, allyRole, allyChampionId, championMap);
+
+  if (directRecommendations.length >= 3) {
+    return directRecommendations.slice(0, 3);
+  }
+
+  return selectDiverseRecommendations(getRecommendations(selfRole, allyRole, allyChampionId, championMap), 3);
+}
+
+export function getRecommendationPool(
+  selfRole: Role,
+  allyRole: Role,
+  allyChampionId: string,
+  championMap?: Map<string, Champion>,
+  limit = 8,
+): Recommendation[] {
+  const directRecommendations = getDirectRecommendations(selfRole, allyRole, allyChampionId, championMap).slice(0, 3);
+  const directChampionIds = new Set(directRecommendations.map((recommendation) => recommendation.champion.id));
+  const scoredRecommendations = getRecommendations(selfRole, allyRole, allyChampionId, championMap).filter(
+    (recommendation) => !directChampionIds.has(recommendation.champion.id),
+  );
+
+  if (directRecommendations.length >= 3) {
+    return [
+      ...directRecommendations,
+      ...selectDiverseRecommendations(scoredRecommendations, Math.max(0, limit - directRecommendations.length)),
+    ].slice(0, limit);
+  }
+
+  return selectDiverseRecommendations(scoredRecommendations, limit);
 }
 
 export function getAvoidRecommendations(
@@ -233,7 +424,13 @@ export function getAvoidRecommendations(
   allyChampionId: string,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
-  return getRecommendations(selfRole, allyRole, allyChampionId, championMap)
+  const recommendations = getRecommendations(selfRole, allyRole, allyChampionId, championMap);
+  const reliableRecommendations = recommendations.filter(
+    (recommendation) => !recommendation.isExpandedData || recommendation.synergySource === "pair",
+  );
+  const avoidPool = reliableRecommendations.length >= 3 ? reliableRecommendations : recommendations;
+
+  return avoidPool
     .slice()
     .sort((a, b) => a.displayWinRate - b.displayWinRate)
     .slice(0, 3);

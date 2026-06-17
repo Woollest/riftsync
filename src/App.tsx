@@ -12,16 +12,17 @@ import {
 } from "lucide-react";
 import { ChampionGrid } from "./components/ChampionGrid";
 import { DataFact } from "./components/DataFact";
-import { AvoidCard, RecommendationCard } from "./components/RecommendationCard";
+import { AvoidCard, CandidateCard, RecommendationCard } from "./components/RecommendationCard";
 import { RoleSelector } from "./components/RoleSelector";
 import { type CopyState, ShareActions } from "./components/ShareActions";
-import { dataMeta, pairSynergies, roleStats, roles } from "./data";
+import { dataMeta, pairSynergies, roles } from "./data";
 import { useDataDragonChampions } from "./hooks/useDataDragonChampions";
 import { roleChampionImageIds } from "./roleCatalog";
 import {
   getAvailableAllyChampionIds,
   getAvoidRecommendations,
-  getTopRecommendations,
+  getRecommendationPool,
+  getRoleStats,
 } from "./scoring";
 import type { Role } from "./types";
 import { copyTextToClipboard } from "./utils/clipboard";
@@ -126,18 +127,31 @@ function App() {
     [allyChampionById, otherAllyChampionIds, normalizedQuery],
   );
 
-  const recommendations = useMemo(
-    () => (allyChampionId ? getTopRecommendations(selfRole, allyRole, allyChampionId, allyChampionById) : []),
+  const recommendationPool = useMemo(
+    () => (allyChampionId ? getRecommendationPool(selfRole, allyRole, allyChampionId, allyChampionById, 8) : []),
     [selfRole, allyRole, allyChampionId, allyChampionById],
   );
+  const recommendations = useMemo(
+    () => (recommendationPool.length > 0 ? recommendationPool.slice(0, 3) : []),
+    [recommendationPool],
+  );
+  const backupRecommendations = useMemo(() => recommendationPool.slice(3), [recommendationPool]);
   const avoidRecommendations = useMemo(
     () => (allyChampionId ? getAvoidRecommendations(selfRole, allyRole, allyChampionId, allyChampionById) : []),
     [selfRole, allyRole, allyChampionId, allyChampionById],
   );
   const selfRoleOption = roles.find((role) => role.id === selfRole);
+  const candidateStats = useMemo(
+    () => getRoleStats(selfRole, allyChampionById).filter((stat) => stat.championId !== allyChampionId),
+    [allyChampionById, allyChampionId, selfRole],
+  );
   const candidateCount = useMemo(
-    () => roleStats.filter((stat) => stat.role === selfRole && stat.championId !== allyChampionId).length,
-    [allyChampionId, selfRole],
+    () => candidateStats.length,
+    [candidateStats],
+  );
+  const expandedCandidateCount = useMemo(
+    () => candidateStats.filter((stat) => stat.source === "expanded").length,
+    [candidateStats],
   );
   const selectedPairCount = useMemo(
     () =>
@@ -150,11 +164,8 @@ function App() {
     [allyChampionId, allyRole, selfRole],
   );
   const lowDataCount = useMemo(
-    () =>
-      roleStats.filter(
-        (stat) => stat.role === selfRole && stat.championId !== allyChampionId && stat.sampleSize < 500,
-      ).length,
-    [allyChampionId, selfRole],
+    () => candidateStats.filter((stat) => stat.sampleSize < 500).length,
+    [candidateStats],
   );
 
   const iconUrl = (imageId: string) =>
@@ -171,6 +182,7 @@ function App() {
         recommendation.difficulty,
         recommendation.isBeginnerFriendly ? "初心者おすすめ" : "",
         recommendation.synergySource === "profile" ? "推定相性" : "",
+        recommendation.isExpandedData ? "補完データ" : "",
         recommendation.isOffMeta ? "オフメタ" : "",
         recommendation.isLowData ? "データ少" : "",
       ].filter(Boolean);
@@ -187,6 +199,13 @@ function App() {
       `データ: Patch ${dataMeta.patch} ${dataMeta.rankRange} ${dataMeta.region}`,
       "",
       ...recommendationLines,
+      "",
+      ...backupRecommendations.map(
+        (recommendation, index) =>
+          `追加${index + 1}. ${recommendation.champion.nameJa} / ${recommendation.champion.nameEn} - コンボ${Math.round(
+            recommendation.comboScore,
+          )}% / 勝率${recommendation.displayWinRate.toFixed(1)}%`,
+      ),
     ].join("\n");
   };
 
@@ -242,14 +261,25 @@ function App() {
         <div className="data-facts">
           <DataFact icon={<CalendarDays aria-hidden="true" size={15} />} label="更新" value={dataMeta.updatedAt} />
           <DataFact label="出典" value={dataMeta.source} wide />
-          <DataFact label="候補" value={`${selfRoleOption?.shortLabel ?? selfRole} ${candidateCount}体`} />
+          <DataFact
+            label="候補"
+            value={`${selfRoleOption?.shortLabel ?? selfRole} ${candidateCount}体`}
+          />
           <DataFact label="直接相性" tone={selectedPairCount >= 3 ? "good" : "warn"} value={`${selectedPairCount}件`} />
+          <DataFact
+            label="補完候補"
+            tone={expandedCandidateCount > 0 ? "warn" : "good"}
+            value={`${expandedCandidateCount}体`}
+          />
           <DataFact label="データ少" tone={lowDataCount > 0 ? "warn" : "good"} value={`${lowDataCount}件`} />
         </div>
-        {selectedPairCount < 3 || candidateCount < 10 ? (
+        {selectedPairCount < 3 || expandedCandidateCount > 0 || candidateCount < 10 ? (
           <div className="data-note">
             {selectedPairCount < 3 ? (
               <span>直接相性データが少ないため、チャンピオン性質からの推定相性を含めて表示します。</span>
+            ) : null}
+            {expandedCandidateCount > 0 ? (
+              <span>CSV未登録の候補はData Dragonとロール分類で補完し、補完データとして明示します。</span>
             ) : null}
             {candidateCount < 10 ? (
               <span>候補データが10体未満のため、実運用前にCSVの拡充を推奨します。</span>
@@ -333,6 +363,20 @@ function App() {
             recommendation={recommendation}
           />
         ))}
+        {backupRecommendations.length > 0 ? (
+          <div className="candidate-strip">
+            <div className="candidate-strip-title">追加候補</div>
+            <div className="candidate-list">
+              {backupRecommendations.map((recommendation) => (
+                <CandidateCard
+                  iconUrl={iconUrl(recommendation.champion.imageId)}
+                  key={`${recommendation.champion.id}-${recommendation.roleStat.role}-candidate`}
+                  recommendation={recommendation}
+                />
+              ))}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className="avoid-stack" aria-label="非推奨チャンピオン">

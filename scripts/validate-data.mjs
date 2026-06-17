@@ -64,6 +64,10 @@ function pushError(errors, file, message) {
   errors.push(`${file}: ${message}`);
 }
 
+function pushWarning(warnings, file, message) {
+  warnings.push(`${file}: ${message}`);
+}
+
 function isNumberInRange(value, min, max) {
   return typeof value === "number" && Number.isFinite(value) && value >= min && value <= max;
 }
@@ -116,7 +120,7 @@ function validateRoleStats(roleStats, knownChampionIds, errors) {
   }
 }
 
-function validatePairSynergies(pairSynergies, roleStats, reasonTemplates, knownChampionIds, errors) {
+function validatePairSynergies(pairSynergies, roleStats, reasonTemplates, knownChampionIds, errors, warnings) {
   const file = "data/manual/pairSynergies.csv";
   const seen = new Set();
   const roleStatKeys = new Set(roleStats.map((stat) => `${stat.championId}:${stat.role}`));
@@ -158,10 +162,10 @@ function validatePairSynergies(pairSynergies, roleStats, reasonTemplates, knownC
     seen.add(duplicateKey);
 
     if (!roleStatKeys.has(`${synergy.recommendedChampionId}:${synergy.recommendedRole}`)) {
-      pushError(
-        errors,
+      pushWarning(
+        warnings,
         row,
-        `recommended champion "${synergy.recommendedChampionId}" has no roleStats entry for "${synergy.recommendedRole}"`,
+        `recommended champion "${synergy.recommendedChampionId}" has no roleStats entry for "${synergy.recommendedRole}"; expanded runtime data will be used when available`,
       );
     }
 
@@ -219,6 +223,7 @@ function validateDataMeta(dataMeta, errors) {
 
 async function main() {
   const errors = [];
+  const warnings = [];
   const [roleStats, pairSynergies, reasonTemplates, dataMeta, knownChampions] = await Promise.all([
     readJson("src/data/roleStats.json"),
     readJson("src/data/pairSynergies.json"),
@@ -229,7 +234,7 @@ async function main() {
 
   validateRoleStats(roleStats, knownChampions.ids, errors);
   validateReasonTemplates(reasonTemplates, errors);
-  validatePairSynergies(pairSynergies, roleStats, reasonTemplates, knownChampions.ids, errors);
+  validatePairSynergies(pairSynergies, roleStats, reasonTemplates, knownChampions.ids, errors, warnings);
   validateDataMeta(dataMeta, errors);
 
   if (errors.length > 0) {
@@ -239,6 +244,13 @@ async function main() {
     }
     process.exitCode = 1;
     return;
+  }
+
+  if (warnings.length > 0) {
+    console.warn(`RiftSync data validation passed with ${warnings.length} warning(s):`);
+    for (const warning of warnings) {
+      console.warn(`- ${warning}`);
+    }
   }
 
   console.log("RiftSync data validation passed.");

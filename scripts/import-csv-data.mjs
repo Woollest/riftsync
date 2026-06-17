@@ -321,11 +321,11 @@ function validateCsvRecords({ roleStats, pairSynergies, reasonTemplateRows, data
     }
 
     if (!roleStatKeys.has(`${synergy.recommendedChampionId}:${synergy.recommendedRole}`)) {
-      addCsvError(
-        errors,
+      addCsvWarning(
+        warnings,
         "pairSynergies",
         rowNumber,
-        `recommended champion "${synergy.recommendedChampionId}" has no roleStats row for "${synergy.recommendedRole}"`,
+        `recommended champion "${synergy.recommendedChampionId}" has no roleStats row for "${synergy.recommendedRole}"; the app will use expanded runtime data when available`,
       );
     }
 
