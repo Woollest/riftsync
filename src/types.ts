@@ -65,6 +65,11 @@ export interface Recommendation {
   displayWinRate: number;
   sampleSize: number;
   totalScore: number;
+  scoreBreakdown: {
+    combo: number;
+    winRate: number;
+    meta: number;
+  };
   metaFlames: number;
   reason: string;
   difficulty: DifficultyLabel;

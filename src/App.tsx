@@ -3,106 +3,29 @@ import {
   AlertTriangle,
   BarChart3,
   CalendarDays,
-  Check,
   ChevronDown,
-  Copy,
   Database,
-  ExternalLink,
-  Flame,
-  Link2,
-  MessageSquare,
   Search,
-  ShieldCheck,
   Sparkles,
   Swords,
   Users,
 } from "lucide-react";
-import { champions, dataMeta, pairSynergies, roleStats, roles } from "./data";
+import { ChampionGrid } from "./components/ChampionGrid";
+import { DataFact } from "./components/DataFact";
+import { AvoidCard, RecommendationCard } from "./components/RecommendationCard";
+import { RoleSelector } from "./components/RoleSelector";
+import { type CopyState, ShareActions } from "./components/ShareActions";
+import { dataMeta, pairSynergies, roleStats, roles } from "./data";
+import { useDataDragonChampions } from "./hooks/useDataDragonChampions";
 import { roleChampionImageIds } from "./roleCatalog";
 import {
   getAvailableAllyChampionIds,
   getAvoidRecommendations,
   getTopRecommendations,
 } from "./scoring";
-import type { Champion, Recommendation, Role } from "./types";
-
-const DEFAULT_DDRAGON_VERSION = "15.24.1";
-const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
-const FEEDBACK_URL = "https://github.com/Woollest/riftsync/issues";
-const DEFAULT_SELECTION = {
-  allyChampionId: "malphite",
-  allyRole: "top" as Role,
-  selfRole: "mid" as Role,
-};
-const localChampionByImageId = new Map(champions.map((champion) => [champion.imageId, champion]));
-
-interface DataDragonChampion {
-  id: string;
-  name: string;
-  info: {
-    difficulty: number;
-  };
-}
-
-interface DataDragonChampionResponse {
-  data: Record<string, DataDragonChampion>;
-}
-
-function isRole(value: string | null): value is Role {
-  return roles.some((role) => role.id === value);
-}
-
-function getFallbackSelfRole(allyRole: Role): Role {
-  return roles.find((role) => role.id !== allyRole)?.id ?? DEFAULT_SELECTION.selfRole;
-}
-
-function getInitialSelection() {
-  if (typeof window === "undefined") {
-    return DEFAULT_SELECTION;
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const requestedAllyRole = params.get("allyRole");
-  const allyRole = isRole(requestedAllyRole) ? requestedAllyRole : DEFAULT_SELECTION.allyRole;
-  const requestedSelfRole = params.get("selfRole");
-  const selfRole =
-    isRole(requestedSelfRole) && requestedSelfRole !== allyRole ? requestedSelfRole : getFallbackSelfRole(allyRole);
-  const allyChampionId = params.get("ally")?.trim() || DEFAULT_SELECTION.allyChampionId;
-
-  return {
-    allyChampionId,
-    allyRole,
-    selfRole,
-  };
-}
-
-async function copyTextToClipboard(text: string): Promise<boolean> {
-  try {
-    if (!navigator.clipboard) {
-      throw new Error("Clipboard API is not available");
-    }
-
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.setAttribute("readonly", "true");
-    textArea.style.position = "fixed";
-    textArea.style.top = "-1000px";
-    textArea.style.left = "-1000px";
-    document.body.append(textArea);
-    textArea.focus({ preventScroll: true });
-    textArea.select();
-    textArea.setSelectionRange(0, textArea.value.length);
-
-    try {
-      return document.execCommand("copy");
-    } finally {
-      textArea.remove();
-    }
-  }
-}
+import type { Role } from "./types";
+import { copyTextToClipboard } from "./utils/clipboard";
+import { buildShareUrl, getFallbackSelfRole, getInitialSelection, syncSelectionToUrl } from "./utils/shareState";
 
 function App() {
   const [initialSelection] = useState(getInitialSelection);
@@ -111,54 +34,9 @@ function App() {
   const [allyChampionId, setAllyChampionId] = useState(initialSelection.allyChampionId);
   const [query, setQuery] = useState("");
   const [showAvoids, setShowAvoids] = useState(false);
-  const [dragonVersion, setDragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
-  const [allAllyChampions, setAllAllyChampions] = useState<Champion[]>(champions);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
-  const [linkCopyState, setLinkCopyState] = useState<"idle" | "copied" | "failed">("idle");
-
-  useEffect(() => {
-    fetch(DDRAGON_VERSIONS_URL)
-      .then((response) => response.json())
-      .then((versions: string[]) => {
-        if (versions[0]) {
-          setDragonVersion(versions[0]);
-        }
-      })
-      .catch(() => setDragonVersion(DEFAULT_DDRAGON_VERSION));
-  }, []);
-
-  useEffect(() => {
-    const loadChampions = async () => {
-      try {
-        const [jaResponse, enResponse] = await Promise.all([
-          fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/ja_JP/champion.json`),
-          fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/en_US/champion.json`),
-        ]);
-        const jaData = (await jaResponse.json()) as DataDragonChampionResponse;
-        const enData = (await enResponse.json()) as DataDragonChampionResponse;
-        const loadedChampions = Object.values(jaData.data)
-          .map((jaChampion) => {
-            const localChampion = localChampionByImageId.get(jaChampion.id);
-            const enChampion = enData.data[jaChampion.id];
-
-            return {
-              id: localChampion?.id ?? jaChampion.id,
-              nameJa: jaChampion.name,
-              nameEn: localChampion?.nameEn ?? enChampion?.name ?? jaChampion.id,
-              imageId: jaChampion.id,
-              riotDifficulty: jaChampion.info.difficulty,
-            };
-          })
-          .sort((a, b) => a.nameJa.localeCompare(b.nameJa, "ja"));
-
-        setAllAllyChampions(loadedChampions);
-      } catch {
-        setAllAllyChampions(champions);
-      }
-    };
-
-    void loadChampions();
-  }, [dragonVersion]);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
+  const [linkCopyState, setLinkCopyState] = useState<CopyState>("idle");
+  const { allChampions, dragonVersion } = useDataDragonChampions();
 
   useEffect(() => {
     if (selfRole === allyRole) {
@@ -167,50 +45,37 @@ function App() {
   }, [selfRole, allyRole]);
 
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set("allyRole", allyRole);
-    params.set("ally", allyChampionId);
-    params.set("selfRole", selfRole);
-
-    const nextUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
-    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-
-    if (nextUrl !== currentUrl) {
-      window.history.replaceState(null, "", nextUrl);
-    }
+    syncSelectionToUrl({ allyChampionId, allyRole, selfRole });
   }, [allyChampionId, allyRole, selfRole]);
 
   const allyChampionById = useMemo(
-    () => new Map(allAllyChampions.map((champion) => [champion.id, champion])),
-    [allAllyChampions],
+    () => new Map(allChampions.map((champion) => [champion.id, champion])),
+    [allChampions],
   );
-  const roleMatchedAllyChampionIds = useMemo(
-    () => {
-      const matchedImageIds = roleChampionImageIds[allyRole];
-      const statsChampionIds = getAvailableAllyChampionIds(allyRole).filter((championId) =>
-        allyChampionById.has(championId),
-      );
-      const catalogChampionIds = allAllyChampions
-        .filter((champion) => matchedImageIds.has(champion.imageId))
-        .map((champion) => champion.id)
-        .sort((a, b) => {
-          const championA = allyChampionById.get(a);
-          const championB = allyChampionById.get(b);
+  const roleMatchedAllyChampionIds = useMemo(() => {
+    const matchedImageIds = roleChampionImageIds[allyRole];
+    const statsChampionIds = getAvailableAllyChampionIds(allyRole).filter((championId) =>
+      allyChampionById.has(championId),
+    );
+    const catalogChampionIds = allChampions
+      .filter((champion) => matchedImageIds.has(champion.imageId))
+      .map((champion) => champion.id)
+      .sort((a, b) => {
+        const championA = allyChampionById.get(a);
+        const championB = allyChampionById.get(b);
 
-          return (championA?.nameJa ?? a).localeCompare(championB?.nameJa ?? b, "ja");
-        });
+        return (championA?.nameJa ?? a).localeCompare(championB?.nameJa ?? b, "ja");
+      });
 
-      return Array.from(new Set([...statsChampionIds, ...catalogChampionIds]));
-    },
-    [allAllyChampions, allyRole, allyChampionById],
-  );
+    return Array.from(new Set([...statsChampionIds, ...catalogChampionIds]));
+  }, [allChampions, allyRole, allyChampionById]);
   const roleMatchedAllyChampionSet = useMemo(
     () => new Set(roleMatchedAllyChampionIds),
     [roleMatchedAllyChampionIds],
   );
   const otherAllyChampionIds = useMemo(
     () =>
-      allAllyChampions
+      allChampions
         .map((champion) => champion.id)
         .filter((championId) => !roleMatchedAllyChampionSet.has(championId))
         .sort((a, b) => {
@@ -219,7 +84,7 @@ function App() {
 
           return (championA?.nameJa ?? a).localeCompare(championB?.nameJa ?? b, "ja");
         }),
-    [allAllyChampions, allyChampionById, roleMatchedAllyChampionSet],
+    [allChampions, allyChampionById, roleMatchedAllyChampionSet],
   );
   const allAllyChampionIds = useMemo(
     () => [...roleMatchedAllyChampionIds, ...otherAllyChampionIds],
@@ -233,11 +98,9 @@ function App() {
   }, [allyChampionId, allAllyChampionIds]);
 
   const selectedAllyChampion = allyChampionId ? allyChampionById.get(allyChampionId) : undefined;
-
-  const filterChampionIds = (championIds: string[]) => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    return championIds.filter((championId) => {
+  const normalizedQuery = query.trim().toLowerCase();
+  const filterChampionIds = (championIds: string[]) =>
+    championIds.filter((championId) => {
       const champion = allyChampionById.get(championId);
 
       if (!champion) {
@@ -253,15 +116,14 @@ function App() {
         champion.nameEn.toLowerCase().includes(normalizedQuery)
       );
     });
-  };
 
   const filteredRoleMatchedAllyChampionIds = useMemo(
     () => filterChampionIds(roleMatchedAllyChampionIds),
-    [allyChampionById, roleMatchedAllyChampionIds, query],
+    [allyChampionById, roleMatchedAllyChampionIds, normalizedQuery],
   );
   const filteredOtherAllyChampionIds = useMemo(
     () => filterChampionIds(otherAllyChampionIds),
-    [allyChampionById, otherAllyChampionIds, query],
+    [allyChampionById, otherAllyChampionIds, normalizedQuery],
   );
 
   const recommendations = useMemo(
@@ -327,15 +189,6 @@ function App() {
     ].join("\n");
   };
 
-  const buildShareUrl = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("allyRole", allyRole);
-    url.searchParams.set("ally", allyChampionId);
-    url.searchParams.set("selfRole", selfRole);
-
-    return url.toString();
-  };
-
   const handleCopySummary = async () => {
     if (await copyTextToClipboard(buildPickSummary())) {
       setCopyState("copied");
@@ -348,7 +201,9 @@ function App() {
   };
 
   const handleCopyLink = async () => {
-    if (await copyTextToClipboard(buildShareUrl())) {
+    const url = buildShareUrl({ allyChampionId, allyRole, selfRole });
+
+    if (url && (await copyTextToClipboard(url))) {
       setLinkCopyState("copied");
       window.setTimeout(() => setLinkCopyState("idle"), 1600);
       return;
@@ -404,10 +259,10 @@ function App() {
           <label className="search-box">
             <Search aria-hidden="true" size={17} />
             <input
-              value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="日本語 / English"
               type="search"
+              value={query}
             />
           </label>
 
@@ -452,31 +307,12 @@ function App() {
             <Sparkles aria-hidden="true" size={18} />
             <span>おすすめ3体</span>
           </div>
-          <div className="action-row" aria-label="共有アクション">
-            <button
-              className={`icon-action ${copyState !== "idle" ? `is-${copyState}` : ""}`}
-              onClick={handleCopySummary}
-              type="button"
-            >
-              {copyState === "copied" ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />}
-              <span>{copyState === "copied" ? "コピー済み" : copyState === "failed" ? "失敗" : "結果をコピー"}</span>
-            </button>
-            <button
-              className={`icon-action ${linkCopyState !== "idle" ? `is-${linkCopyState}` : ""}`}
-              onClick={handleCopyLink}
-              type="button"
-            >
-              {linkCopyState === "copied" ? <Check aria-hidden="true" size={16} /> : <Link2 aria-hidden="true" size={16} />}
-              <span>
-                {linkCopyState === "copied" ? "コピー済み" : linkCopyState === "failed" ? "失敗" : "リンクをコピー"}
-              </span>
-            </button>
-            <a className="icon-action" href={FEEDBACK_URL} rel="noreferrer" target="_blank">
-              <MessageSquare aria-hidden="true" size={16} />
-              <span>フィードバック</span>
-              <ExternalLink aria-hidden="true" size={13} />
-            </a>
-          </div>
+          <ShareActions
+            copyState={copyState}
+            linkCopyState={linkCopyState}
+            onCopyLink={handleCopyLink}
+            onCopySummary={handleCopySummary}
+          />
         </div>
         {recommendations.map((recommendation, index) => (
           <RecommendationCard
@@ -508,212 +344,6 @@ function App() {
         ) : null}
       </section>
     </main>
-  );
-}
-
-interface ChampionGridProps {
-  championIds: string[];
-  championMap: Map<string, Champion>;
-  iconUrl: (imageId: string) => string;
-  onSelect: (championId: string) => void;
-  selectedChampionId: string;
-  title: string;
-}
-
-function ChampionGrid({ championIds, championMap, iconUrl, onSelect, selectedChampionId, title }: ChampionGridProps) {
-  return (
-    <div className="champion-group">
-      <div className="champion-group-title">{title}</div>
-      {championIds.length > 0 ? (
-        <div className="champion-grid">
-          {championIds.map((championId) => {
-            const champion = championMap.get(championId);
-            const selected = selectedChampionId === championId;
-
-            if (!champion) {
-              return null;
-            }
-
-            return (
-              <button
-                className={`champion-tile ${selected ? "is-selected" : ""}`}
-                key={`${title}-${championId}`}
-                onClick={() => onSelect(championId)}
-                type="button"
-                title={`${champion.nameJa} / ${champion.nameEn}`}
-              >
-                <img src={iconUrl(champion.imageId)} alt="" />
-                <span>{champion.nameJa}</span>
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        <p className="empty-champion-group">該当チャンピオンなし</p>
-      )}
-    </div>
-  );
-}
-
-interface RoleSelectorProps {
-  title: string;
-  value: Role;
-  onChange: (role: Role) => void;
-  disabledRole?: Role;
-}
-
-function RoleSelector({ title, value, onChange, disabledRole }: RoleSelectorProps) {
-  return (
-    <div className="field-block">
-      <div className="section-title">
-        <ShieldCheck aria-hidden="true" size={17} />
-        <span>{title}</span>
-      </div>
-      <div className="role-segment">
-        {roles.map((role) => {
-          const disabled = disabledRole === role.id;
-
-          return (
-            <button
-              className={value === role.id ? "active" : ""}
-              disabled={disabled}
-              key={role.id}
-              onClick={() => onChange(role.id)}
-              type="button"
-            >
-              <span>{role.shortLabel}</span>
-              <small>{role.label}</small>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-interface RecommendationCardProps {
-  iconUrl: string;
-  index: number;
-  recommendation: Recommendation;
-}
-
-function RecommendationCard({ iconUrl, index, recommendation }: RecommendationCardProps) {
-  return (
-    <article className="recommendation-card">
-      <div className="rank-badge">{index}</div>
-      <img className="champion-portrait" src={iconUrl} alt="" />
-      <div className="card-main">
-        <div className="card-heading">
-          <div>
-            <h2>{recommendation.champion.nameJa}</h2>
-            <p>{recommendation.champion.nameEn}</p>
-          </div>
-          <StarRating score={recommendation.totalScore} />
-        </div>
-        <p className="reason">{recommendation.reason}</p>
-        <div className="metric-grid">
-          <Metric label="コンボ相性" value={`${Math.round(recommendation.comboScore)}%`} />
-          <Metric label="勝率" value={`${recommendation.displayWinRate.toFixed(1)}%`} />
-          <Metric label="メタ" value={<FlameRating count={recommendation.metaFlames} />} />
-          <Metric label="難易度" value={recommendation.difficulty} />
-        </div>
-        <LabelRow recommendation={recommendation} />
-      </div>
-    </article>
-  );
-}
-
-interface AvoidCardProps {
-  iconUrl: string;
-  recommendation: Recommendation;
-}
-
-function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
-  return (
-    <article className="avoid-card">
-      <img src={iconUrl} alt="" />
-      <div>
-        <strong>
-          {recommendation.champion.nameJa} / {recommendation.champion.nameEn}
-        </strong>
-        <p>勝率が低く、味方との構成としてかみ合いにくい</p>
-        <span>
-          勝率 {recommendation.displayWinRate.toFixed(1)}% ・ コンボ相性 {Math.round(recommendation.comboScore)}%
-        </span>
-      </div>
-    </article>
-  );
-}
-
-function LabelRow({ recommendation }: { recommendation: Recommendation }) {
-  return (
-    <div className="label-row">
-      {recommendation.isBeginnerFriendly ? <span className="label good">初心者おすすめ</span> : null}
-      {recommendation.isOffMeta ? <span className="label warn">オフメタ</span> : null}
-      {recommendation.isLowData ? <span className="label caution">データ少</span> : null}
-    </div>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="metric">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
-}
-
-function DataFact({
-  icon,
-  label,
-  tone,
-  value,
-  wide = false,
-}: {
-  icon?: React.ReactNode;
-  label: string;
-  tone?: "good" | "warn";
-  value: string;
-  wide?: boolean;
-}) {
-  return (
-    <div className={`data-fact ${tone ? `is-${tone}` : ""} ${wide ? "is-wide" : ""}`}>
-      <span>
-        {icon}
-        {label}
-      </span>
-      <strong>{value}</strong>
-    </div>
-  );
-}
-
-function StarRating({ score }: { score: number }) {
-  const rating = Math.max(1, Math.min(5, Math.round((score / 20) * 2) / 2));
-
-  return (
-    <div className="star-rating" aria-label={`総合評価 ${rating} / 5`}>
-      {Array.from({ length: 5 }).map((_, index) => {
-        const fill = Math.max(0, Math.min(1, rating - index));
-        const className = fill >= 1 ? "full" : fill >= 0.5 ? "half" : "empty";
-
-        return (
-          <span className={className} key={index}>
-            ★
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-function FlameRating({ count }: { count: number }) {
-  return (
-    <span className="flame-rating" aria-label={`メタ評価 ${count} / 5`}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Flame className={index < count ? "lit" : ""} fill="currentColor" key={index} size={14} />
-      ))}
-    </span>
   );
 }
 

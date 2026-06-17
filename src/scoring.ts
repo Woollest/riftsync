@@ -115,7 +115,12 @@ function toRecommendation(
   const comboScore = synergy?.comboScore ?? getGenericComboScore(roleStat, allyRole, roleStat.role);
   const displayWinRate = synergy?.pairWinRate ?? roleStat.winRate;
   const sampleSize = synergy?.sampleSize ?? roleStat.sampleSize;
-  const totalScore = comboScore * 0.5 + winRateScore * 0.3 + roleStat.metaScore * 0.2;
+  const scoreBreakdown = {
+    combo: comboScore * 0.5,
+    winRate: winRateScore * 0.3,
+    meta: roleStat.metaScore * 0.2,
+  };
+  const totalScore = scoreBreakdown.combo + scoreBreakdown.winRate + scoreBreakdown.meta;
   const difficulty = getDifficultyLabel(champion.riotDifficulty);
 
   return {
@@ -125,6 +130,7 @@ function toRecommendation(
     displayWinRate,
     sampleSize,
     totalScore,
+    scoreBreakdown,
     metaFlames: getMetaFlames(roleStat.metaScore),
     reason: synergy ? reasonTemplates[synergy.reasonType] : getFallbackReason(roleStat),
     difficulty,
