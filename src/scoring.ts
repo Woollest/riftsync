@@ -5,9 +5,9 @@ import type { Champion, DifficultyLabel, PairSynergy, Recommendation, Role, Role
 export const OFF_META_PICK_RATE = 1.0;
 export const LOW_DATA_SAMPLE_SIZE = 500;
 export const SCORE_WEIGHT = {
-  combo: 0.7,
-  winRate: 0.2,
-  meta: 0.1,
+  combo: 0.85,
+  winRate: 0.1,
+  meta: 0.05,
 };
 
 const championById = new Map(champions.map((champion) => [champion.id, champion]));
@@ -77,9 +77,9 @@ function getGenericComboScore(
   const allyTraits = getSynergyTraits(allyChampion, allyRole);
   const recommendedTraits = getSynergyTraits(recommendedChampion, selfRole);
   const traitBonus = getTraitCompatibilityScore(allyTraits, recommendedTraits);
-  const score = 38 + pairBonus + traitBonus + roleStat.metaScore * 0.06 + Math.max(0, roleStat.winRate - 50) * 1.6;
+  const score = 36 + pairBonus + traitBonus;
 
-  return Math.round(Math.min(94, Math.max(42, score)));
+  return Math.round(Math.min(96, Math.max(36, score)));
 }
 
 function getFallbackReason(roleStat: RoleStat): string {
@@ -118,6 +118,18 @@ function getMetaFlames(metaScore: number): number {
   return Math.max(1, Math.min(5, Math.round(metaScore / 20)));
 }
 
+function getDataPenalty(sampleSize: number): number {
+  if (sampleSize < LOW_DATA_SAMPLE_SIZE) {
+    return 10;
+  }
+
+  if (sampleSize < 1000) {
+    return 4;
+  }
+
+  return 0;
+}
+
 function toRecommendation(
   roleStat: RoleStat,
   allyChampionId: string,
@@ -132,12 +144,14 @@ function toRecommendation(
     synergy?.comboScore ?? getGenericComboScore(roleStat, allyChampion, champion, allyRole, roleStat.role);
   const displayWinRate = synergy?.pairWinRate ?? roleStat.winRate;
   const sampleSize = synergy?.sampleSize ?? roleStat.sampleSize;
+  const dataPenalty = getDataPenalty(sampleSize);
   const scoreBreakdown = {
     combo: comboScore * SCORE_WEIGHT.combo,
     winRate: winRateScore * SCORE_WEIGHT.winRate,
     meta: roleStat.metaScore * SCORE_WEIGHT.meta,
+    dataPenalty,
   };
-  const totalScore = scoreBreakdown.combo + scoreBreakdown.winRate + scoreBreakdown.meta;
+  const totalScore = scoreBreakdown.combo + scoreBreakdown.winRate + scoreBreakdown.meta - dataPenalty;
   const difficulty = getDifficultyLabel(champion.riotDifficulty);
 
   return {
@@ -147,6 +161,7 @@ function toRecommendation(
     displayWinRate,
     sampleSize,
     totalScore,
+    dataPenalty,
     synergySource: synergy ? "pair" : "profile",
     scoreBreakdown,
     metaFlames: getMetaFlames(roleStat.metaScore),

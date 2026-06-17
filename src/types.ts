@@ -71,11 +71,13 @@ export interface Recommendation {
   displayWinRate: number;
   sampleSize: number;
   totalScore: number;
+  dataPenalty: number;
   synergySource: "pair" | "profile";
   scoreBreakdown: {
     combo: number;
     winRate: number;
     meta: number;
+    dataPenalty: number;
   };
   metaFlames: number;
   reason: string;

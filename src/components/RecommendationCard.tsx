@@ -27,6 +27,7 @@ export function RecommendationCard({ iconUrl, index, recommendation }: Recommend
           <Metric label="勝率" value={`${recommendation.displayWinRate.toFixed(1)}%`} />
           <Metric label="メタ" value={<FlameRating count={recommendation.metaFlames} />} />
           <Metric label="難易度" value={recommendation.difficulty} />
+          <Metric label="試合数" value={recommendation.sampleSize.toLocaleString("ja-JP")} />
         </div>
         <ScoreBreakdown recommendation={recommendation} />
         <LabelRow recommendation={recommendation} />
@@ -58,11 +59,27 @@ export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
 }
 
 function ScoreBreakdown({ recommendation }: { recommendation: Recommendation }) {
-  const rows = [
-    { label: "相性", max: 70, value: recommendation.scoreBreakdown.combo },
-    { label: "勝率", max: 20, value: recommendation.scoreBreakdown.winRate },
-    { label: "メタ", max: 10, value: recommendation.scoreBreakdown.meta },
+  const rows: Array<{
+    label: string;
+    max: number;
+    tone?: "penalty";
+    value: number;
+    valuePrefix?: string;
+  }> = [
+    { label: "相性", max: 85, value: recommendation.scoreBreakdown.combo },
+    { label: "勝率", max: 10, value: recommendation.scoreBreakdown.winRate },
+    { label: "メタ", max: 5, value: recommendation.scoreBreakdown.meta },
   ];
+
+  if (recommendation.scoreBreakdown.dataPenalty > 0) {
+    rows.push({
+      label: "データ",
+      max: 10,
+      value: recommendation.scoreBreakdown.dataPenalty,
+      valuePrefix: "-",
+      tone: "penalty",
+    });
+  }
 
   return (
     <div className="score-breakdown" aria-label="総合スコア内訳">
@@ -71,10 +88,13 @@ function ScoreBreakdown({ recommendation }: { recommendation: Recommendation }) 
         const width = Math.max(0, Math.min(100, (row.value / row.max) * 100));
 
         return (
-          <div className="score-bar" key={row.label}>
+          <div className={`score-bar ${row.tone ? `is-${row.tone}` : ""}`} key={row.label}>
             <div className="score-bar-header">
               <span>{row.label}</span>
-              <strong>+{Math.round(row.value)}</strong>
+              <strong>
+                {row.valuePrefix ?? "+"}
+                {Math.round(row.value)}
+              </strong>
             </div>
             <span className="score-bar-track">
               <span className="score-bar-fill" style={{ width: `${width}%` }} />

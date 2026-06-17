@@ -9,6 +9,7 @@ type SynergyTrait =
   | "engage"
   | "enchanter"
   | "frontline"
+  | "hypercarry"
   | "lanePressure"
   | "magic"
   | "peel"
@@ -29,8 +30,8 @@ const championTraits: Record<string, SynergyTrait[]> = {
   darius: ["frontline", "dps", "physical"],
   ezreal: ["poke", "safe", "physical"],
   jarvanIV: ["engage", "catch", "frontline", "physical"],
-  jinx: ["dps", "scaling", "physical"],
-  kaisa: ["dive", "burst", "scaling", "physical"],
+  jinx: ["dps", "hypercarry", "scaling", "physical"],
+  kaisa: ["dive", "burst", "dps", "hypercarry", "scaling", "physical"],
   leeSin: ["dive", "catch", "roam", "physical"],
   leona: ["engage", "catch", "frontline"],
   lulu: ["enchanter", "peel", "utility"],
@@ -58,34 +59,39 @@ const roleTraits: Record<Role, SynergyTrait[]> = {
 };
 
 const tagTraits: Record<string, SynergyTrait[]> = {
-  Assassin: ["burst", "dive", "catch"],
-  Fighter: ["dive", "frontline", "dps"],
-  Mage: ["burst", "poke", "magic"],
-  Marksman: ["dps", "scaling", "physical"],
-  Support: ["peel", "utility", "enchanter"],
-  Tank: ["frontline", "engage", "catch"],
+  Assassin: ["burst", "dive"],
+  Fighter: ["dive"],
+  Mage: ["magic"],
+  Marksman: ["physical"],
+  Support: ["utility"],
+  Tank: ["frontline"],
 };
 
 const synergyPairs: Array<[SynergyTrait, SynergyTrait, number]> = [
-  ["engage", "aoe", 18],
+  ["engage", "aoe", 22],
   ["engage", "burst", 14],
+  ["engage", "lanePressure", 14],
   ["engage", "dps", 11],
   ["engage", "catch", 9],
-  ["frontline", "dps", 16],
+  ["frontline", "dps", 14],
+  ["frontline", "hypercarry", 16],
   ["frontline", "scaling", 12],
   ["frontline", "poke", 8],
   ["catch", "burst", 15],
   ["catch", "dive", 12],
-  ["catch", "lanePressure", 9],
+  ["catch", "lanePressure", 12],
   ["dive", "dive", 14],
   ["dive", "burst", 13],
   ["dive", "roam", 9],
-  ["peel", "dps", 16],
+  ["peel", "dps", 14],
+  ["peel", "hypercarry", 20],
   ["peel", "scaling", 13],
   ["peel", "safe", 8],
-  ["enchanter", "dps", 18],
+  ["enchanter", "dps", 16],
+  ["enchanter", "hypercarry", 24],
   ["enchanter", "scaling", 14],
   ["utility", "dps", 10],
+  ["utility", "hypercarry", 14],
   ["utility", "catch", 8],
   ["poke", "poke", 13],
   ["poke", "lanePressure", 11],
@@ -153,5 +159,5 @@ export function getTraitCompatibilityScore(allyTraits: Set<SynergyTrait>, recomm
     score += 6;
   }
 
-  return Math.min(score, 38);
+  return Math.min(score, 44);
 }

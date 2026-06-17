@@ -243,9 +243,19 @@ function App() {
           <DataFact icon={<CalendarDays aria-hidden="true" size={15} />} label="更新" value={dataMeta.updatedAt} />
           <DataFact label="出典" value={dataMeta.source} wide />
           <DataFact label="候補" value={`${selfRoleOption?.shortLabel ?? selfRole} ${candidateCount}体`} />
-          <DataFact label="相性" tone={selectedPairCount > 0 ? "good" : "warn"} value={`${selectedPairCount}件`} />
+          <DataFact label="直接相性" tone={selectedPairCount >= 3 ? "good" : "warn"} value={`${selectedPairCount}件`} />
           <DataFact label="データ少" tone={lowDataCount > 0 ? "warn" : "good"} value={`${lowDataCount}件`} />
         </div>
+        {selectedPairCount < 3 || candidateCount < 10 ? (
+          <div className="data-note">
+            {selectedPairCount < 3 ? (
+              <span>直接相性データが少ないため、チャンピオン性質からの推定相性を含めて表示します。</span>
+            ) : null}
+            {candidateCount < 10 ? (
+              <span>候補データが10体未満のため、実運用前にCSVの拡充を推奨します。</span>
+            ) : null}
+          </div>
+        ) : null}
       </section>
 
       <section className="control-stack" aria-label="ピック条件">
