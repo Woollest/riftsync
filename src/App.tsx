@@ -3,9 +3,13 @@ import {
   AlertTriangle,
   BarChart3,
   CalendarDays,
+  Check,
   ChevronDown,
+  Copy,
   Database,
+  ExternalLink,
   Flame,
+  MessageSquare,
   Search,
   ShieldCheck,
   Sparkles,
@@ -23,6 +27,7 @@ import type { Champion, Recommendation, Role } from "./types";
 
 const DEFAULT_DDRAGON_VERSION = "15.24.1";
 const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
+const FEEDBACK_URL = "https://github.com/Woollest/riftsync/issues";
 const localChampionByImageId = new Map(champions.map((champion) => [champion.imageId, champion]));
 
 interface DataDragonChampion {
@@ -37,6 +42,32 @@ interface DataDragonChampionResponse {
   data: Record<string, DataDragonChampion>;
 }
 
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  try {
+    if (!navigator.clipboard) {
+      throw new Error("Clipboard API is not available");
+    }
+
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.setAttribute("readonly", "true");
+    textArea.style.position = "fixed";
+    textArea.style.top = "-1000px";
+    textArea.style.left = "-1000px";
+    document.body.append(textArea);
+    textArea.select();
+
+    try {
+      return document.execCommand("copy");
+    } finally {
+      textArea.remove();
+    }
+  }
+}
+
 function App() {
   const [selfRole, setSelfRole] = useState<Role>("mid");
   const [allyRole, setAllyRole] = useState<Role>("top");
@@ -45,6 +76,7 @@ function App() {
   const [showAvoids, setShowAvoids] = useState(false);
   const [dragonVersion, setDragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
   const [allAllyChampions, setAllAllyChampions] = useState<Champion[]>(champions);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
 
   useEffect(() => {
     fetch(DDRAGON_VERSIONS_URL)
@@ -215,6 +247,46 @@ function App() {
   const iconUrl = (imageId: string) =>
     `https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/img/champion/${imageId}.png`;
 
+  const buildPickSummary = () => {
+    const allyRoleLabel = roles.find((role) => role.id === allyRole)?.shortLabel ?? allyRole;
+    const selfRoleLabel = roles.find((role) => role.id === selfRole)?.shortLabel ?? selfRole;
+    const allyName = selectedAllyChampion
+      ? `${selectedAllyChampion.nameJa} / ${selectedAllyChampion.nameEn}`
+      : "未選択";
+    const recommendationLines = recommendations.map((recommendation, index) => {
+      const labels = [
+        recommendation.difficulty,
+        recommendation.isBeginnerFriendly ? "初心者おすすめ" : "",
+        recommendation.isOffMeta ? "オフメタ" : "",
+        recommendation.isLowData ? "データ少" : "",
+      ].filter(Boolean);
+
+      return `${index + 1}. ${recommendation.champion.nameJa} / ${recommendation.champion.nameEn} - コンボ${Math.round(
+        recommendation.comboScore,
+      )}% / 勝率${recommendation.displayWinRate.toFixed(1)}% / ${labels.join(", ")}`;
+    });
+
+    return [
+      "RiftSync pick memo",
+      `味方: ${allyRoleLabel} ${allyName}`,
+      `自分: ${selfRoleLabel}`,
+      `データ: Patch ${dataMeta.patch} ${dataMeta.rankRange} ${dataMeta.region}`,
+      "",
+      ...recommendationLines,
+    ].join("\n");
+  };
+
+  const handleCopySummary = async () => {
+    if (await copyTextToClipboard(buildPickSummary())) {
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 1600);
+      return;
+    }
+
+    setCopyState("failed");
+    window.setTimeout(() => setCopyState("idle"), 1600);
+  };
+
   return (
     <main className="app-shell">
       <section className="hero-band">
@@ -304,9 +376,26 @@ function App() {
       ) : null}
 
       <section className="results-stack" aria-label="おすすめチャンピオン">
-        <div className="section-title section-title-strong">
-          <Sparkles aria-hidden="true" size={18} />
-          <span>おすすめ3体</span>
+        <div className="results-heading">
+          <div className="section-title section-title-strong">
+            <Sparkles aria-hidden="true" size={18} />
+            <span>おすすめ3体</span>
+          </div>
+          <div className="action-row" aria-label="共有アクション">
+            <button
+              className={`icon-action ${copyState !== "idle" ? `is-${copyState}` : ""}`}
+              onClick={handleCopySummary}
+              type="button"
+            >
+              {copyState === "copied" ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />}
+              <span>{copyState === "copied" ? "コピー済み" : copyState === "failed" ? "失敗" : "結果をコピー"}</span>
+            </button>
+            <a className="icon-action" href={FEEDBACK_URL} rel="noreferrer" target="_blank">
+              <MessageSquare aria-hidden="true" size={16} />
+              <span>フィードバック</span>
+              <ExternalLink aria-hidden="true" size={13} />
+            </a>
+          </div>
         </div>
         {recommendations.map((recommendation, index) => (
           <RecommendationCard
