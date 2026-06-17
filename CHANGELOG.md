@@ -16,6 +16,7 @@ RiftSync の仕様変更と実装内容を記録する。
 
 ### Changed
 
+- PC横長表示で左のsticky入力パネルと下部UIが重ならないよう、選択中表示と非推奨候補の配置を調整
 - `App.tsx` に集中していたUI部品、Data Dragon取得、共有URL、クリップボード処理を分割
 
 ### Verified
