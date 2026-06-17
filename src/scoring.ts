@@ -59,6 +59,16 @@ function getPairSynergy(allyChampionId: string, allyRole: Role, recommendedChamp
   );
 }
 
+function getDirectPairSynergies(allyChampionId: string, allyRole: Role, recommendedRole: Role): PairSynergy[] {
+  return pairSynergies.filter(
+    (synergy) =>
+      synergy.allyChampionId === allyChampionId &&
+      synergy.allyRole === allyRole &&
+      synergy.recommendedRole === recommendedRole &&
+      synergy.recommendedChampionId !== allyChampionId,
+  );
+}
+
 function getGenericComboScore(
   roleStat: RoleStat,
   allyChampion: Champion | undefined,
@@ -201,6 +211,19 @@ export function getTopRecommendations(
   allyChampionId: string,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
+  const directSynergies = getDirectPairSynergies(allyChampionId, allyRole, selfRole);
+
+  if (directSynergies.length >= 3) {
+    const directRecommendations = directSynergies
+      .map((synergy) => getRoleStat(synergy.recommendedChampionId, synergy.recommendedRole))
+      .filter((roleStat): roleStat is RoleStat => Boolean(roleStat))
+      .map((roleStat) => toRecommendation(roleStat, allyChampionId, allyRole, 100, championMap));
+
+    if (directRecommendations.length >= 3) {
+      return directRecommendations.slice(0, 3);
+    }
+  }
+
   return getRecommendations(selfRole, allyRole, allyChampionId, championMap).slice(0, 3);
 }
 

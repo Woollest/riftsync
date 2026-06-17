@@ -73,12 +73,14 @@ malphite,top,orianna,mid,94,54.1,1320,teamfight_aoe
 - `sampleSize`: その組み合わせの試合数
 - `reasonType`: `reasonTemplates.json` のキー
 
+同じ `allyChampionId` / `allyRole` / `recommendedRole` の直接相性データが3件以上ある場合、アプリのおすすめ3体はCSVに書いた順番の上位3件をそのまま表示する。OP.GGのシナジー欄を採用する場合は、OP.GG上の上位3体を同じ順番でCSVへ転記する。
+
 ## データ更新の流れ
 
 1. 最新パッチを確認する
 2. U.GG / OP.GG で Gold+ のロール別データを見る
 3. `data/manual/roleStats.csv` に勝率、使用率、Tier相当、試合数を入れる
-4. 味方チャンピオンとの相性データを確認できる場合は `data/manual/pairSynergies.csv` に入れる
+4. 味方チャンピオンとの相性データを確認できる場合は `data/manual/pairSynergies.csv` に入れる。OP.GGのシナジー欄を使う場合は、上位3体を表示順のまま入れる
 5. 相性理由は既存の `reasonType` から近いものを選ぶ
 6. `data/manual/dataMeta.csv` のパッチ、出典、更新日を更新する
 7. `pnpm validate:csv` を実行してCSVの列名、空欄、重複、参照ミスを確認する

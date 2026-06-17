@@ -77,5 +77,7 @@ pnpm check:data
 現在のデータはMVP用のサンプルデータです。実運用前に、U.GG / OP.GG 等を確認して `data/manual/` のCSVを更新してください。
 
 特に相性精度を上げたい組み合わせは、`data/manual/pairSynergies.csv` に直接相性データを追加するとおすすめ結果へ強く反映されます。
+同じ味方チャンピオン/味方ロール/自分ロールの直接相性データが3件以上ある場合、おすすめ3体はCSVに書いた順番の上位3件をそのまま表示します。
+OP.GGのシナジー欄を使う場合は、表示したい3体を上から順に `pairSynergies.csv` へ転記します。
 
 RiftSync is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.
