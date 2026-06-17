@@ -248,5 +248,245 @@
     "pairWinRate": 52.6,
     "sampleSize": 1880,
     "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "missFortune",
+    "allyRole": "adc",
+    "recommendedChampionId": "leona",
+    "recommendedRole": "support",
+    "comboScore": 92,
+    "pairWinRate": 53.9,
+    "sampleSize": 1460,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "missFortune",
+    "allyRole": "adc",
+    "recommendedChampionId": "nautilus",
+    "recommendedRole": "support",
+    "comboScore": 90,
+    "pairWinRate": 53.4,
+    "sampleSize": 1320,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "missFortune",
+    "allyRole": "adc",
+    "recommendedChampionId": "seraphine",
+    "recommendedRole": "support",
+    "comboScore": 86,
+    "pairWinRate": 52.7,
+    "sampleSize": 760,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "jinx",
+    "allyRole": "adc",
+    "recommendedChampionId": "lulu",
+    "recommendedRole": "support",
+    "comboScore": 92,
+    "pairWinRate": 54.1,
+    "sampleSize": 1740,
+    "reasonType": "peel_dps"
+  },
+  {
+    "allyChampionId": "jinx",
+    "allyRole": "adc",
+    "recommendedChampionId": "thresh",
+    "recommendedRole": "support",
+    "comboScore": 89,
+    "pairWinRate": 53.6,
+    "sampleSize": 2210,
+    "reasonType": "peel_dps"
+  },
+  {
+    "allyChampionId": "jinx",
+    "allyRole": "adc",
+    "recommendedChampionId": "nami",
+    "recommendedRole": "support",
+    "comboScore": 86,
+    "pairWinRate": 53.1,
+    "sampleSize": 1580,
+    "reasonType": "scaling_support"
+  },
+  {
+    "allyChampionId": "caitlyn",
+    "allyRole": "adc",
+    "recommendedChampionId": "lux",
+    "recommendedRole": "support",
+    "comboScore": 91,
+    "pairWinRate": 53.8,
+    "sampleSize": 2360,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "caitlyn",
+    "allyRole": "adc",
+    "recommendedChampionId": "thresh",
+    "recommendedRole": "support",
+    "comboScore": 86,
+    "pairWinRate": 52.9,
+    "sampleSize": 1880,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "caitlyn",
+    "allyRole": "adc",
+    "recommendedChampionId": "nami",
+    "recommendedRole": "support",
+    "comboScore": 83,
+    "pairWinRate": 52.4,
+    "sampleSize": 1420,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "ashe",
+    "allyRole": "adc",
+    "recommendedChampionId": "leona",
+    "recommendedRole": "support",
+    "comboScore": 88,
+    "pairWinRate": 53.1,
+    "sampleSize": 1280,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "ashe",
+    "allyRole": "adc",
+    "recommendedChampionId": "nautilus",
+    "recommendedRole": "support",
+    "comboScore": 86,
+    "pairWinRate": 52.8,
+    "sampleSize": 1190,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "ashe",
+    "allyRole": "adc",
+    "recommendedChampionId": "lux",
+    "recommendedRole": "support",
+    "comboScore": 84,
+    "pairWinRate": 52.2,
+    "sampleSize": 1510,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "ezreal",
+    "allyRole": "adc",
+    "recommendedChampionId": "lux",
+    "recommendedRole": "support",
+    "comboScore": 90,
+    "pairWinRate": 53.3,
+    "sampleSize": 2140,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "ezreal",
+    "allyRole": "adc",
+    "recommendedChampionId": "brand",
+    "recommendedRole": "support",
+    "comboScore": 87,
+    "pairWinRate": 52.7,
+    "sampleSize": 1180,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "ezreal",
+    "allyRole": "adc",
+    "recommendedChampionId": "nami",
+    "recommendedRole": "support",
+    "comboScore": 82,
+    "pairWinRate": 52.1,
+    "sampleSize": 1340,
+    "reasonType": "scaling_support"
+  },
+  {
+    "allyChampionId": "kaisa",
+    "allyRole": "adc",
+    "recommendedChampionId": "nautilus",
+    "recommendedRole": "support",
+    "comboScore": 91,
+    "pairWinRate": 53.5,
+    "sampleSize": 1260,
+    "reasonType": "engage_followup"
+  },
+  {
+    "allyChampionId": "kaisa",
+    "allyRole": "adc",
+    "recommendedChampionId": "leona",
+    "recommendedRole": "support",
+    "comboScore": 89,
+    "pairWinRate": 53.2,
+    "sampleSize": 1390,
+    "reasonType": "engage_followup"
+  },
+  {
+    "allyChampionId": "kaisa",
+    "allyRole": "adc",
+    "recommendedChampionId": "thresh",
+    "recommendedRole": "support",
+    "comboScore": 86,
+    "pairWinRate": 52.5,
+    "sampleSize": 1620,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "brand",
+    "allyRole": "adc",
+    "recommendedChampionId": "nautilus",
+    "recommendedRole": "support",
+    "comboScore": 83,
+    "pairWinRate": 51.4,
+    "sampleSize": 340,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "brand",
+    "allyRole": "adc",
+    "recommendedChampionId": "lux",
+    "recommendedRole": "support",
+    "comboScore": 81,
+    "pairWinRate": 51,
+    "sampleSize": 290,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "brand",
+    "allyRole": "adc",
+    "recommendedChampionId": "nami",
+    "recommendedRole": "support",
+    "comboScore": 78,
+    "pairWinRate": 50.6,
+    "sampleSize": 260,
+    "reasonType": "scaling_support"
+  },
+  {
+    "allyChampionId": "seraphine",
+    "allyRole": "adc",
+    "recommendedChampionId": "lux",
+    "recommendedRole": "support",
+    "comboScore": 84,
+    "pairWinRate": 51.9,
+    "sampleSize": 520,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "seraphine",
+    "allyRole": "adc",
+    "recommendedChampionId": "nautilus",
+    "recommendedRole": "support",
+    "comboScore": 82,
+    "pairWinRate": 51.5,
+    "sampleSize": 430,
+    "reasonType": "engage_followup"
+  },
+  {
+    "allyChampionId": "seraphine",
+    "allyRole": "adc",
+    "recommendedChampionId": "lulu",
+    "recommendedRole": "support",
+    "comboScore": 79,
+    "pairWinRate": 51.1,
+    "sampleSize": 410,
+    "reasonType": "peel_dps"
   }
 ]
