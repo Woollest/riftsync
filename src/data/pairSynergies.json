@@ -1,0 +1,252 @@
+[
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "orianna",
+    "recommendedRole": "mid",
+    "comboScore": 94,
+    "pairWinRate": 54.1,
+    "sampleSize": 1320,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "yasuo",
+    "recommendedRole": "mid",
+    "comboScore": 96,
+    "pairWinRate": 52.4,
+    "sampleSize": 920,
+    "reasonType": "engage_followup"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "annie",
+    "recommendedRole": "mid",
+    "comboScore": 88,
+    "pairWinRate": 53.2,
+    "sampleSize": 780,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "missFortune",
+    "recommendedRole": "adc",
+    "comboScore": 92,
+    "pairWinRate": 53.8,
+    "sampleSize": 1410,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "jinx",
+    "recommendedRole": "adc",
+    "comboScore": 84,
+    "pairWinRate": 52.9,
+    "sampleSize": 1580,
+    "reasonType": "frontline_cover"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "ashe",
+    "recommendedRole": "adc",
+    "comboScore": 80,
+    "pairWinRate": 52.1,
+    "sampleSize": 1110,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "jarvanIV",
+    "recommendedRole": "jungle",
+    "comboScore": 86,
+    "pairWinRate": 52.8,
+    "sampleSize": 1160,
+    "reasonType": "engage_followup"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "amumu",
+    "recommendedRole": "jungle",
+    "comboScore": 89,
+    "pairWinRate": 53.3,
+    "sampleSize": 690,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "leona",
+    "recommendedRole": "support",
+    "comboScore": 83,
+    "pairWinRate": 52.2,
+    "sampleSize": 820,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "malphite",
+    "allyRole": "top",
+    "recommendedChampionId": "nami",
+    "recommendedRole": "support",
+    "comboScore": 77,
+    "pairWinRate": 51.7,
+    "sampleSize": 640,
+    "reasonType": "peel_dps"
+  },
+  {
+    "allyChampionId": "leona",
+    "allyRole": "support",
+    "recommendedChampionId": "missFortune",
+    "recommendedRole": "adc",
+    "comboScore": 94,
+    "pairWinRate": 54.4,
+    "sampleSize": 1680,
+    "reasonType": "cc_chain"
+  },
+  {
+    "allyChampionId": "leona",
+    "allyRole": "support",
+    "recommendedChampionId": "jinx",
+    "recommendedRole": "adc",
+    "comboScore": 86,
+    "pairWinRate": 53.1,
+    "sampleSize": 1440,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "leona",
+    "allyRole": "support",
+    "recommendedChampionId": "caitlyn",
+    "recommendedRole": "adc",
+    "comboScore": 83,
+    "pairWinRate": 52.4,
+    "sampleSize": 1530,
+    "reasonType": "lane_pressure"
+  },
+  {
+    "allyChampionId": "nami",
+    "allyRole": "support",
+    "recommendedChampionId": "jinx",
+    "recommendedRole": "adc",
+    "comboScore": 89,
+    "pairWinRate": 53.6,
+    "sampleSize": 1260,
+    "reasonType": "peel_dps"
+  },
+  {
+    "allyChampionId": "nami",
+    "allyRole": "support",
+    "recommendedChampionId": "kaisa",
+    "recommendedRole": "adc",
+    "comboScore": 83,
+    "pairWinRate": 52.2,
+    "sampleSize": 980,
+    "reasonType": "peel_dps"
+  },
+  {
+    "allyChampionId": "nami",
+    "allyRole": "support",
+    "recommendedChampionId": "ezreal",
+    "recommendedRole": "adc",
+    "comboScore": 77,
+    "pairWinRate": 50.8,
+    "sampleSize": 1120,
+    "reasonType": "scaling_support"
+  },
+  {
+    "allyChampionId": "jarvanIV",
+    "allyRole": "jungle",
+    "recommendedChampionId": "orianna",
+    "recommendedRole": "mid",
+    "comboScore": 92,
+    "pairWinRate": 53.7,
+    "sampleSize": 1010,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "jarvanIV",
+    "allyRole": "jungle",
+    "recommendedChampionId": "annie",
+    "recommendedRole": "mid",
+    "comboScore": 87,
+    "pairWinRate": 53,
+    "sampleSize": 740,
+    "reasonType": "burst_window"
+  },
+  {
+    "allyChampionId": "jarvanIV",
+    "allyRole": "jungle",
+    "recommendedChampionId": "ahri",
+    "recommendedRole": "mid",
+    "comboScore": 82,
+    "pairWinRate": 52.3,
+    "sampleSize": 1280,
+    "reasonType": "roam_follow"
+  },
+  {
+    "allyChampionId": "amumu",
+    "allyRole": "jungle",
+    "recommendedChampionId": "missFortune",
+    "recommendedRole": "adc",
+    "comboScore": 96,
+    "pairWinRate": 54.9,
+    "sampleSize": 900,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "amumu",
+    "allyRole": "jungle",
+    "recommendedChampionId": "brand",
+    "recommendedRole": "mid",
+    "comboScore": 88,
+    "pairWinRate": 52.6,
+    "sampleSize": 430,
+    "reasonType": "teamfight_aoe"
+  },
+  {
+    "allyChampionId": "shen",
+    "allyRole": "top",
+    "recommendedChampionId": "kaisa",
+    "recommendedRole": "adc",
+    "comboScore": 86,
+    "pairWinRate": 52.8,
+    "sampleSize": 890,
+    "reasonType": "frontline_cover"
+  },
+  {
+    "allyChampionId": "shen",
+    "allyRole": "top",
+    "recommendedChampionId": "ahri",
+    "recommendedRole": "mid",
+    "comboScore": 82,
+    "pairWinRate": 52,
+    "sampleSize": 780,
+    "reasonType": "roam_follow"
+  },
+  {
+    "allyChampionId": "thresh",
+    "allyRole": "support",
+    "recommendedChampionId": "jinx",
+    "recommendedRole": "adc",
+    "comboScore": 88,
+    "pairWinRate": 53.5,
+    "sampleSize": 2010,
+    "reasonType": "peel_dps"
+  },
+  {
+    "allyChampionId": "thresh",
+    "allyRole": "support",
+    "recommendedChampionId": "caitlyn",
+    "recommendedRole": "adc",
+    "comboScore": 84,
+    "pairWinRate": 52.6,
+    "sampleSize": 1880,
+    "reasonType": "lane_pressure"
+  }
+]

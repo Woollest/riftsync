@@ -1,0 +1,16 @@
+{
+  "name": "RiftSync",
+  "short_name": "RiftSync",
+  "description": "League of Legends solo queue pick helper.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#050b13",
+  "theme_color": "#06131f",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ]
+}

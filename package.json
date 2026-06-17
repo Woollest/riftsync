@@ -1,0 +1,28 @@
+{
+  "name": "riftsync",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "import:data": "node scripts/import-csv-data.mjs",
+    "check:data": "node scripts/import-csv-data.mjs --check && node scripts/validate-data.mjs",
+    "share:check": "node scripts/import-csv-data.mjs --check && node scripts/validate-data.mjs && tsc -b && vite build",
+    "validate:csv": "node scripts/import-csv-data.mjs --validate-only",
+    "validate:data": "node scripts/validate-data.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "lucide-react": "^0.562.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0"
+  }
+}
