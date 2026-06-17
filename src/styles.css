@@ -719,6 +719,11 @@ h1 {
   background: var(--gold);
 }
 
+.label.info {
+  color: #042032;
+  background: var(--cyan-soft);
+}
+
 .label.caution {
   color: #fff5f7;
   background: rgba(255, 91, 127, 0.82);

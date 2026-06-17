@@ -170,6 +170,7 @@ function App() {
       const labels = [
         recommendation.difficulty,
         recommendation.isBeginnerFriendly ? "初心者おすすめ" : "",
+        recommendation.synergySource === "profile" ? "推定相性" : "",
         recommendation.isOffMeta ? "オフメタ" : "",
         recommendation.isLowData ? "データ少" : "",
       ].filter(Boolean);

@@ -26,6 +26,12 @@ export interface Champion {
   nameEn: string;
   imageId: string;
   riotDifficulty: number;
+  tags?: string[];
+  combatProfile?: {
+    attack: number;
+    defense: number;
+    magic: number;
+  };
 }
 
 export interface RoleStat {
@@ -65,6 +71,7 @@ export interface Recommendation {
   displayWinRate: number;
   sampleSize: number;
   totalScore: number;
+  synergySource: "pair" | "profile";
   scoreBreakdown: {
     combo: number;
     winRate: number;

@@ -1,8 +1,14 @@
 import { champions, pairSynergies, reasonTemplates, roleStats } from "./data";
+import { getSynergyTraits, getTraitCompatibilityScore } from "./synergyProfiles";
 import type { Champion, DifficultyLabel, PairSynergy, Recommendation, Role, RoleStat } from "./types";
 
 export const OFF_META_PICK_RATE = 1.0;
 export const LOW_DATA_SAMPLE_SIZE = 500;
+export const SCORE_WEIGHT = {
+  combo: 0.7,
+  winRate: 0.2,
+  meta: 0.1,
+};
 
 const championById = new Map(champions.map((champion) => [champion.id, champion]));
 
@@ -53,7 +59,13 @@ function getPairSynergy(allyChampionId: string, allyRole: Role, recommendedChamp
   );
 }
 
-function getGenericComboScore(roleStat: RoleStat, allyRole: Role, selfRole: Role): number {
+function getGenericComboScore(
+  roleStat: RoleStat,
+  allyChampion: Champion | undefined,
+  recommendedChampion: Champion,
+  allyRole: Role,
+  selfRole: Role,
+): number {
   const roleBlendBonus: Record<Role, Partial<Record<Role, number>>> = {
     top: { jungle: 6, mid: 5, adc: 8, support: 6 },
     jungle: { top: 7, mid: 8, adc: 5, support: 5 },
@@ -62,9 +74,12 @@ function getGenericComboScore(roleStat: RoleStat, allyRole: Role, selfRole: Role
     support: { top: 5, jungle: 5, mid: 4, adc: 9 },
   };
   const pairBonus = roleBlendBonus[allyRole][selfRole] ?? 4;
-  const score = 48 + pairBonus + roleStat.metaScore * 0.18 + Math.max(0, roleStat.winRate - 50) * 5;
+  const allyTraits = getSynergyTraits(allyChampion, allyRole);
+  const recommendedTraits = getSynergyTraits(recommendedChampion, selfRole);
+  const traitBonus = getTraitCompatibilityScore(allyTraits, recommendedTraits);
+  const score = 38 + pairBonus + traitBonus + roleStat.metaScore * 0.06 + Math.max(0, roleStat.winRate - 50) * 1.6;
 
-  return Math.round(Math.min(86, Math.max(45, score)));
+  return Math.round(Math.min(94, Math.max(42, score)));
 }
 
 function getFallbackReason(roleStat: RoleStat): string {
@@ -111,14 +126,16 @@ function toRecommendation(
   championMap?: Map<string, Champion>,
 ): Recommendation {
   const champion = getChampion(roleStat.championId, championMap);
+  const allyChampion = championMap?.get(allyChampionId) ?? championById.get(allyChampionId);
   const synergy = getPairSynergy(allyChampionId, allyRole, roleStat.championId, roleStat.role);
-  const comboScore = synergy?.comboScore ?? getGenericComboScore(roleStat, allyRole, roleStat.role);
+  const comboScore =
+    synergy?.comboScore ?? getGenericComboScore(roleStat, allyChampion, champion, allyRole, roleStat.role);
   const displayWinRate = synergy?.pairWinRate ?? roleStat.winRate;
   const sampleSize = synergy?.sampleSize ?? roleStat.sampleSize;
   const scoreBreakdown = {
-    combo: comboScore * 0.5,
-    winRate: winRateScore * 0.3,
-    meta: roleStat.metaScore * 0.2,
+    combo: comboScore * SCORE_WEIGHT.combo,
+    winRate: winRateScore * SCORE_WEIGHT.winRate,
+    meta: roleStat.metaScore * SCORE_WEIGHT.meta,
   };
   const totalScore = scoreBreakdown.combo + scoreBreakdown.winRate + scoreBreakdown.meta;
   const difficulty = getDifficultyLabel(champion.riotDifficulty);
@@ -130,6 +147,7 @@ function toRecommendation(
     displayWinRate,
     sampleSize,
     totalScore,
+    synergySource: synergy ? "pair" : "profile",
     scoreBreakdown,
     metaFlames: getMetaFlames(roleStat.metaScore),
     reason: synergy ? reasonTemplates[synergy.reasonType] : getFallbackReason(roleStat),

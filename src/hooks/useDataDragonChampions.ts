@@ -6,8 +6,12 @@ import type { Champion } from "../types";
 interface DataDragonChampion {
   id: string;
   name: string;
+  tags: string[];
   info: {
+    attack: number;
+    defense: number;
     difficulty: number;
+    magic: number;
   };
 }
 
@@ -51,6 +55,12 @@ export function useDataDragonChampions() {
               nameJa: jaChampion.name,
               nameEn: localChampion?.nameEn ?? enChampion?.name ?? jaChampion.id,
               imageId: jaChampion.id,
+              tags: jaChampion.tags,
+              combatProfile: {
+                attack: jaChampion.info.attack,
+                defense: jaChampion.info.defense,
+                magic: jaChampion.info.magic,
+              },
               riotDifficulty: jaChampion.info.difficulty,
             };
           })

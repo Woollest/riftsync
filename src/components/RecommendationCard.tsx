@@ -59,9 +59,9 @@ export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
 
 function ScoreBreakdown({ recommendation }: { recommendation: Recommendation }) {
   const rows = [
-    { label: "相性", max: 50, value: recommendation.scoreBreakdown.combo },
-    { label: "勝率", max: 30, value: recommendation.scoreBreakdown.winRate },
-    { label: "メタ", max: 20, value: recommendation.scoreBreakdown.meta },
+    { label: "相性", max: 70, value: recommendation.scoreBreakdown.combo },
+    { label: "勝率", max: 20, value: recommendation.scoreBreakdown.winRate },
+    { label: "メタ", max: 10, value: recommendation.scoreBreakdown.meta },
   ];
 
   return (
@@ -90,6 +90,7 @@ function LabelRow({ recommendation }: { recommendation: Recommendation }) {
   return (
     <div className="label-row">
       {recommendation.isBeginnerFriendly ? <span className="label good">初心者おすすめ</span> : null}
+      {recommendation.synergySource === "profile" ? <span className="label info">推定相性</span> : null}
       {recommendation.isOffMeta ? <span className="label warn">オフメタ</span> : null}
       {recommendation.isLowData ? <span className="label caution">データ少</span> : null}
     </div>
