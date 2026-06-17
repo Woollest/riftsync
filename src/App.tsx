@@ -9,6 +9,7 @@ import {
   Database,
   ExternalLink,
   Flame,
+  Link2,
   MessageSquare,
   Search,
   ShieldCheck,
@@ -28,6 +29,11 @@ import type { Champion, Recommendation, Role } from "./types";
 const DEFAULT_DDRAGON_VERSION = "15.24.1";
 const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const FEEDBACK_URL = "https://github.com/Woollest/riftsync/issues";
+const DEFAULT_SELECTION = {
+  allyChampionId: "malphite",
+  allyRole: "top" as Role,
+  selfRole: "mid" as Role,
+};
 const localChampionByImageId = new Map(champions.map((champion) => [champion.imageId, champion]));
 
 interface DataDragonChampion {
@@ -40,6 +46,34 @@ interface DataDragonChampion {
 
 interface DataDragonChampionResponse {
   data: Record<string, DataDragonChampion>;
+}
+
+function isRole(value: string | null): value is Role {
+  return roles.some((role) => role.id === value);
+}
+
+function getFallbackSelfRole(allyRole: Role): Role {
+  return roles.find((role) => role.id !== allyRole)?.id ?? DEFAULT_SELECTION.selfRole;
+}
+
+function getInitialSelection() {
+  if (typeof window === "undefined") {
+    return DEFAULT_SELECTION;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedAllyRole = params.get("allyRole");
+  const allyRole = isRole(requestedAllyRole) ? requestedAllyRole : DEFAULT_SELECTION.allyRole;
+  const requestedSelfRole = params.get("selfRole");
+  const selfRole =
+    isRole(requestedSelfRole) && requestedSelfRole !== allyRole ? requestedSelfRole : getFallbackSelfRole(allyRole);
+  const allyChampionId = params.get("ally")?.trim() || DEFAULT_SELECTION.allyChampionId;
+
+  return {
+    allyChampionId,
+    allyRole,
+    selfRole,
+  };
 }
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
@@ -58,7 +92,9 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
     textArea.style.top = "-1000px";
     textArea.style.left = "-1000px";
     document.body.append(textArea);
+    textArea.focus({ preventScroll: true });
     textArea.select();
+    textArea.setSelectionRange(0, textArea.value.length);
 
     try {
       return document.execCommand("copy");
@@ -69,14 +105,16 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
 }
 
 function App() {
-  const [selfRole, setSelfRole] = useState<Role>("mid");
-  const [allyRole, setAllyRole] = useState<Role>("top");
-  const [allyChampionId, setAllyChampionId] = useState("malphite");
+  const [initialSelection] = useState(getInitialSelection);
+  const [selfRole, setSelfRole] = useState<Role>(initialSelection.selfRole);
+  const [allyRole, setAllyRole] = useState<Role>(initialSelection.allyRole);
+  const [allyChampionId, setAllyChampionId] = useState(initialSelection.allyChampionId);
   const [query, setQuery] = useState("");
   const [showAvoids, setShowAvoids] = useState(false);
   const [dragonVersion, setDragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
   const [allAllyChampions, setAllAllyChampions] = useState<Champion[]>(champions);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const [linkCopyState, setLinkCopyState] = useState<"idle" | "copied" | "failed">("idle");
 
   useEffect(() => {
     fetch(DDRAGON_VERSIONS_URL)
@@ -124,10 +162,23 @@ function App() {
 
   useEffect(() => {
     if (selfRole === allyRole) {
-      const fallbackRole = roles.find((role) => role.id !== allyRole)?.id ?? "top";
-      setSelfRole(fallbackRole);
+      setSelfRole(getFallbackSelfRole(allyRole));
     }
   }, [selfRole, allyRole]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("allyRole", allyRole);
+    params.set("ally", allyChampionId);
+    params.set("selfRole", selfRole);
+
+    const nextUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    if (nextUrl !== currentUrl) {
+      window.history.replaceState(null, "", nextUrl);
+    }
+  }, [allyChampionId, allyRole, selfRole]);
 
   const allyChampionById = useMemo(
     () => new Map(allAllyChampions.map((champion) => [champion.id, champion])),
@@ -276,6 +327,15 @@ function App() {
     ].join("\n");
   };
 
+  const buildShareUrl = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("allyRole", allyRole);
+    url.searchParams.set("ally", allyChampionId);
+    url.searchParams.set("selfRole", selfRole);
+
+    return url.toString();
+  };
+
   const handleCopySummary = async () => {
     if (await copyTextToClipboard(buildPickSummary())) {
       setCopyState("copied");
@@ -285,6 +345,17 @@ function App() {
 
     setCopyState("failed");
     window.setTimeout(() => setCopyState("idle"), 1600);
+  };
+
+  const handleCopyLink = async () => {
+    if (await copyTextToClipboard(buildShareUrl())) {
+      setLinkCopyState("copied");
+      window.setTimeout(() => setLinkCopyState("idle"), 1600);
+      return;
+    }
+
+    setLinkCopyState("failed");
+    window.setTimeout(() => setLinkCopyState("idle"), 1600);
   };
 
   return (
@@ -389,6 +460,16 @@ function App() {
             >
               {copyState === "copied" ? <Check aria-hidden="true" size={16} /> : <Copy aria-hidden="true" size={16} />}
               <span>{copyState === "copied" ? "コピー済み" : copyState === "failed" ? "失敗" : "結果をコピー"}</span>
+            </button>
+            <button
+              className={`icon-action ${linkCopyState !== "idle" ? `is-${linkCopyState}` : ""}`}
+              onClick={handleCopyLink}
+              type="button"
+            >
+              {linkCopyState === "copied" ? <Check aria-hidden="true" size={16} /> : <Link2 aria-hidden="true" size={16} />}
+              <span>
+                {linkCopyState === "copied" ? "コピー済み" : linkCopyState === "failed" ? "失敗" : "リンクをコピー"}
+              </span>
             </button>
             <a className="icon-action" href={FEEDBACK_URL} rel="noreferrer" target="_blank">
               <MessageSquare aria-hidden="true" size={16} />

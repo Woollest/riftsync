@@ -241,7 +241,7 @@ h1 {
 
 .action-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(106px, 1fr));
   gap: 8px;
 }
 
@@ -817,13 +817,11 @@ h1 {
   }
 
   .results-heading {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
+    align-items: stretch;
   }
 
   .action-row {
-    grid-template-columns: repeat(2, minmax(138px, 1fr));
-    min-width: 310px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .champion-groups {
@@ -842,6 +840,13 @@ h1 {
 
   .results-heading {
     grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .action-row {
+    grid-template-columns: repeat(3, minmax(132px, 1fr));
+    min-width: 430px;
   }
 
   .recommendation-card {
