@@ -5,7 +5,7 @@
 ## ディレクトリ
 
 - `src/app/`
-  - アプリのルート画面とグローバルCSS
+  - アプリのルート画面、グローバルCSS、service worker登録
 - `src/components/`
   - 画面で再利用するUI部品
 - `src/config/`
@@ -22,6 +22,8 @@
   - 人が確認・更新するCSVデータ
 - `scripts/`
   - OP.GG取り込み、CSV import、データ検証
+- `public/`
+  - PWA manifest、service worker、favicon、ホーム画面用アイコン
 - `docs/developer/`
   - 開発、データ更新、デプロイ手順
 - `docs/product/`

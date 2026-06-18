@@ -1,16 +1,47 @@
 {
+  "id": "./",
   "name": "RiftSync",
   "short_name": "RiftSync",
-  "description": "League of Legends solo queue pick helper.",
+  "description": "味方ピックに合わせたLeague of LegendsソロQ向けピック支援アプリ。",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#050b13",
   "theme_color": "#06131f",
+  "categories": ["games", "utilities"],
   "icons": [
     {
       "src": "./favicon.svg",
       "sizes": "64x64",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./maskable-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ADC + Supportを開く",
+      "short_name": "ADC/SUP",
+      "url": "./?allyRole=adc&selfRole=support",
+      "description": "ADCに合わせるSupport候補をすぐ確認します。"
     }
   ]
 }
