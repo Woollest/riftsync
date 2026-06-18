@@ -40,14 +40,14 @@ pnpm share:check
 
 ## データ更新
 
-ロール別の勝率、使用率、Tier相当、サンプル数はOP.GGから更新できます。
+ロール別の勝率、使用率、Tier相当、サンプル数と、味方チャンピオン別のシナジー上位3件はOP.GGから更新できます。
 
 ```bash
 pnpm update:opgg
 ```
 
-このコマンドは `data/manual/roleStats.csv` と `data/manual/dataMeta.csv` を更新し、`src/data/` のJSONへ反映します。
-相性データはOP.GGのシナジー欄などを見ながら `data/manual/pairSynergies.csv` を編集します。
+このコマンドは `data/manual/roleStats.csv`、`data/manual/pairSynergies.csv`、`data/manual/dataMeta.csv` を更新し、`src/data/` のJSONへ反映します。
+ロール別統計だけ更新したい場合は `pnpm update:opgg:stats`、シナジーだけ更新したい場合は `pnpm update:opgg:synergies` を使います。
 
 ```bash
 pnpm validate:csv
@@ -83,11 +83,10 @@ pnpm check:data
 ## 注意
 
 現在のロール別データはOP.GG Champion Tier ListのGlobal / Gold+ / Ranked Solo/Duoを元に更新しています。
-相性データは一部手入力のため、OP.GGのシナジー欄を確認しながら `data/manual/pairSynergies.csv` を継続更新します。
+相性データはOP.GGの個別シナジーページから、味方チャンピオン/味方ロールごとに各自分ロールの上位3件を取り込んでいます。
 
-特に相性精度を上げたい組み合わせは、`data/manual/pairSynergies.csv` に直接相性データを追加するとおすすめ結果へ強く反映されます。
+特に相性精度を上げたい組み合わせは、`data/manual/pairSynergies.csv` に直接相性データを追加するとおすすめ結果へ強く反映されます。ただし `pnpm update:opgg:synergies` を実行するとOP.GG取り込み結果で上書きされます。
 同じ味方チャンピオン/味方ロール/自分ロールの直接相性データが3件以上ある場合、おすすめ3体はCSVに書いた順番の上位3件をそのまま表示します。
-OP.GGのシナジー欄を使う場合は、表示したい3体を上から順に `pairSynergies.csv` へ転記します。
 CSV未登録のチャンピオンも、Data Dragonのタグ/難易度/戦闘プロフィールと `src/roleCatalog.ts` のロール分類から補完候補として表示されます。補完候補は「補完データ」「データ少」ラベルを付け、実データより強いペナルティをかけます。
 
 RiftSync is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.

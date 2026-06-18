@@ -37,7 +37,7 @@ function App() {
   const [showAvoids, setShowAvoids] = useState(false);
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const [linkCopyState, setLinkCopyState] = useState<CopyState>("idle");
-  const { allChampions, dragonVersion } = useDataDragonChampions();
+  const { allChampions, dragonVersion, isLoadingChampions } = useDataDragonChampions();
 
   useEffect(() => {
     if (selfRole === allyRole) {
@@ -93,10 +93,14 @@ function App() {
   );
 
   useEffect(() => {
+    if (isLoadingChampions) {
+      return;
+    }
+
     if (!allAllyChampionIds.includes(allyChampionId)) {
       setAllyChampionId(allAllyChampionIds[0] ?? "");
     }
-  }, [allyChampionId, allAllyChampionIds]);
+  }, [allyChampionId, allAllyChampionIds, isLoadingChampions]);
 
   const selectedAllyChampion = allyChampionId ? allyChampionById.get(allyChampionId) : undefined;
   const normalizedQuery = query.trim().toLowerCase();

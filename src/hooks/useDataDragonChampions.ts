@@ -24,6 +24,7 @@ const localChampionByImageId = new Map(champions.map((champion) => [champion.ima
 export function useDataDragonChampions() {
   const [dragonVersion, setDragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
   const [allChampions, setAllChampions] = useState<Champion[]>(champions);
+  const [isLoadingChampions, setIsLoadingChampions] = useState(true);
 
   useEffect(() => {
     fetch(DDRAGON_VERSIONS_URL)
@@ -38,6 +39,8 @@ export function useDataDragonChampions() {
 
   useEffect(() => {
     const loadChampions = async () => {
+      setIsLoadingChampions(true);
+
       try {
         const [jaResponse, enResponse] = await Promise.all([
           fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/ja_JP/champion.json`),
@@ -69,6 +72,8 @@ export function useDataDragonChampions() {
         setAllChampions(loadedChampions);
       } catch {
         setAllChampions(champions);
+      } finally {
+        setIsLoadingChampions(false);
       }
     };
 
@@ -78,5 +83,6 @@ export function useDataDragonChampions() {
   return {
     allChampions,
     dragonVersion,
+    isLoadingChampions,
   };
 }

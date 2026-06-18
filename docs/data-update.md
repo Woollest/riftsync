@@ -2,7 +2,7 @@
 
 RiftSync のおすすめ結果は、`data/manual/` 配下のCSVを編集し、`pnpm import:data` で `src/data/` 配下のJSONへ反映する。
 
-`src/data/` のJSONはアプリが読み込む生成先として扱う。ロール別統計は `pnpm update:opgg` でOP.GGから更新し、相性データはOP.GGのシナジー欄などを確認してCSVへ追記する。
+`src/data/` のJSONはアプリが読み込む生成先として扱う。ロール別統計と相性データは `pnpm update:opgg` でOP.GGから更新する。
 
 ## 更新対象ファイル
 
@@ -73,30 +73,33 @@ malphite,top,orianna,mid,94,54.1,1320,teamfight_aoe
 - `sampleSize`: その組み合わせの試合数
 - `reasonType`: `reasonTemplates.json` のキー
 
-同じ `allyChampionId` / `allyRole` / `recommendedRole` の直接相性データが3件以上ある場合、アプリのおすすめ3体はCSVに書いた順番の上位3件をそのまま表示する。OP.GGのシナジー欄を採用する場合は、OP.GG上の上位3体を同じ順番でCSVへ転記する。
+同じ `allyChampionId` / `allyRole` / `recommendedRole` の直接相性データが3件以上ある場合、アプリのおすすめ3体はCSVに書いた順番の上位3件をそのまま表示する。`pnpm update:opgg:synergies` はOP.GGの個別シナジーページを巡回し、各自分ロールの上位3体をOP.GGの表示順に取り込む。
 
 ## データ更新の流れ
 
-1. `pnpm update:opgg` を実行してOP.GGのGlobal / Gold+ / Ranked Solo/Duoのロール別統計を取り込む
-2. OP.GGのシナジー欄などを確認する
-3. 必要な味方チャンピオンとの相性データを `data/manual/pairSynergies.csv` に入れる。OP.GGのシナジー欄を使う場合は、上位3体を表示順のまま入れる
-4. 相性理由は既存の `reasonType` から近いものを選ぶ
-5. `data/manual/dataMeta.csv` のパッチ、出典、更新日を確認する
-6. `pnpm validate:csv` を実行してCSVの列名、空欄、重複、参照ミスを確認する
-7. `pnpm import:data` を実行してCSVをJSONへ反映する
-8. `pnpm check:data` を実行してCSVとJSONの同期、Data Dragon上のID、形式のミスを確認する
-9. `pnpm build` を実行して壊れていないか確認する
-10. ブラウザでおすすめ3体と非推奨候補が出るか確認する
+1. `pnpm update:opgg` を実行してOP.GGのGlobal / Gold+ / Ranked Solo/Duoのロール別統計とシナジーを取り込む
+2. `pnpm check:data` を実行してCSVとJSONの同期、Data Dragon上のID、形式のミスを確認する
+3. `pnpm build` を実行して壊れていないか確認する
+4. ブラウザでおすすめ3体と非推奨候補が出るか確認する
 
 ## CSV反映コマンド
 
-OP.GGのロール別統計を更新してJSONへ反映する場合は、以下を使う。
+OP.GGのロール別統計とシナジーをまとめて更新してJSONへ反映する場合は、以下を使う。
 
 ```bash
 pnpm update:opgg
 ```
 
-このコマンドはOP.GGのChampion Tier Listから `positionWinRate`、`positionPickRate`、Tier、総解析数を取得し、`data/manual/roleStats.csv` と `data/manual/dataMeta.csv` を更新する。
+このコマンドはOP.GGのChampion Tier Listから `positionWinRate`、`positionPickRate`、Tier、総解析数を取得し、`data/manual/roleStats.csv` と `data/manual/dataMeta.csv` を更新する。続けてOP.GGの個別シナジーページを巡回し、`data/manual/pairSynergies.csv` を更新する。
+
+個別に更新したい場合は以下を使う。
+
+```bash
+pnpm update:opgg:stats
+pnpm update:opgg:synergies
+```
+
+`pnpm update:opgg:synergies` は現在の `roleStats.csv` に載っているチャンピオン/ロールを対象に、`https://op.gg/lol/champions/{champion}/synergies/{role}?region=global&tier=gold_plus&mode=ranked` を取得する。各ページ内の自分ロール別シナジー表から上位3件を取り込み、試合数を `sampleSize`、ペア勝率を `pairWinRate` として保存する。
 
 CSVだけ先に確認したい場合は、以下を使う。
 
@@ -174,4 +177,5 @@ pnpm validate:data
 - 補完候補は「補完データ」「データ少」ラベルを付け、スコア上も強いデータ不足ペナルティを受ける
 - 味方チャンピオン一覧の「ロールにマッチ」は `src/roleCatalog.ts` で管理する
 - 味方チャンピオン一覧には全チャンピオンを出し、おすすめ候補は `roleStats.json` の実データを優先しつつ、未登録分を補完候補として広げる
+- `pnpm update:opgg:synergies` は `pairSynergies.csv` をOP.GG取り込み結果で上書きするため、手作業の追記を残したい場合は別ファイルに控えてから実行する
 - CSV内でカンマを含む文章を入れる場合は `"..."` で囲む

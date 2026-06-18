@@ -1,113 +1,21 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  extractNextFlightText,
+  fetchOpggText,
+  findMatchingBracket,
+  getChampionMaps,
+  opggRoleMap,
+  toCsvValue,
+  toPercent,
+} from "./opgg-utils.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const dataDir = path.join(rootDir, "data", "manual");
 
 const opggUrl = "https://op.gg/lol/champions?region=global&tier=gold_plus&mode=ranked";
-const versionsUrl = "https://ddragon.leagueoflegends.com/api/versions.json";
-
-const roleMap = {
-  ADC: "adc",
-  JUNGLE: "jungle",
-  MID: "mid",
-  SUPPORT: "support",
-  TOP: "top",
-};
-
-const localChampionIdByImageId = new Map([
-  ["Ahri", "ahri"],
-  ["Amumu", "amumu"],
-  ["Annie", "annie"],
-  ["Ashe", "ashe"],
-  ["Brand", "brand"],
-  ["Caitlyn", "caitlyn"],
-  ["Darius", "darius"],
-  ["Ezreal", "ezreal"],
-  ["JarvanIV", "jarvanIV"],
-  ["Jinx", "jinx"],
-  ["Kaisa", "kaisa"],
-  ["LeeSin", "leeSin"],
-  ["Leona", "leona"],
-  ["Lulu", "lulu"],
-  ["Lux", "lux"],
-  ["Malphite", "malphite"],
-  ["MissFortune", "missFortune"],
-  ["Nami", "nami"],
-  ["Nautilus", "nautilus"],
-  ["Orianna", "orianna"],
-  ["Ornn", "ornn"],
-  ["Seraphine", "seraphine"],
-  ["Shen", "shen"],
-  ["Thresh", "thresh"],
-  ["Vi", "vi"],
-  ["Viktor", "viktor"],
-  ["Yasuo", "yasuo"],
-]);
-
-function findMatchingBracket(text, startIndex) {
-  let depth = 0;
-  let escape = false;
-  let inString = false;
-
-  for (let index = startIndex; index < text.length; index += 1) {
-    const char = text[index];
-
-    if (escape) {
-      escape = false;
-      continue;
-    }
-
-    if (char === "\\") {
-      escape = true;
-      continue;
-    }
-
-    if (char === '"') {
-      inString = !inString;
-      continue;
-    }
-
-    if (inString) {
-      continue;
-    }
-
-    if (char === "[") {
-      depth += 1;
-    }
-
-    if (char === "]") {
-      depth -= 1;
-
-      if (depth === 0) {
-        return index + 1;
-      }
-    }
-  }
-
-  throw new Error("Could not find the end of the OP.GG champion data array");
-}
-
-function extractNextFlightText(html) {
-  const scriptMatches = html.matchAll(/self\.__next_f\.push\((\[[\s\S]*?\])\)<\/script>/g);
-  const chunks = [];
-
-  for (const match of scriptMatches) {
-    try {
-      const payload = JSON.parse(match[1]);
-
-      if (typeof payload[1] === "string") {
-        chunks.push(payload[1]);
-      }
-    } catch {
-      // Ignore non-JSON script payloads.
-    }
-  }
-
-  return chunks.join("");
-}
 
 function extractChampionRows(html) {
   const flightText = extractNextFlightText(html);
@@ -132,20 +40,6 @@ function extractTotalSamples(html) {
   }
 
   return Number(match[1].replaceAll(",", ""));
-}
-
-function toCsvValue(value) {
-  const text = String(value);
-
-  if (!/[",\n\r]/.test(text)) {
-    return text;
-  }
-
-  return `"${text.replaceAll('"', '""')}"`;
-}
-
-function toPercent(value) {
-  return Math.round(value * 10) / 10;
 }
 
 function toTier(positionTier, positionRank) {
@@ -177,28 +71,10 @@ function toMetaScore(positionTier, positionRank, winRate, pickRate) {
   return Math.max(20, Math.min(96, Math.round(tierScore + rankScore + winScore + pickScore)));
 }
 
-async function getChampionIdMap() {
-  const versions = await fetch(versionsUrl).then((response) => response.json());
-  const version = versions[0];
-  const championData = await fetch(
-    `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,
-  ).then((response) => response.json());
-  const championIdByLowerImageId = new Map();
-
-  for (const champion of Object.values(championData.data)) {
-    championIdByLowerImageId.set(
-      champion.id.toLowerCase(),
-      localChampionIdByImageId.get(champion.id) ?? champion.id,
-    );
-  }
-
-  return { championIdByLowerImageId, version };
-}
-
 async function main() {
   const [html, championMap] = await Promise.all([
-    fetch(opggUrl, { headers: { "user-agent": "Mozilla/5.0" } }).then((response) => response.text()),
-    getChampionIdMap(),
+    fetchOpggText(opggUrl),
+    getChampionMaps(),
   ]);
   const totalSamples = extractTotalSamples(html);
   const rows = extractChampionRows(html);
@@ -206,8 +82,8 @@ async function main() {
   const missingChampionKeys = new Set();
 
   for (const row of rows) {
-    const role = roleMap[row.positionName];
-    const championId = championMap.championIdByLowerImageId.get(row.key);
+    const role = opggRoleMap[row.positionName];
+    const championId = championMap.championIdByOpggKey.get(row.key);
 
     if (!role || !championId) {
       if (!championId) {
