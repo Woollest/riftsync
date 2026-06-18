@@ -15,12 +15,15 @@ import { DataFact } from "./components/DataFact";
 import { AvoidCard, CandidateCard, RecommendationCard } from "./components/RecommendationCard";
 import { RoleSelector } from "./components/RoleSelector";
 import { type CopyState, ShareActions } from "./components/ShareActions";
-import { dataMeta, pairSynergies, roles } from "./data";
+import { dataMeta, roles } from "./data";
 import { useDataDragonChampions } from "./hooks/useDataDragonChampions";
+import { usePairSynergies } from "./hooks/usePairSynergies";
 import { roleChampionImageIds } from "./roleCatalog";
 import {
+  createPairSynergyLookup,
   getAvailableAllyChampionIds,
   getAvoidRecommendations,
+  getDirectPairSynergyCount,
   getRecommendationPool,
   getRoleStats,
 } from "./scoring";
@@ -38,6 +41,7 @@ function App() {
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const [linkCopyState, setLinkCopyState] = useState<CopyState>("idle");
   const { allChampions, dragonVersion, isLoadingChampions } = useDataDragonChampions();
+  const { isLoadingPairSynergies, pairSynergies, pairSynergyError } = usePairSynergies();
 
   useEffect(() => {
     if (selfRole === allyRole) {
@@ -53,6 +57,7 @@ function App() {
     () => new Map(allChampions.map((champion) => [champion.id, champion])),
     [allChampions],
   );
+  const pairSynergyLookup = useMemo(() => createPairSynergyLookup(pairSynergies), [pairSynergies]);
   const roleMatchedAllyChampionIds = useMemo(() => {
     const matchedImageIds = roleChampionImageIds[allyRole];
     const statsChampionIds = getAvailableAllyChampionIds(allyRole).filter((championId) =>
@@ -132,8 +137,11 @@ function App() {
   );
 
   const recommendationPool = useMemo(
-    () => (allyChampionId ? getRecommendationPool(selfRole, allyRole, allyChampionId, allyChampionById, 8) : []),
-    [selfRole, allyRole, allyChampionId, allyChampionById],
+    () =>
+      allyChampionId && !isLoadingPairSynergies
+        ? getRecommendationPool(selfRole, allyRole, allyChampionId, pairSynergyLookup, allyChampionById, 8)
+        : [],
+    [selfRole, allyRole, allyChampionId, allyChampionById, isLoadingPairSynergies, pairSynergyLookup],
   );
   const recommendations = useMemo(
     () => (recommendationPool.length > 0 ? recommendationPool.slice(0, 3) : []),
@@ -141,8 +149,11 @@ function App() {
   );
   const backupRecommendations = useMemo(() => recommendationPool.slice(3), [recommendationPool]);
   const avoidRecommendations = useMemo(
-    () => (allyChampionId ? getAvoidRecommendations(selfRole, allyRole, allyChampionId, allyChampionById) : []),
-    [selfRole, allyRole, allyChampionId, allyChampionById],
+    () =>
+      allyChampionId && !isLoadingPairSynergies
+        ? getAvoidRecommendations(selfRole, allyRole, allyChampionId, pairSynergyLookup, allyChampionById)
+        : [],
+    [selfRole, allyRole, allyChampionId, allyChampionById, isLoadingPairSynergies, pairSynergyLookup],
   );
   const selfRoleOption = roles.find((role) => role.id === selfRole);
   const candidateStats = useMemo(
@@ -159,13 +170,10 @@ function App() {
   );
   const selectedPairCount = useMemo(
     () =>
-      pairSynergies.filter(
-        (synergy) =>
-          synergy.allyChampionId === allyChampionId &&
-          synergy.allyRole === allyRole &&
-          synergy.recommendedRole === selfRole,
-      ).length,
-    [allyChampionId, allyRole, selfRole],
+      isLoadingPairSynergies
+        ? 0
+        : getDirectPairSynergyCount(pairSynergyLookup, allyChampionId, allyRole, selfRole),
+    [allyChampionId, allyRole, isLoadingPairSynergies, pairSynergyLookup, selfRole],
   );
   const lowDataCount = useMemo(
     () => candidateStats.filter((stat) => stat.sampleSize < 500).length,
@@ -266,10 +274,19 @@ function App() {
           <DataFact icon={<CalendarDays aria-hidden="true" size={15} />} label="更新" value={dataMeta.updatedAt} />
           <DataFact label="出典" value={dataMeta.source} wide />
           <DataFact
+            label="相性データ"
+            tone={!isLoadingPairSynergies && !pairSynergyError ? "good" : "warn"}
+            value={isLoadingPairSynergies ? "読込中" : pairSynergyError ? "推定のみ" : `${pairSynergies.length}件`}
+          />
+          <DataFact
             label="候補"
             value={`${selfRoleOption?.shortLabel ?? selfRole} ${candidateCount}体`}
           />
-          <DataFact label="直接相性" tone={selectedPairCount >= 3 ? "good" : "warn"} value={`${selectedPairCount}件`} />
+          <DataFact
+            label="直接相性"
+            tone={!isLoadingPairSynergies && selectedPairCount >= 3 ? "good" : "warn"}
+            value={isLoadingPairSynergies ? "読込中" : `${selectedPairCount}件`}
+          />
           <DataFact
             label="補完候補"
             tone={expandedCandidateCount > 0 ? "warn" : "good"}
@@ -277,9 +294,15 @@ function App() {
           />
           <DataFact label="データ少" tone={lowDataCount > 0 ? "warn" : "good"} value={`${lowDataCount}件`} />
         </div>
-        {selectedPairCount < 3 || expandedCandidateCount > 0 || candidateCount < 10 ? (
+        {isLoadingPairSynergies ||
+        pairSynergyError ||
+        selectedPairCount < 3 ||
+        expandedCandidateCount > 0 ||
+        candidateCount < 10 ? (
           <div className="data-note">
-            {selectedPairCount < 3 ? (
+            {isLoadingPairSynergies ? <span>直接相性データを読み込み中です。</span> : null}
+            {pairSynergyError ? <span>直接相性データを読み込めないため、推定相性で表示します。</span> : null}
+            {!isLoadingPairSynergies && !pairSynergyError && selectedPairCount < 3 ? (
               <span>直接相性データが少ないため、チャンピオン性質からの推定相性を含めて表示します。</span>
             ) : null}
             {expandedCandidateCount > 0 ? (
@@ -359,6 +382,7 @@ function App() {
             onCopySummary={handleCopySummary}
           />
         </div>
+        {isLoadingPairSynergies ? <div className="results-placeholder">相性データを読み込み中</div> : null}
         {recommendations.map((recommendation, index) => (
           <RecommendationCard
             iconUrl={iconUrl(recommendation.champion.imageId)}

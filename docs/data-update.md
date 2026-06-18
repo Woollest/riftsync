@@ -10,6 +10,7 @@ RiftSync のおすすめ結果は、`data/manual/` 配下のCSVを編集し、`p
   - 自分のロールごとの候補チャンピオンの勝率、使用率、メタ評価を管理する
 - `data/manual/pairSynergies.csv` -> `src/data/pairSynergies.json`
   - 味方チャンピオンとおすすめ候補のコンボ相性を管理する
+  - アプリでは `?url` importで別JSONアセットとして読み込み、初期JSには直接含めない
 - `data/manual/reasonTemplates.csv` -> `src/data/reasonTemplates.json`
   - おすすめ理由の表示文を管理する
 - `data/manual/dataMeta.csv` -> `src/data/dataMeta.json`
@@ -131,6 +132,8 @@ pnpm import:data
 - `src/data/pairSynergies.json`
 - `src/data/reasonTemplates.json`
 - `src/data/dataMeta.json`
+
+`src/data/pairSynergies.json` は検証対象でもあり、ビルド時には `assets/pairSynergies-*.json` として出力される。アプリは起動後にこのJSONを読み込み、読み込み中はデータ情報に「読込中」を表示する。
 
 CSVとJSONが同期しているかだけ確認したい場合は、以下を使う。
 

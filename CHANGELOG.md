@@ -8,6 +8,7 @@ RiftSync の仕様変更と実装内容を記録する。
 
 - OP.GG Champion Tier Listからロール別統計を取り込む `pnpm update:opgg` を追加
 - OP.GGの個別シナジーページから `pairSynergies.csv` を一括生成する `pnpm update:opgg:synergies` を追加
+- `pairSynergies.json` を別アセットとして読み込む `usePairSynergies` を追加
 - Data Dragonとロール分類を使って、CSV未登録チャンピオンも補完候補として推薦プールに含める仕組みを追加
 - おすすめ3体の下に追加候補を最大5体表示する機能を追加
 - 補完候補を判別できる「補完データ」ラベルとデータ情報パネルの補完候補数表示を追加
@@ -17,6 +18,8 @@ RiftSync の仕様変更と実装内容を記録する。
 - `roleStats.csv` をOP.GG Global / Gold+ / Ranked Solo/Duo / Patch 16.12.1 の259件へ更新し、サンプルデータ扱いを解除
 - `pairSynergies.csv` をOP.GG個別シナジーページ由来の3108件へ更新し、1036個の味方/味方ロール/自分ロール組み合わせを直接相性データでカバー
 - `pnpm update:opgg` はロール別統計とシナジーの両方を更新するよう変更
+- 初期JSから大きなシナジーJSONを外し、production buildのメインJSを約833kBから約259kBへ削減
+- 直接相性の理由文にOP.GG上位、ペア勝率、試合数を含めるよう変更
 - 直接相性データが少ない場合は、広い候補プールからタグと戦闘プロフィールを使って多様性を考慮した推薦を選ぶよう変更
 - 非推奨候補は補完データより実データ/直接相性データを優先して選ぶよう変更
 - 相性CSVのおすすめ先が `roleStats.csv` 未登録でも、エラーではなく補完データ前提の警告として扱うよう変更

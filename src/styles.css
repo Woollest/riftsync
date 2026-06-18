@@ -489,6 +489,17 @@ h1 {
   box-shadow: var(--shadow);
 }
 
+.results-placeholder {
+  padding: 18px;
+  color: var(--cyan-soft);
+  border: 1px solid rgba(96, 226, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(6, 24, 39, 0.72);
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-align: center;
+}
+
 .recommendation-card {
   position: relative;
   display: grid;

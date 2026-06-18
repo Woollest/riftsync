@@ -1,8 +1,7 @@
-import pairSynergiesJson from "./data/pairSynergies.json";
 import dataMetaJson from "./data/dataMeta.json";
 import reasonTemplatesJson from "./data/reasonTemplates.json";
 import roleStatsJson from "./data/roleStats.json";
-import type { Champion, DataMeta, PairSynergy, ReasonType, RoleOption, RoleStat } from "./types";
+import type { Champion, DataMeta, ReasonType, RoleOption, RoleStat } from "./types";
 
 export const roles: RoleOption[] = [
   { id: "top", label: "トップ", shortLabel: "TOP" },
@@ -43,6 +42,5 @@ export const champions: Champion[] = [
 ];
 
 export const roleStats = roleStatsJson as RoleStat[];
-export const pairSynergies = pairSynergiesJson as PairSynergy[];
 export const reasonTemplates = reasonTemplatesJson as Record<ReasonType, string>;
 export const dataMeta = dataMetaJson as DataMeta;

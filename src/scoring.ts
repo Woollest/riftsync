@@ -1,4 +1,4 @@
-import { champions, pairSynergies, reasonTemplates, roleStats } from "./data";
+import { champions, reasonTemplates, roleStats } from "./data";
 import { roleChampionImageIds } from "./roleCatalog";
 import { getSynergyTraits, getTraitCompatibilityScore } from "./synergyProfiles";
 import type { Champion, DifficultyLabel, PairSynergy, Recommendation, Role, RoleStat } from "./types";
@@ -14,6 +14,12 @@ export const SCORE_WEIGHT = {
 const championById = new Map(champions.map((champion) => [champion.id, champion]));
 const manualRoleStatByKey = new Map(roleStats.map((stat) => [`${stat.championId}:${stat.role}`, stat]));
 
+export interface PairSynergyLookup {
+  byGroup: Map<string, PairSynergy[]>;
+  byPair: Map<string, PairSynergy>;
+  size: number;
+}
+
 const roleTagWeights: Record<Role, Partial<Record<string, number>>> = {
   top: { Fighter: 10, Tank: 10, Mage: 3, Marksman: 2, Assassin: 2 },
   jungle: { Fighter: 10, Tank: 8, Assassin: 8, Mage: 4, Marksman: 1, Support: 1 },
@@ -28,6 +34,43 @@ function roundToOne(value: number): number {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
+}
+
+function getPairKey(
+  allyChampionId: string,
+  allyRole: Role,
+  recommendedChampionId: string,
+  recommendedRole: Role,
+): string {
+  return [allyChampionId, allyRole, recommendedChampionId, recommendedRole].join(":");
+}
+
+function getGroupKey(allyChampionId: string, allyRole: Role, recommendedRole: Role): string {
+  return [allyChampionId, allyRole, recommendedRole].join(":");
+}
+
+export function createPairSynergyLookup(pairSynergies: PairSynergy[]): PairSynergyLookup {
+  const byGroup = new Map<string, PairSynergy[]>();
+  const byPair = new Map<string, PairSynergy>();
+
+  for (const synergy of pairSynergies) {
+    byPair.set(
+      getPairKey(synergy.allyChampionId, synergy.allyRole, synergy.recommendedChampionId, synergy.recommendedRole),
+      synergy,
+    );
+
+    const groupKey = getGroupKey(synergy.allyChampionId, synergy.allyRole, synergy.recommendedRole);
+    const group = byGroup.get(groupKey) ?? [];
+
+    group.push(synergy);
+    byGroup.set(groupKey, group);
+  }
+
+  return {
+    byGroup,
+    byPair,
+    size: pairSynergies.length,
+  };
 }
 
 export function getChampion(championId: string, championMap?: Map<string, Champion>): Champion {
@@ -171,23 +214,33 @@ export function getRoleStat(championId: string, role: Role, championMap?: Map<st
   return getExpandedRoleStat(champion, role);
 }
 
-function getPairSynergy(allyChampionId: string, allyRole: Role, recommendedChampionId: string, recommendedRole: Role): PairSynergy | undefined {
-  return pairSynergies.find(
-    (synergy) =>
-      synergy.allyChampionId === allyChampionId &&
-      synergy.allyRole === allyRole &&
-      synergy.recommendedChampionId === recommendedChampionId &&
-      synergy.recommendedRole === recommendedRole,
-  );
+function getPairSynergy(
+  pairSynergyLookup: PairSynergyLookup,
+  allyChampionId: string,
+  allyRole: Role,
+  recommendedChampionId: string,
+  recommendedRole: Role,
+): PairSynergy | undefined {
+  return pairSynergyLookup.byPair.get(getPairKey(allyChampionId, allyRole, recommendedChampionId, recommendedRole));
 }
 
-function getDirectPairSynergies(allyChampionId: string, allyRole: Role, recommendedRole: Role): PairSynergy[] {
-  return pairSynergies.filter(
-    (synergy) =>
-      synergy.allyChampionId === allyChampionId &&
-      synergy.allyRole === allyRole &&
-      synergy.recommendedRole === recommendedRole &&
-      synergy.recommendedChampionId !== allyChampionId,
+export function getDirectPairSynergyCount(
+  pairSynergyLookup: PairSynergyLookup,
+  allyChampionId: string,
+  allyRole: Role,
+  recommendedRole: Role,
+): number {
+  return getDirectPairSynergies(pairSynergyLookup, allyChampionId, allyRole, recommendedRole).length;
+}
+
+function getDirectPairSynergies(
+  pairSynergyLookup: PairSynergyLookup,
+  allyChampionId: string,
+  allyRole: Role,
+  recommendedRole: Role,
+): PairSynergy[] {
+  return (pairSynergyLookup.byGroup.get(getGroupKey(allyChampionId, allyRole, recommendedRole)) ?? []).filter(
+    (synergy) => synergy.recommendedChampionId !== allyChampionId,
   );
 }
 
@@ -234,6 +287,13 @@ function getFallbackReason(roleStat: RoleStat): string {
   return reasonTemplates.frontline_cover;
 }
 
+function getPairReason(synergy: PairSynergy): string {
+  const reason = reasonTemplates[synergy.reasonType];
+  const sampleSize = synergy.sampleSize.toLocaleString("ja-JP");
+
+  return `OP.GG上位。${reason}（${sampleSize}試合 / 勝率${synergy.pairWinRate.toFixed(1)}%）`;
+}
+
 function normalizeWinRates(items: Array<{ displayWinRate: number }>): number[] {
   if (items.length === 0) {
     return [];
@@ -275,11 +335,12 @@ function toRecommendation(
   allyChampionId: string,
   allyRole: Role,
   winRateScore: number,
+  pairSynergyLookup: PairSynergyLookup,
   championMap?: Map<string, Champion>,
 ): Recommendation {
   const champion = getChampion(roleStat.championId, championMap);
   const allyChampion = championMap?.get(allyChampionId) ?? championById.get(allyChampionId);
-  const synergy = getPairSynergy(allyChampionId, allyRole, roleStat.championId, roleStat.role);
+  const synergy = getPairSynergy(pairSynergyLookup, allyChampionId, allyRole, roleStat.championId, roleStat.role);
   const isExpandedData = (roleStat.source ?? "manual") === "expanded" && !synergy;
   const comboScore =
     synergy?.comboScore ?? getGenericComboScore(roleStat, allyChampion, champion, allyRole, roleStat.role);
@@ -306,7 +367,7 @@ function toRecommendation(
     synergySource: synergy ? "pair" : "profile",
     scoreBreakdown,
     metaFlames: getMetaFlames(roleStat.metaScore),
-    reason: synergy ? reasonTemplates[synergy.reasonType] : getFallbackReason(roleStat),
+    reason: synergy ? getPairReason(synergy) : `推定相性。${getFallbackReason(roleStat)}`,
     difficulty,
     isBeginnerFriendly: difficulty === "簡単",
     isExpandedData,
@@ -319,11 +380,12 @@ export function getRecommendations(
   selfRole: Role,
   allyRole: Role,
   allyChampionId: string,
+  pairSynergyLookup: PairSynergyLookup,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
   const candidateStats = getRoleStats(selfRole, championMap).filter((stat) => stat.championId !== allyChampionId);
   const baseItems = candidateStats.map((roleStat) => {
-    const synergy = getPairSynergy(allyChampionId, allyRole, roleStat.championId, selfRole);
+    const synergy = getPairSynergy(pairSynergyLookup, allyChampionId, allyRole, roleStat.championId, selfRole);
 
     return {
       roleStat,
@@ -333,7 +395,9 @@ export function getRecommendations(
   const normalizedRates = normalizeWinRates(baseItems);
 
   return candidateStats
-    .map((roleStat, index) => toRecommendation(roleStat, allyChampionId, allyRole, normalizedRates[index], championMap))
+    .map((roleStat, index) =>
+      toRecommendation(roleStat, allyChampionId, allyRole, normalizedRates[index], pairSynergyLookup, championMap),
+    )
     .sort((a, b) => b.totalScore - a.totalScore);
 }
 
@@ -372,9 +436,10 @@ function getDirectRecommendations(
   selfRole: Role,
   allyRole: Role,
   allyChampionId: string,
+  pairSynergyLookup: PairSynergyLookup,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
-  const directSynergies = getDirectPairSynergies(allyChampionId, allyRole, selfRole);
+  const directSynergies = getDirectPairSynergies(pairSynergyLookup, allyChampionId, allyRole, selfRole);
 
   if (directSynergies.length < 3) {
     return [];
@@ -383,36 +448,57 @@ function getDirectRecommendations(
   return directSynergies
     .map((synergy) => getRoleStat(synergy.recommendedChampionId, synergy.recommendedRole, championMap))
     .filter((roleStat): roleStat is RoleStat => Boolean(roleStat))
-    .map((roleStat) => toRecommendation(roleStat, allyChampionId, allyRole, 100, championMap));
+    .map((roleStat) => toRecommendation(roleStat, allyChampionId, allyRole, 100, pairSynergyLookup, championMap));
 }
 
 export function getTopRecommendations(
   selfRole: Role,
   allyRole: Role,
   allyChampionId: string,
+  pairSynergyLookup: PairSynergyLookup,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
-  const directRecommendations = getDirectRecommendations(selfRole, allyRole, allyChampionId, championMap);
+  const directRecommendations = getDirectRecommendations(
+    selfRole,
+    allyRole,
+    allyChampionId,
+    pairSynergyLookup,
+    championMap,
+  );
 
   if (directRecommendations.length >= 3) {
     return directRecommendations.slice(0, 3);
   }
 
-  return selectDiverseRecommendations(getRecommendations(selfRole, allyRole, allyChampionId, championMap), 3);
+  return selectDiverseRecommendations(
+    getRecommendations(selfRole, allyRole, allyChampionId, pairSynergyLookup, championMap),
+    3,
+  );
 }
 
 export function getRecommendationPool(
   selfRole: Role,
   allyRole: Role,
   allyChampionId: string,
+  pairSynergyLookup: PairSynergyLookup,
   championMap?: Map<string, Champion>,
   limit = 8,
 ): Recommendation[] {
-  const directRecommendations = getDirectRecommendations(selfRole, allyRole, allyChampionId, championMap).slice(0, 3);
+  const directRecommendations = getDirectRecommendations(
+    selfRole,
+    allyRole,
+    allyChampionId,
+    pairSynergyLookup,
+    championMap,
+  ).slice(0, 3);
   const directChampionIds = new Set(directRecommendations.map((recommendation) => recommendation.champion.id));
-  const scoredRecommendations = getRecommendations(selfRole, allyRole, allyChampionId, championMap).filter(
-    (recommendation) => !directChampionIds.has(recommendation.champion.id),
-  );
+  const scoredRecommendations = getRecommendations(
+    selfRole,
+    allyRole,
+    allyChampionId,
+    pairSynergyLookup,
+    championMap,
+  ).filter((recommendation) => !directChampionIds.has(recommendation.champion.id));
 
   if (directRecommendations.length >= 3) {
     return [
@@ -428,9 +514,10 @@ export function getAvoidRecommendations(
   selfRole: Role,
   allyRole: Role,
   allyChampionId: string,
+  pairSynergyLookup: PairSynergyLookup,
   championMap?: Map<string, Champion>,
 ): Recommendation[] {
-  const recommendations = getRecommendations(selfRole, allyRole, allyChampionId, championMap);
+  const recommendations = getRecommendations(selfRole, allyRole, allyChampionId, pairSynergyLookup, championMap);
   const reliableRecommendations = recommendations.filter(
     (recommendation) => !recommendation.isExpandedData || recommendation.synergySource === "pair",
   );
