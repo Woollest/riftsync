@@ -2,7 +2,7 @@
 
 RiftSync のおすすめ結果は、`data/manual/` 配下のCSVを編集し、`pnpm import:data` で `src/data/` 配下のJSONへ反映する。
 
-`src/data/` のJSONはアプリが読み込む生成先として扱う。毎パッチ更新では、基本的にCSVを編集する。
+`src/data/` のJSONはアプリが読み込む生成先として扱う。ロール別統計は `pnpm update:opgg` でOP.GGから更新し、相性データはOP.GGのシナジー欄などを確認してCSVへ追記する。
 
 ## 更新対象ファイル
 
@@ -77,19 +77,26 @@ malphite,top,orianna,mid,94,54.1,1320,teamfight_aoe
 
 ## データ更新の流れ
 
-1. 最新パッチを確認する
-2. U.GG / OP.GG で Gold+ のロール別データを見る
-3. `data/manual/roleStats.csv` に勝率、使用率、Tier相当、試合数を入れる
-4. 味方チャンピオンとの相性データを確認できる場合は `data/manual/pairSynergies.csv` に入れる。OP.GGのシナジー欄を使う場合は、上位3体を表示順のまま入れる
-5. 相性理由は既存の `reasonType` から近いものを選ぶ
-6. `data/manual/dataMeta.csv` のパッチ、出典、更新日を更新する
-7. `pnpm validate:csv` を実行してCSVの列名、空欄、重複、参照ミスを確認する
-8. `pnpm import:data` を実行してCSVをJSONへ反映する
-9. `pnpm check:data` を実行してCSVとJSONの同期、Data Dragon上のID、形式のミスを確認する
-10. `pnpm build` を実行して壊れていないか確認する
-11. ブラウザでおすすめ3体と非推奨候補が出るか確認する
+1. `pnpm update:opgg` を実行してOP.GGのGlobal / Gold+ / Ranked Solo/Duoのロール別統計を取り込む
+2. OP.GGのシナジー欄などを確認する
+3. 必要な味方チャンピオンとの相性データを `data/manual/pairSynergies.csv` に入れる。OP.GGのシナジー欄を使う場合は、上位3体を表示順のまま入れる
+4. 相性理由は既存の `reasonType` から近いものを選ぶ
+5. `data/manual/dataMeta.csv` のパッチ、出典、更新日を確認する
+6. `pnpm validate:csv` を実行してCSVの列名、空欄、重複、参照ミスを確認する
+7. `pnpm import:data` を実行してCSVをJSONへ反映する
+8. `pnpm check:data` を実行してCSVとJSONの同期、Data Dragon上のID、形式のミスを確認する
+9. `pnpm build` を実行して壊れていないか確認する
+10. ブラウザでおすすめ3体と非推奨候補が出るか確認する
 
 ## CSV反映コマンド
+
+OP.GGのロール別統計を更新してJSONへ反映する場合は、以下を使う。
+
+```bash
+pnpm update:opgg
+```
+
+このコマンドはOP.GGのChampion Tier Listから `positionWinRate`、`positionPickRate`、Tier、総解析数を取得し、`data/manual/roleStats.csv` と `data/manual/dataMeta.csv` を更新する。
 
 CSVだけ先に確認したい場合は、以下を使う。
 

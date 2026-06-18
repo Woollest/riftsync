@@ -40,7 +40,14 @@ pnpm share:check
 
 ## データ更新
 
-データは `data/manual/` のCSVを編集して更新します。
+ロール別の勝率、使用率、Tier相当、サンプル数はOP.GGから更新できます。
+
+```bash
+pnpm update:opgg
+```
+
+このコマンドは `data/manual/roleStats.csv` と `data/manual/dataMeta.csv` を更新し、`src/data/` のJSONへ反映します。
+相性データはOP.GGのシナジー欄などを見ながら `data/manual/pairSynergies.csv` を編集します。
 
 ```bash
 pnpm validate:csv
@@ -75,7 +82,8 @@ pnpm check:data
 
 ## 注意
 
-現在のデータはMVP用のサンプルデータです。実運用前に、U.GG / OP.GG 等を確認して `data/manual/` のCSVを更新してください。
+現在のロール別データはOP.GG Champion Tier ListのGlobal / Gold+ / Ranked Solo/Duoを元に更新しています。
+相性データは一部手入力のため、OP.GGのシナジー欄を確認しながら `data/manual/pairSynergies.csv` を継続更新します。
 
 特に相性精度を上げたい組み合わせは、`data/manual/pairSynergies.csv` に直接相性データを追加するとおすすめ結果へ強く反映されます。
 同じ味方チャンピオン/味方ロール/自分ロールの直接相性データが3件以上ある場合、おすすめ3体はCSVに書いた順番の上位3件をそのまま表示します。

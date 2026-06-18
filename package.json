@@ -10,6 +10,7 @@
     "import:data": "node scripts/import-csv-data.mjs",
     "check:data": "node scripts/import-csv-data.mjs --check && node scripts/validate-data.mjs",
     "share:check": "node scripts/import-csv-data.mjs --check && node scripts/validate-data.mjs && tsc -b && vite build",
+    "update:opgg": "node scripts/update-opgg-data.mjs && node scripts/import-csv-data.mjs",
     "validate:csv": "node scripts/import-csv-data.mjs --validate-only",
     "validate:data": "node scripts/validate-data.mjs"
   },

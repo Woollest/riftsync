@@ -1,290 +1,2333 @@
 [
   {
+    "championId": "Garen",
+    "role": "top",
+    "winRate": 52.2,
+    "pickRate": 9.6,
+    "metaScore": 80,
+    "sampleSize": 3530140,
+    "tier": "S"
+  },
+  {
     "championId": "malphite",
     "role": "top",
-    "winRate": 51.8,
-    "pickRate": 6.9,
-    "metaScore": 83,
-    "sampleSize": 18240,
-    "tier": "A"
+    "winRate": 51.4,
+    "pickRate": 7.3,
+    "metaScore": 76,
+    "sampleSize": 2685676,
+    "tier": "S"
+  },
+  {
+    "championId": "Teemo",
+    "role": "top",
+    "winRate": 51.4,
+    "pickRate": 6.2,
+    "metaScore": 75,
+    "sampleSize": 2270496,
+    "tier": "S"
+  },
+  {
+    "championId": "Sett",
+    "role": "top",
+    "winRate": 51.6,
+    "pickRate": 6,
+    "metaScore": 75,
+    "sampleSize": 2222412,
+    "tier": "S"
+  },
+  {
+    "championId": "DrMundo",
+    "role": "top",
+    "winRate": 51.5,
+    "pickRate": 3.9,
+    "metaScore": 66,
+    "sampleSize": 1432912,
+    "tier": "S"
   },
   {
     "championId": "ornn",
     "role": "top",
-    "winRate": 51.2,
-    "pickRate": 4.5,
-    "metaScore": 78,
-    "sampleSize": 11320,
+    "winRate": 51.6,
+    "pickRate": 3.6,
+    "metaScore": 66,
+    "sampleSize": 1325559,
+    "tier": "S"
+  },
+  {
+    "championId": "Kayle",
+    "role": "top",
+    "winRate": 52,
+    "pickRate": 2.8,
+    "metaScore": 64,
+    "sampleSize": 1016543,
+    "tier": "S"
+  },
+  {
+    "championId": "Sion",
+    "role": "top",
+    "winRate": 50.8,
+    "pickRate": 5.2,
+    "metaScore": 63,
+    "sampleSize": 1910826,
+    "tier": "S"
+  },
+  {
+    "championId": "Yone",
+    "role": "top",
+    "winRate": 50.1,
+    "pickRate": 7.1,
+    "metaScore": 62,
+    "sampleSize": 2607462,
+    "tier": "S"
+  },
+  {
+    "championId": "Yorick",
+    "role": "top",
+    "winRate": 50.8,
+    "pickRate": 4.9,
+    "metaScore": 62,
+    "sampleSize": 1807952,
+    "tier": "S"
+  },
+  {
+    "championId": "Singed",
+    "role": "top",
+    "winRate": 52.1,
+    "pickRate": 2.3,
+    "metaScore": 62,
+    "sampleSize": 858077,
+    "tier": "A"
+  },
+  {
+    "championId": "Illaoi",
+    "role": "top",
+    "winRate": 51.4,
+    "pickRate": 3.3,
+    "metaScore": 61,
+    "sampleSize": 1205317,
+    "tier": "A"
+  },
+  {
+    "championId": "Jax",
+    "role": "top",
+    "winRate": 50.4,
+    "pickRate": 5.7,
+    "metaScore": 60,
+    "sampleSize": 2096666,
+    "tier": "A"
+  },
+  {
+    "championId": "Aatrox",
+    "role": "top",
+    "winRate": 50.3,
+    "pickRate": 5.8,
+    "metaScore": 59,
+    "sampleSize": 2136373,
     "tier": "A"
   },
   {
     "championId": "shen",
     "role": "top",
-    "winRate": 50.9,
-    "pickRate": 3.8,
-    "metaScore": 72,
-    "sampleSize": 9340,
-    "tier": "B"
+    "winRate": 51.3,
+    "pickRate": 3.5,
+    "metaScore": 59,
+    "sampleSize": 1292541,
+    "tier": "A"
+  },
+  {
+    "championId": "Tryndamere",
+    "role": "top",
+    "winRate": 51.1,
+    "pickRate": 3.7,
+    "metaScore": 58,
+    "sampleSize": 1343519,
+    "tier": "A"
+  },
+  {
+    "championId": "Mordekaiser",
+    "role": "top",
+    "winRate": 50.2,
+    "pickRate": 5.7,
+    "metaScore": 56,
+    "sampleSize": 2106624,
+    "tier": "A"
   },
   {
     "championId": "darius",
     "role": "top",
-    "winRate": 50.6,
-    "pickRate": 8.1,
-    "metaScore": 76,
-    "sampleSize": 22500,
+    "winRate": 49.5,
+    "pickRate": 7.6,
+    "metaScore": 54,
+    "sampleSize": 2782766,
     "tier": "A"
+  },
+  {
+    "championId": "Gangplank",
+    "role": "top",
+    "winRate": 50.1,
+    "pickRate": 4.9,
+    "metaScore": 54,
+    "sampleSize": 1788790,
+    "tier": "A"
+  },
+  {
+    "championId": "Urgot",
+    "role": "top",
+    "winRate": 51.2,
+    "pickRate": 2.5,
+    "metaScore": 54,
+    "sampleSize": 926282,
+    "tier": "A"
+  },
+  {
+    "championId": "Warwick",
+    "role": "top",
+    "winRate": 51.9,
+    "pickRate": 1.4,
+    "metaScore": 54,
+    "sampleSize": 521405,
+    "tier": "A"
+  },
+  {
+    "championId": "Irelia",
+    "role": "top",
+    "winRate": 50.2,
+    "pickRate": 4,
+    "metaScore": 53,
+    "sampleSize": 1469482,
+    "tier": "A"
+  },
+  {
+    "championId": "Nasus",
+    "role": "top",
+    "winRate": 50.4,
+    "pickRate": 3.7,
+    "metaScore": 53,
+    "sampleSize": 1346585,
+    "tier": "A"
+  },
+  {
+    "championId": "Olaf",
+    "role": "top",
+    "winRate": 51.1,
+    "pickRate": 2.4,
+    "metaScore": 53,
+    "sampleSize": 870885,
+    "tier": "A"
+  },
+  {
+    "championId": "Renekton",
+    "role": "top",
+    "winRate": 50.1,
+    "pickRate": 4.5,
+    "metaScore": 52,
+    "sampleSize": 1653089,
+    "tier": "A"
+  },
+  {
+    "championId": "Heimerdinger",
+    "role": "top",
+    "winRate": 51,
+    "pickRate": 1.6,
+    "metaScore": 42,
+    "sampleSize": 606489,
+    "tier": "B"
+  },
+  {
+    "championId": "Akali",
+    "role": "top",
+    "winRate": 50,
+    "pickRate": 2.6,
+    "metaScore": 41,
+    "sampleSize": 966654,
+    "tier": "B"
+  },
+  {
+    "championId": "Pantheon",
+    "role": "top",
+    "winRate": 50.2,
+    "pickRate": 2.5,
+    "metaScore": 41,
+    "sampleSize": 926411,
+    "tier": "B"
+  },
+  {
+    "championId": "TahmKench",
+    "role": "top",
+    "winRate": 50.3,
+    "pickRate": 2.4,
+    "metaScore": 41,
+    "sampleSize": 868623,
+    "tier": "B"
+  },
+  {
+    "championId": "Kled",
+    "role": "top",
+    "winRate": 51.2,
+    "pickRate": 1.4,
+    "metaScore": 41,
+    "sampleSize": 505482,
+    "tier": "B"
+  },
+  {
+    "championId": "MonkeyKing",
+    "role": "top",
+    "winRate": 51.3,
+    "pickRate": 1.1,
+    "metaScore": 39,
+    "sampleSize": 399417,
+    "tier": "B"
+  },
+  {
+    "championId": "Volibear",
+    "role": "top",
+    "winRate": 49.7,
+    "pickRate": 3.2,
+    "metaScore": 38,
+    "sampleSize": 1169534,
+    "tier": "B"
+  },
+  {
+    "championId": "Chogath",
+    "role": "top",
+    "winRate": 50,
+    "pickRate": 2.6,
+    "metaScore": 38,
+    "sampleSize": 969096,
+    "tier": "B"
+  },
+  {
+    "championId": "Zaahen",
+    "role": "top",
+    "winRate": 49.9,
+    "pickRate": 2.6,
+    "metaScore": 36,
+    "sampleSize": 952891,
+    "tier": "B"
+  },
+  {
+    "championId": "Fiora",
+    "role": "top",
+    "winRate": 49.6,
+    "pickRate": 2.8,
+    "metaScore": 35,
+    "sampleSize": 1038004,
+    "tier": "B"
+  },
+  {
+    "championId": "Camille",
+    "role": "top",
+    "winRate": 50.1,
+    "pickRate": 2.1,
+    "metaScore": 35,
+    "sampleSize": 777281,
+    "tier": "B"
+  },
+  {
+    "championId": "Naafiri",
+    "role": "top",
+    "winRate": 50.7,
+    "pickRate": 0.8,
+    "metaScore": 34,
+    "sampleSize": 293254,
+    "tier": "B"
+  },
+  {
+    "championId": "Vayne",
+    "role": "top",
+    "winRate": 48.9,
+    "pickRate": 3.3,
+    "metaScore": 32,
+    "sampleSize": 1205398,
+    "tier": "B"
+  },
+  {
+    "championId": "Riven",
+    "role": "top",
+    "winRate": 48.9,
+    "pickRate": 3,
+    "metaScore": 30,
+    "sampleSize": 1120131,
+    "tier": "B"
   },
   {
     "championId": "yasuo",
     "role": "top",
-    "winRate": 48.7,
-    "pickRate": 0.7,
-    "metaScore": 43,
-    "sampleSize": 430,
-    "tier": "D"
+    "winRate": 48.8,
+    "pickRate": 3,
+    "metaScore": 30,
+    "sampleSize": 1097913,
+    "tier": "B"
   },
   {
-    "championId": "leeSin",
+    "championId": "Gwen",
+    "role": "top",
+    "winRate": 49.4,
+    "pickRate": 2.3,
+    "metaScore": 29,
+    "sampleSize": 832005,
+    "tier": "B"
+  },
+  {
+    "championId": "Jayce",
+    "role": "top",
+    "winRate": 48.2,
+    "pickRate": 4.2,
+    "metaScore": 28,
+    "sampleSize": 1537158,
+    "tier": "B"
+  },
+  {
+    "championId": "Gnar",
+    "role": "top",
+    "winRate": 48.8,
+    "pickRate": 3,
+    "metaScore": 27,
+    "sampleSize": 1091092,
+    "tier": "B"
+  },
+  {
+    "championId": "Poppy",
+    "role": "top",
+    "winRate": 50.4,
+    "pickRate": 1,
+    "metaScore": 23,
+    "sampleSize": 378934,
+    "tier": "B"
+  },
+  {
+    "championId": "Quinn",
+    "role": "top",
+    "winRate": 50.5,
+    "pickRate": 1,
+    "metaScore": 23,
+    "sampleSize": 360286,
+    "tier": "C"
+  },
+  {
+    "championId": "KSante",
+    "role": "top",
+    "winRate": 47.2,
+    "pickRate": 3.9,
+    "metaScore": 20,
+    "sampleSize": 1446856,
+    "tier": "C"
+  },
+  {
+    "championId": "Ambessa",
+    "role": "top",
+    "winRate": 48.8,
+    "pickRate": 2.4,
+    "metaScore": 20,
+    "sampleSize": 882972,
+    "tier": "B"
+  },
+  {
+    "championId": "Gragas",
+    "role": "top",
+    "winRate": 48.8,
+    "pickRate": 1.9,
+    "metaScore": 20,
+    "sampleSize": 702652,
+    "tier": "C"
+  },
+  {
+    "championId": "Rumble",
+    "role": "top",
+    "winRate": 47.6,
+    "pickRate": 1.8,
+    "metaScore": 20,
+    "sampleSize": 664357,
+    "tier": "C"
+  },
+  {
+    "championId": "Trundle",
+    "role": "top",
+    "winRate": 49.1,
+    "pickRate": 1.8,
+    "metaScore": 20,
+    "sampleSize": 660717,
+    "tier": "C"
+  },
+  {
+    "championId": "XinZhao",
+    "role": "top",
+    "winRate": 47.9,
+    "pickRate": 1.7,
+    "metaScore": 20,
+    "sampleSize": 628636,
+    "tier": "C"
+  },
+  {
+    "championId": "Kennen",
+    "role": "top",
+    "winRate": 49.5,
+    "pickRate": 1.4,
+    "metaScore": 20,
+    "sampleSize": 532058,
+    "tier": "C"
+  },
+  {
+    "championId": "Vladimir",
+    "role": "top",
+    "winRate": 49,
+    "pickRate": 1.3,
+    "metaScore": 20,
+    "sampleSize": 467894,
+    "tier": "C"
+  },
+  {
+    "championId": "Varus",
+    "role": "top",
+    "winRate": 48.2,
+    "pickRate": 1.1,
+    "metaScore": 20,
+    "sampleSize": 399497,
+    "tier": "C"
+  },
+  {
+    "championId": "MasterYi",
+    "role": "top",
+    "winRate": 47.7,
+    "pickRate": 0.9,
+    "metaScore": 20,
+    "sampleSize": 324808,
+    "tier": "C"
+  },
+  {
+    "championId": "Malzahar",
+    "role": "top",
+    "winRate": 50,
+    "pickRate": 0.7,
+    "metaScore": 20,
+    "sampleSize": 242307,
+    "tier": "C"
+  },
+  {
+    "championId": "Anivia",
+    "role": "top",
+    "winRate": 50.5,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 238795,
+    "tier": "C"
+  },
+  {
+    "championId": "Ryze",
+    "role": "top",
+    "winRate": 48.7,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 233215,
+    "tier": "C"
+  },
+  {
+    "championId": "Cassiopeia",
+    "role": "top",
+    "winRate": 50.2,
+    "pickRate": 0.5,
+    "metaScore": 20,
+    "sampleSize": 193791,
+    "tier": "C"
+  },
+  {
+    "championId": "Lissandra",
+    "role": "top",
+    "winRate": 50.8,
+    "pickRate": 0.5,
+    "metaScore": 20,
+    "sampleSize": 189785,
+    "tier": "C"
+  },
+  {
+    "championId": "Udyr",
+    "role": "top",
+    "winRate": 48.2,
+    "pickRate": 0.5,
+    "metaScore": 20,
+    "sampleSize": 194961,
+    "tier": "C"
+  },
+  {
+    "championId": "Nocturne",
+    "role": "jungle",
+    "winRate": 51.9,
+    "pickRate": 8,
+    "metaScore": 79,
+    "sampleSize": 2947723,
+    "tier": "S"
+  },
+  {
+    "championId": "Briar",
+    "role": "jungle",
+    "winRate": 52.2,
+    "pickRate": 5.7,
+    "metaScore": 78,
+    "sampleSize": 2095125,
+    "tier": "S"
+  },
+  {
+    "championId": "Warwick",
+    "role": "jungle",
+    "winRate": 52.4,
+    "pickRate": 4.9,
+    "metaScore": 78,
+    "sampleSize": 1807827,
+    "tier": "S"
+  },
+  {
+    "championId": "Shyvana",
+    "role": "jungle",
+    "winRate": 52.2,
+    "pickRate": 4.9,
+    "metaScore": 77,
+    "sampleSize": 1795931,
+    "tier": "S"
+  },
+  {
+    "championId": "MonkeyKing",
+    "role": "jungle",
+    "winRate": 52,
+    "pickRate": 4.7,
+    "metaScore": 75,
+    "sampleSize": 1742145,
+    "tier": "S"
+  },
+  {
+    "championId": "Nasus",
+    "role": "jungle",
+    "winRate": 52.7,
+    "pickRate": 2.3,
+    "metaScore": 67,
+    "sampleSize": 847715,
+    "tier": "S"
+  },
+  {
+    "championId": "Rammus",
+    "role": "jungle",
+    "winRate": 52.6,
+    "pickRate": 2.4,
+    "metaScore": 66,
+    "sampleSize": 864446,
+    "tier": "S"
+  },
+  {
+    "championId": "Kayn",
+    "role": "jungle",
+    "winRate": 50.5,
+    "pickRate": 9.1,
+    "metaScore": 65,
+    "sampleSize": 3356079,
+    "tier": "S"
+  },
+  {
+    "championId": "Naafiri",
+    "role": "jungle",
+    "winRate": 50.6,
+    "pickRate": 6.4,
+    "metaScore": 63,
+    "sampleSize": 2356061,
+    "tier": "S"
+  },
+  {
+    "championId": "MasterYi",
+    "role": "jungle",
+    "winRate": 50.4,
+    "pickRate": 7.8,
+    "metaScore": 62,
+    "sampleSize": 2851677,
+    "tier": "S"
+  },
+  {
+    "championId": "Viego",
+    "role": "jungle",
+    "winRate": 49.8,
+    "pickRate": 9.7,
+    "metaScore": 60,
+    "sampleSize": 3579360,
+    "tier": "A"
+  },
+  {
+    "championId": "Graves",
     "role": "jungle",
     "winRate": 49.6,
-    "pickRate": 12.5,
-    "metaScore": 74,
-    "sampleSize": 29110,
-    "tier": "B"
+    "pickRate": 10.5,
+    "metaScore": 59,
+    "sampleSize": 3860425,
+    "tier": "A"
+  },
+  {
+    "championId": "Sylas",
+    "role": "jungle",
+    "winRate": 49.9,
+    "pickRate": 6.9,
+    "metaScore": 51,
+    "sampleSize": 2546299,
+    "tier": "A"
   },
   {
     "championId": "jarvanIV",
     "role": "jungle",
-    "winRate": 51.3,
-    "pickRate": 7.8,
-    "metaScore": 84,
-    "sampleSize": 19840,
+    "winRate": 50.5,
+    "pickRate": 5.6,
+    "metaScore": 51,
+    "sampleSize": 2054190,
     "tier": "A"
   },
   {
     "championId": "amumu",
     "role": "jungle",
-    "winRate": 52,
-    "pickRate": 4.9,
-    "metaScore": 80,
-    "sampleSize": 12220,
+    "winRate": 51.4,
+    "pickRate": 3.1,
+    "metaScore": 51,
+    "sampleSize": 1123073,
+    "tier": "A"
+  },
+  {
+    "championId": "Shaco",
+    "role": "jungle",
+    "winRate": 50.2,
+    "pickRate": 5.5,
+    "metaScore": 50,
+    "sampleSize": 2025214,
     "tier": "A"
   },
   {
     "championId": "vi",
     "role": "jungle",
-    "winRate": 50.8,
-    "pickRate": 6.2,
-    "metaScore": 73,
-    "sampleSize": 15110,
+    "winRate": 50.5,
+    "pickRate": 5.4,
+    "metaScore": 50,
+    "sampleSize": 1982742,
+    "tier": "A"
+  },
+  {
+    "championId": "Sejuani",
+    "role": "jungle",
+    "winRate": 51.3,
+    "pickRate": 2.1,
+    "metaScore": 48,
+    "sampleSize": 756012,
+    "tier": "A"
+  },
+  {
+    "championId": "Diana",
+    "role": "jungle",
+    "winRate": 50.2,
+    "pickRate": 4.8,
+    "metaScore": 47,
+    "sampleSize": 1781399,
+    "tier": "A"
+  },
+  {
+    "championId": "Ekko",
+    "role": "jungle",
+    "winRate": 50.4,
+    "pickRate": 3.7,
+    "metaScore": 47,
+    "sampleSize": 1351954,
+    "tier": "A"
+  },
+  {
+    "championId": "Udyr",
+    "role": "jungle",
+    "winRate": 51.2,
+    "pickRate": 2,
+    "metaScore": 47,
+    "sampleSize": 720508,
+    "tier": "A"
+  },
+  {
+    "championId": "leeSin",
+    "role": "jungle",
+    "winRate": 48.5,
+    "pickRate": 12,
+    "metaScore": 45,
+    "sampleSize": 4402117,
+    "tier": "A"
+  },
+  {
+    "championId": "Jax",
+    "role": "jungle",
+    "winRate": 50.6,
+    "pickRate": 2.7,
+    "metaScore": 45,
+    "sampleSize": 1009174,
+    "tier": "A"
+  },
+  {
+    "championId": "RekSai",
+    "role": "jungle",
+    "winRate": 51.1,
+    "pickRate": 2,
+    "metaScore": 45,
+    "sampleSize": 728013,
+    "tier": "A"
+  },
+  {
+    "championId": "Belveth",
+    "role": "jungle",
+    "winRate": 51.2,
+    "pickRate": 1.8,
+    "metaScore": 45,
+    "sampleSize": 662202,
     "tier": "B"
   },
   {
-    "championId": "brand",
+    "championId": "Lillia",
+    "role": "jungle",
+    "winRate": 50.6,
+    "pickRate": 2.7,
+    "metaScore": 44,
+    "sampleSize": 992851,
+    "tier": "A"
+  },
+  {
+    "championId": "Fiddlesticks",
+    "role": "jungle",
+    "winRate": 51,
+    "pickRate": 2.1,
+    "metaScore": 43,
+    "sampleSize": 755313,
+    "tier": "B"
+  },
+  {
+    "championId": "Aatrox",
+    "role": "jungle",
+    "winRate": 51.3,
+    "pickRate": 1.4,
+    "metaScore": 42,
+    "sampleSize": 519324,
+    "tier": "B"
+  },
+  {
+    "championId": "XinZhao",
+    "role": "jungle",
+    "winRate": 49.6,
+    "pickRate": 4.1,
+    "metaScore": 40,
+    "sampleSize": 1523780,
+    "tier": "B"
+  },
+  {
+    "championId": "Evelynn",
+    "role": "jungle",
+    "winRate": 50.5,
+    "pickRate": 2.4,
+    "metaScore": 40,
+    "sampleSize": 900689,
+    "tier": "B"
+  },
+  {
+    "championId": "Talon",
+    "role": "jungle",
+    "winRate": 49.7,
+    "pickRate": 4,
+    "metaScore": 39,
+    "sampleSize": 1488567,
+    "tier": "B"
+  },
+  {
+    "championId": "darius",
+    "role": "jungle",
+    "winRate": 51.2,
+    "pickRate": 0.8,
+    "metaScore": 32,
+    "sampleSize": 294073,
+    "tier": "B"
+  },
+  {
+    "championId": "Nunu",
     "role": "jungle",
     "winRate": 50.3,
-    "pickRate": 0.8,
-    "metaScore": 59,
-    "sampleSize": 470,
+    "pickRate": 1.9,
+    "metaScore": 30,
+    "sampleSize": 714389,
+    "tier": "B"
+  },
+  {
+    "championId": "Volibear",
+    "role": "jungle",
+    "winRate": 50.5,
+    "pickRate": 1.3,
+    "metaScore": 30,
+    "sampleSize": 474513,
+    "tier": "B"
+  },
+  {
+    "championId": "Trundle",
+    "role": "jungle",
+    "winRate": 51,
+    "pickRate": 0.9,
+    "metaScore": 30,
+    "sampleSize": 320061,
+    "tier": "B"
+  },
+  {
+    "championId": "Khazix",
+    "role": "jungle",
+    "winRate": 48.7,
+    "pickRate": 4.7,
+    "metaScore": 27,
+    "sampleSize": 1724593,
+    "tier": "B"
+  },
+  {
+    "championId": "Zac",
+    "role": "jungle",
+    "winRate": 49.7,
+    "pickRate": 2,
+    "metaScore": 27,
+    "sampleSize": 746988,
+    "tier": "B"
+  },
+  {
+    "championId": "Zyra",
+    "role": "jungle",
+    "winRate": 50.9,
+    "pickRate": 0.7,
+    "metaScore": 27,
+    "sampleSize": 269993,
+    "tier": "B"
+  },
+  {
+    "championId": "Elise",
+    "role": "jungle",
+    "winRate": 49.9,
+    "pickRate": 1.6,
+    "metaScore": 26,
+    "sampleSize": 581877,
+    "tier": "B"
+  },
+  {
+    "championId": "Ivern",
+    "role": "jungle",
+    "winRate": 50.5,
+    "pickRate": 0.9,
+    "metaScore": 25,
+    "sampleSize": 329747,
+    "tier": "B"
+  },
+  {
+    "championId": "Hecarim",
+    "role": "jungle",
+    "winRate": 48.8,
+    "pickRate": 3,
+    "metaScore": 23,
+    "sampleSize": 1086918,
+    "tier": "B"
+  },
+  {
+    "championId": "Kindred",
+    "role": "jungle",
+    "winRate": 49.1,
+    "pickRate": 2.3,
+    "metaScore": 23,
+    "sampleSize": 860147,
+    "tier": "B"
+  },
+  {
+    "championId": "Teemo",
+    "role": "jungle",
+    "winRate": 49.9,
+    "pickRate": 0.9,
+    "metaScore": 22,
+    "sampleSize": 313495,
+    "tier": "B"
+  },
+  {
+    "championId": "Rengar",
+    "role": "jungle",
+    "winRate": 46.8,
+    "pickRate": 3.5,
+    "metaScore": 20,
+    "sampleSize": 1295038,
     "tier": "C"
+  },
+  {
+    "championId": "Nidalee",
+    "role": "jungle",
+    "winRate": 48.7,
+    "pickRate": 2.4,
+    "metaScore": 20,
+    "sampleSize": 899170,
+    "tier": "B"
+  },
+  {
+    "championId": "Zed",
+    "role": "jungle",
+    "winRate": 46.7,
+    "pickRate": 2,
+    "metaScore": 20,
+    "sampleSize": 747815,
+    "tier": "C"
+  },
+  {
+    "championId": "Jayce",
+    "role": "jungle",
+    "winRate": 48.5,
+    "pickRate": 1.8,
+    "metaScore": 20,
+    "sampleSize": 667600,
+    "tier": "C"
+  },
+  {
+    "championId": "Quinn",
+    "role": "jungle",
+    "winRate": 48.8,
+    "pickRate": 1.8,
+    "metaScore": 20,
+    "sampleSize": 662522,
+    "tier": "B"
+  },
+  {
+    "championId": "Ambessa",
+    "role": "jungle",
+    "winRate": 47.8,
+    "pickRate": 1.4,
+    "metaScore": 20,
+    "sampleSize": 517507,
+    "tier": "C"
+  },
+  {
+    "championId": "Karthus",
+    "role": "jungle",
+    "winRate": 48.7,
+    "pickRate": 1.3,
+    "metaScore": 20,
+    "sampleSize": 465349,
+    "tier": "C"
+  },
+  {
+    "championId": "malphite",
+    "role": "jungle",
+    "winRate": 49,
+    "pickRate": 1.1,
+    "metaScore": 20,
+    "sampleSize": 416729,
+    "tier": "C"
+  },
+  {
+    "championId": "Pantheon",
+    "role": "jungle",
+    "winRate": 48.7,
+    "pickRate": 1.1,
+    "metaScore": 20,
+    "sampleSize": 412103,
+    "tier": "C"
+  },
+  {
+    "championId": "Skarner",
+    "role": "jungle",
+    "winRate": 48.8,
+    "pickRate": 0.9,
+    "metaScore": 20,
+    "sampleSize": 347600,
+    "tier": "C"
+  },
+  {
+    "championId": "Gwen",
+    "role": "jungle",
+    "winRate": 49.4,
+    "pickRate": 0.8,
+    "metaScore": 20,
+    "sampleSize": 295072,
+    "tier": "C"
+  },
+  {
+    "championId": "Qiyana",
+    "role": "jungle",
+    "winRate": 46.5,
+    "pickRate": 0.8,
+    "metaScore": 20,
+    "sampleSize": 288945,
+    "tier": "C"
+  },
+  {
+    "championId": "Gragas",
+    "role": "jungle",
+    "winRate": 49.7,
+    "pickRate": 0.7,
+    "metaScore": 20,
+    "sampleSize": 247653,
+    "tier": "C"
+  },
+  {
+    "championId": "DrMundo",
+    "role": "jungle",
+    "winRate": 50.2,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 226362,
+    "tier": "C"
+  },
+  {
+    "championId": "Fizz",
+    "role": "jungle",
+    "winRate": 50.3,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 214937,
+    "tier": "C"
+  },
+  {
+    "championId": "Fizz",
+    "role": "mid",
+    "winRate": 52.2,
+    "pickRate": 6.6,
+    "metaScore": 79,
+    "sampleSize": 2423512,
+    "tier": "S"
+  },
+  {
+    "championId": "Xerath",
+    "role": "mid",
+    "winRate": 52.4,
+    "pickRate": 5,
+    "metaScore": 78,
+    "sampleSize": 1845195,
+    "tier": "S"
   },
   {
     "championId": "ahri",
     "role": "mid",
-    "winRate": 51.6,
-    "pickRate": 9.4,
-    "metaScore": 86,
-    "sampleSize": 24180,
+    "winRate": 50.8,
+    "pickRate": 9.5,
+    "metaScore": 75,
+    "sampleSize": 3493350,
     "tier": "S"
   },
   {
-    "championId": "orianna",
+    "championId": "Malzahar",
     "role": "mid",
-    "winRate": 50.9,
+    "winRate": 51.2,
+    "pickRate": 7.4,
+    "metaScore": 74,
+    "sampleSize": 2717595,
+    "tier": "S"
+  },
+  {
+    "championId": "Syndra",
+    "role": "mid",
+    "winRate": 51.4,
     "pickRate": 6.2,
-    "metaScore": 79,
-    "sampleSize": 16870,
+    "metaScore": 73,
+    "sampleSize": 2288246,
+    "tier": "S"
+  },
+  {
+    "championId": "Veigar",
+    "role": "mid",
+    "winRate": 51.8,
+    "pickRate": 4.8,
+    "metaScore": 73,
+    "sampleSize": 1775953,
+    "tier": "S"
+  },
+  {
+    "championId": "Sylas",
+    "role": "mid",
+    "winRate": 50.5,
+    "pickRate": 8.3,
+    "metaScore": 72,
+    "sampleSize": 3049435,
+    "tier": "S"
+  },
+  {
+    "championId": "viktor",
+    "role": "mid",
+    "winRate": 50.7,
+    "pickRate": 8.3,
+    "metaScore": 72,
+    "sampleSize": 3059459,
+    "tier": "S"
+  },
+  {
+    "championId": "Naafiri",
+    "role": "mid",
+    "winRate": 51.9,
+    "pickRate": 3.1,
+    "metaScore": 72,
+    "sampleSize": 1157414,
+    "tier": "S"
+  },
+  {
+    "championId": "Diana",
+    "role": "mid",
+    "winRate": 51.5,
+    "pickRate": 4.7,
+    "metaScore": 71,
+    "sampleSize": 1738997,
+    "tier": "S"
+  },
+  {
+    "championId": "lux",
+    "role": "mid",
+    "winRate": 51.3,
+    "pickRate": 4.5,
+    "metaScore": 69,
+    "sampleSize": 1643911,
+    "tier": "S"
+  },
+  {
+    "championId": "Vladimir",
+    "role": "mid",
+    "winRate": 51.5,
+    "pickRate": 4.3,
+    "metaScore": 69,
+    "sampleSize": 1587061,
+    "tier": "S"
+  },
+  {
+    "championId": "Vex",
+    "role": "mid",
+    "winRate": 51.8,
+    "pickRate": 3,
+    "metaScore": 61,
+    "sampleSize": 1113067,
+    "tier": "A"
+  },
+  {
+    "championId": "Hwei",
+    "role": "mid",
+    "winRate": 51,
+    "pickRate": 5.1,
+    "metaScore": 60,
+    "sampleSize": 1884111,
+    "tier": "A"
+  },
+  {
+    "championId": "Katarina",
+    "role": "mid",
+    "winRate": 50.2,
+    "pickRate": 6.9,
+    "metaScore": 58,
+    "sampleSize": 2540441,
+    "tier": "A"
+  },
+  {
+    "championId": "Lissandra",
+    "role": "mid",
+    "winRate": 50.8,
+    "pickRate": 4.5,
+    "metaScore": 57,
+    "sampleSize": 1644132,
+    "tier": "A"
+  },
+  {
+    "championId": "TwistedFate",
+    "role": "mid",
+    "winRate": 50.6,
+    "pickRate": 4.4,
+    "metaScore": 55,
+    "sampleSize": 1600042,
+    "tier": "A"
+  },
+  {
+    "championId": "Zed",
+    "role": "mid",
+    "winRate": 49.3,
+    "pickRate": 7.3,
+    "metaScore": 54,
+    "sampleSize": 2699610,
+    "tier": "A"
+  },
+  {
+    "championId": "Ekko",
+    "role": "mid",
+    "winRate": 50.8,
+    "pickRate": 3.3,
+    "metaScore": 54,
+    "sampleSize": 1203931,
+    "tier": "A"
+  },
+  {
+    "championId": "brand",
+    "role": "mid",
+    "winRate": 51.4,
+    "pickRate": 1.6,
+    "metaScore": 54,
+    "sampleSize": 580380,
     "tier": "A"
   },
   {
     "championId": "annie",
     "role": "mid",
-    "winRate": 51.9,
-    "pickRate": 3.5,
-    "metaScore": 76,
-    "sampleSize": 8810,
+    "winRate": 51.1,
+    "pickRate": 2.3,
+    "metaScore": 53,
+    "sampleSize": 840665,
     "tier": "A"
-  },
-  {
-    "championId": "viktor",
-    "role": "mid",
-    "winRate": 50.4,
-    "pickRate": 5.4,
-    "metaScore": 71,
-    "sampleSize": 13310,
-    "tier": "B"
   },
   {
     "championId": "yasuo",
     "role": "mid",
+    "winRate": 48.9,
+    "pickRate": 8.3,
+    "metaScore": 52,
+    "sampleSize": 3068821,
+    "tier": "A"
+  },
+  {
+    "championId": "Yone",
+    "role": "mid",
     "winRate": 49.2,
-    "pickRate": 7.1,
-    "metaScore": 67,
-    "sampleSize": 17200,
+    "pickRate": 7,
+    "metaScore": 51,
+    "sampleSize": 2564769,
+    "tier": "A"
+  },
+  {
+    "championId": "Akali",
+    "role": "mid",
+    "winRate": 49.3,
+    "pickRate": 6.5,
+    "metaScore": 51,
+    "sampleSize": 2374664,
+    "tier": "A"
+  },
+  {
+    "championId": "Gwen",
+    "role": "mid",
+    "winRate": 53.1,
+    "pickRate": 0.6,
+    "metaScore": 50,
+    "sampleSize": 203158,
     "tier": "B"
   },
   {
-    "championId": "brand",
+    "championId": "Irelia",
+    "role": "mid",
+    "winRate": 50,
+    "pickRate": 3.3,
+    "metaScore": 49,
+    "sampleSize": 1199456,
+    "tier": "A"
+  },
+  {
+    "championId": "Sion",
+    "role": "mid",
+    "winRate": 51.7,
+    "pickRate": 1,
+    "metaScore": 44,
+    "sampleSize": 371723,
+    "tier": "B"
+  },
+  {
+    "championId": "malphite",
+    "role": "mid",
+    "winRate": 51.1,
+    "pickRate": 1,
+    "metaScore": 42,
+    "sampleSize": 380939,
+    "tier": "B"
+  },
+  {
+    "championId": "Swain",
+    "role": "mid",
+    "winRate": 52,
+    "pickRate": 0.8,
+    "metaScore": 42,
+    "sampleSize": 277343,
+    "tier": "B"
+  },
+  {
+    "championId": "Velkoz",
+    "role": "mid",
+    "winRate": 51,
+    "pickRate": 1.3,
+    "metaScore": 41,
+    "sampleSize": 472998,
+    "tier": "B"
+  },
+  {
+    "championId": "Galio",
+    "role": "mid",
+    "winRate": 49.4,
+    "pickRate": 4,
+    "metaScore": 40,
+    "sampleSize": 1455439,
+    "tier": "B"
+  },
+  {
+    "championId": "Pantheon",
+    "role": "mid",
+    "winRate": 51.3,
+    "pickRate": 1,
+    "metaScore": 39,
+    "sampleSize": 359150,
+    "tier": "B"
+  },
+  {
+    "championId": "Leblanc",
+    "role": "mid",
+    "winRate": 48.8,
+    "pickRate": 3.8,
+    "metaScore": 37,
+    "sampleSize": 1395599,
+    "tier": "B"
+  },
+  {
+    "championId": "Anivia",
+    "role": "mid",
+    "winRate": 49.7,
+    "pickRate": 2.4,
+    "metaScore": 37,
+    "sampleSize": 876474,
+    "tier": "B"
+  },
+  {
+    "championId": "Riven",
+    "role": "mid",
+    "winRate": 50.8,
+    "pickRate": 1.2,
+    "metaScore": 37,
+    "sampleSize": 428025,
+    "tier": "B"
+  },
+  {
+    "championId": "Akshan",
+    "role": "mid",
+    "winRate": 49.8,
+    "pickRate": 2.2,
+    "metaScore": 36,
+    "sampleSize": 797296,
+    "tier": "B"
+  },
+  {
+    "championId": "Zoe",
+    "role": "mid",
+    "winRate": 49.1,
+    "pickRate": 2.6,
+    "metaScore": 32,
+    "sampleSize": 940325,
+    "tier": "B"
+  },
+  {
+    "championId": "Aurora",
+    "role": "mid",
+    "winRate": 49.1,
+    "pickRate": 2.4,
+    "metaScore": 31,
+    "sampleSize": 871602,
+    "tier": "B"
+  },
+  {
+    "championId": "Kassadin",
+    "role": "mid",
+    "winRate": 49.4,
+    "pickRate": 2.1,
+    "metaScore": 31,
+    "sampleSize": 770765,
+    "tier": "B"
+  },
+  {
+    "championId": "Talon",
+    "role": "mid",
+    "winRate": 49.2,
+    "pickRate": 2.1,
+    "metaScore": 30,
+    "sampleSize": 778597,
+    "tier": "B"
+  },
+  {
+    "championId": "AurelionSol",
+    "role": "mid",
+    "winRate": 49.1,
+    "pickRate": 1.8,
+    "metaScore": 29,
+    "sampleSize": 644312,
+    "tier": "B"
+  },
+  {
+    "championId": "Ziggs",
     "role": "mid",
     "winRate": 50.1,
-    "pickRate": 1.1,
-    "metaScore": 58,
-    "sampleSize": 2870,
+    "pickRate": 0.9,
+    "metaScore": 24,
+    "sampleSize": 336683,
+    "tier": "B"
+  },
+  {
+    "championId": "Chogath",
+    "role": "mid",
+    "winRate": 50.7,
+    "pickRate": 0.6,
+    "metaScore": 23,
+    "sampleSize": 217933,
     "tier": "C"
+  },
+  {
+    "championId": "Morgana",
+    "role": "mid",
+    "winRate": 50.5,
+    "pickRate": 0.5,
+    "metaScore": 23,
+    "sampleSize": 200697,
+    "tier": "B"
+  },
+  {
+    "championId": "Mel",
+    "role": "mid",
+    "winRate": 46,
+    "pickRate": 3.8,
+    "metaScore": 20,
+    "sampleSize": 1414103,
+    "tier": "C"
+  },
+  {
+    "championId": "Ryze",
+    "role": "mid",
+    "winRate": 47.1,
+    "pickRate": 2.7,
+    "metaScore": 20,
+    "sampleSize": 984084,
+    "tier": "C"
+  },
+  {
+    "championId": "orianna",
+    "role": "mid",
+    "winRate": 46.3,
+    "pickRate": 2.6,
+    "metaScore": 20,
+    "sampleSize": 946753,
+    "tier": "C"
+  },
+  {
+    "championId": "Qiyana",
+    "role": "mid",
+    "winRate": 48.4,
+    "pickRate": 1.9,
+    "metaScore": 20,
+    "sampleSize": 686865,
+    "tier": "B"
+  },
+  {
+    "championId": "Azir",
+    "role": "mid",
+    "winRate": 46,
+    "pickRate": 1.5,
+    "metaScore": 20,
+    "sampleSize": 548230,
+    "tier": "C"
+  },
+  {
+    "championId": "Cassiopeia",
+    "role": "mid",
+    "winRate": 48.9,
+    "pickRate": 1.5,
+    "metaScore": 20,
+    "sampleSize": 561192,
+    "tier": "B"
+  },
+  {
+    "championId": "Taliyah",
+    "role": "mid",
+    "winRate": 48,
+    "pickRate": 1,
+    "metaScore": 20,
+    "sampleSize": 383152,
+    "tier": "C"
+  },
+  {
+    "championId": "Smolder",
+    "role": "mid",
+    "winRate": 45.8,
+    "pickRate": 0.8,
+    "metaScore": 20,
+    "sampleSize": 300397,
+    "tier": "C"
+  },
+  {
+    "championId": "XinZhao",
+    "role": "mid",
+    "winRate": 49.2,
+    "pickRate": 0.8,
+    "metaScore": 20,
+    "sampleSize": 305419,
+    "tier": "C"
+  },
+  {
+    "championId": "Jayce",
+    "role": "mid",
+    "winRate": 49,
+    "pickRate": 0.7,
+    "metaScore": 20,
+    "sampleSize": 263175,
+    "tier": "C"
+  },
+  {
+    "championId": "Tristana",
+    "role": "mid",
+    "winRate": 47.2,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 232867,
+    "tier": "C"
+  },
+  {
+    "championId": "Senna",
+    "role": "adc",
+    "winRate": 54.7,
+    "pickRate": 16.2,
+    "metaScore": 96,
+    "sampleSize": 5943500,
+    "tier": "S"
   },
   {
     "championId": "jinx",
     "role": "adc",
-    "winRate": 51.7,
-    "pickRate": 10.2,
-    "metaScore": 85,
-    "sampleSize": 24880,
+    "winRate": 51.4,
+    "pickRate": 12.1,
+    "metaScore": 78,
+    "sampleSize": 4452716,
+    "tier": "S"
+  },
+  {
+    "championId": "brand",
+    "role": "adc",
+    "winRate": 53.2,
+    "pickRate": 2.7,
+    "metaScore": 77,
+    "sampleSize": 994991,
     "tier": "S"
   },
   {
     "championId": "caitlyn",
     "role": "adc",
-    "winRate": 50.7,
-    "pickRate": 12.1,
-    "metaScore": 78,
-    "sampleSize": 30600,
-    "tier": "A"
+    "winRate": 49.3,
+    "pickRate": 18.5,
+    "metaScore": 74,
+    "sampleSize": 6807464,
+    "tier": "S"
   },
   {
     "championId": "ashe",
     "role": "adc",
-    "winRate": 51.1,
-    "pickRate": 7.5,
-    "metaScore": 77,
-    "sampleSize": 19190,
-    "tier": "A"
+    "winRate": 50.5,
+    "pickRate": 12.2,
+    "metaScore": 74,
+    "sampleSize": 4497468,
+    "tier": "S"
+  },
+  {
+    "championId": "Jhin",
+    "role": "adc",
+    "winRate": 49.6,
+    "pickRate": 15.6,
+    "metaScore": 72,
+    "sampleSize": 5752027,
+    "tier": "S"
+  },
+  {
+    "championId": "seraphine",
+    "role": "adc",
+    "winRate": 54.3,
+    "pickRate": 1.2,
+    "metaScore": 72,
+    "sampleSize": 445415,
+    "tier": "S"
   },
   {
     "championId": "missFortune",
     "role": "adc",
-    "winRate": 52.2,
-    "pickRate": 6.6,
-    "metaScore": 82,
-    "sampleSize": 16420,
+    "winRate": 50.5,
+    "pickRate": 9.8,
+    "metaScore": 71,
+    "sampleSize": 3599383,
+    "tier": "S"
+  },
+  {
+    "championId": "Smolder",
+    "role": "adc",
+    "winRate": 50.8,
+    "pickRate": 7.3,
+    "metaScore": 71,
+    "sampleSize": 2667467,
+    "tier": "S"
+  },
+  {
+    "championId": "Veigar",
+    "role": "adc",
+    "winRate": 53.8,
+    "pickRate": 1,
+    "metaScore": 66,
+    "sampleSize": 366540,
+    "tier": "A"
+  },
+  {
+    "championId": "Tristana",
+    "role": "adc",
+    "winRate": 50.4,
+    "pickRate": 6.8,
+    "metaScore": 61,
+    "sampleSize": 2496413,
+    "tier": "S"
+  },
+  {
+    "championId": "Twitch",
+    "role": "adc",
+    "winRate": 50.9,
+    "pickRate": 5,
+    "metaScore": 61,
+    "sampleSize": 1849755,
+    "tier": "A"
+  },
+  {
+    "championId": "Samira",
+    "role": "adc",
+    "winRate": 50.2,
+    "pickRate": 5.2,
+    "metaScore": 58,
+    "sampleSize": 1926009,
+    "tier": "A"
+  },
+  {
+    "championId": "Vayne",
+    "role": "adc",
+    "winRate": 49.6,
+    "pickRate": 5.8,
+    "metaScore": 56,
+    "sampleSize": 2142098,
+    "tier": "A"
+  },
+  {
+    "championId": "Xayah",
+    "role": "adc",
+    "winRate": 50.8,
+    "pickRate": 3.5,
+    "metaScore": 56,
+    "sampleSize": 1290063,
+    "tier": "A"
+  },
+  {
+    "championId": "kaisa",
+    "role": "adc",
+    "winRate": 48.3,
+    "pickRate": 11.4,
+    "metaScore": 55,
+    "sampleSize": 4201083,
+    "tier": "A"
+  },
+  {
+    "championId": "Swain",
+    "role": "adc",
+    "winRate": 53.2,
+    "pickRate": 1,
+    "metaScore": 55,
+    "sampleSize": 360580,
+    "tier": "A"
+  },
+  {
+    "championId": "Hwei",
+    "role": "adc",
+    "winRate": 53.3,
+    "pickRate": 0.9,
+    "metaScore": 52,
+    "sampleSize": 319398,
     "tier": "A"
   },
   {
     "championId": "ezreal",
     "role": "adc",
-    "winRate": 49.8,
-    "pickRate": 17.8,
-    "metaScore": 72,
-    "sampleSize": 38900,
-    "tier": "B"
+    "winRate": 47.2,
+    "pickRate": 15.1,
+    "metaScore": 51,
+    "sampleSize": 5554707,
+    "tier": "A"
   },
   {
-    "championId": "kaisa",
+    "championId": "Ziggs",
     "role": "adc",
-    "winRate": 50.2,
-    "pickRate": 11.4,
-    "metaScore": 73,
-    "sampleSize": 27640,
-    "tier": "B"
+    "winRate": 51.8,
+    "pickRate": 1.9,
+    "metaScore": 51,
+    "sampleSize": 702402,
+    "tier": "A"
   },
   {
-    "championId": "brand",
+    "championId": "Nilah",
     "role": "adc",
-    "winRate": 49.4,
+    "winRate": 52.6,
+    "pickRate": 1.2,
+    "metaScore": 51,
+    "sampleSize": 452696,
+    "tier": "A"
+  },
+  {
+    "championId": "KogMaw",
+    "role": "adc",
+    "winRate": 52,
+    "pickRate": 1.6,
+    "metaScore": 49,
+    "sampleSize": 598402,
+    "tier": "A"
+  },
+  {
+    "championId": "Teemo",
+    "role": "adc",
+    "winRate": 52.6,
+    "pickRate": 0.9,
+    "metaScore": 49,
+    "sampleSize": 324629,
+    "tier": "A"
+  },
+  {
+    "championId": "Sivir",
+    "role": "adc",
+    "winRate": 49.7,
+    "pickRate": 4.2,
+    "metaScore": 44,
+    "sampleSize": 1540074,
+    "tier": "A"
+  },
+  {
+    "championId": "Velkoz",
+    "role": "adc",
+    "winRate": 53.6,
     "pickRate": 0.6,
-    "metaScore": 46,
-    "sampleSize": 390,
-    "tier": "D"
+    "metaScore": 44,
+    "sampleSize": 213093,
+    "tier": "B"
+  },
+  {
+    "championId": "Lucian",
+    "role": "adc",
+    "winRate": 48.4,
+    "pickRate": 7.1,
+    "metaScore": 42,
+    "sampleSize": 2629143,
+    "tier": "A"
+  },
+  {
+    "championId": "Zeri",
+    "role": "adc",
+    "winRate": 49.8,
+    "pickRate": 3.2,
+    "metaScore": 41,
+    "sampleSize": 1168497,
+    "tier": "B"
+  },
+  {
+    "championId": "yasuo",
+    "role": "adc",
+    "winRate": 50.9,
+    "pickRate": 1.1,
+    "metaScore": 35,
+    "sampleSize": 401369,
+    "tier": "B"
+  },
+  {
+    "championId": "Aphelios",
+    "role": "adc",
+    "winRate": 48.9,
+    "pickRate": 4,
+    "metaScore": 30,
+    "sampleSize": 1455689,
+    "tier": "B"
+  },
+  {
+    "championId": "Draven",
+    "role": "adc",
+    "winRate": 48.4,
+    "pickRate": 3.6,
+    "metaScore": 27,
+    "sampleSize": 1311582,
+    "tier": "B"
+  },
+  {
+    "championId": "Yunara",
+    "role": "adc",
+    "winRate": 47.8,
+    "pickRate": 4.2,
+    "metaScore": 25,
+    "sampleSize": 1542949,
+    "tier": "B"
+  },
+  {
+    "championId": "Varus",
+    "role": "adc",
+    "winRate": 47.1,
+    "pickRate": 3.9,
+    "metaScore": 22,
+    "sampleSize": 1427657,
+    "tier": "B"
+  },
+  {
+    "championId": "Kalista",
+    "role": "adc",
+    "winRate": 47.8,
+    "pickRate": 1.6,
+    "metaScore": 20,
+    "sampleSize": 586815,
+    "tier": "B"
+  },
+  {
+    "championId": "Mel",
+    "role": "adc",
+    "winRate": 47.4,
+    "pickRate": 1.3,
+    "metaScore": 20,
+    "sampleSize": 484383,
+    "tier": "B"
+  },
+  {
+    "championId": "Corki",
+    "role": "adc",
+    "winRate": 47.4,
+    "pickRate": 1.1,
+    "metaScore": 20,
+    "sampleSize": 406808,
+    "tier": "B"
   },
   {
     "championId": "seraphine",
-    "role": "adc",
-    "winRate": 51,
-    "pickRate": 0.9,
-    "metaScore": 61,
-    "sampleSize": 520,
-    "tier": "C"
+    "role": "support",
+    "winRate": 52,
+    "pickRate": 11.7,
+    "metaScore": 81,
+    "sampleSize": 4292168,
+    "tier": "S"
   },
   {
     "championId": "thresh",
     "role": "support",
-    "winRate": 50,
-    "pickRate": 10.8,
-    "metaScore": 74,
-    "sampleSize": 25700,
-    "tier": "B"
+    "winRate": 51.4,
+    "pickRate": 12.3,
+    "metaScore": 79,
+    "sampleSize": 4514567,
+    "tier": "S"
   },
   {
     "championId": "leona",
     "role": "support",
+    "winRate": 51.9,
+    "pickRate": 8.5,
+    "metaScore": 77,
+    "sampleSize": 3127216,
+    "tier": "S"
+  },
+  {
+    "championId": "Senna",
+    "role": "support",
+    "winRate": 52,
+    "pickRate": 7.2,
+    "metaScore": 77,
+    "sampleSize": 2632493,
+    "tier": "S"
+  },
+  {
+    "championId": "nautilus",
+    "role": "support",
+    "winRate": 50.2,
+    "pickRate": 10.4,
+    "metaScore": 65,
+    "sampleSize": 3838913,
+    "tier": "S"
+  },
+  {
+    "championId": "Milio",
+    "role": "support",
     "winRate": 51.4,
-    "pickRate": 8.9,
-    "metaScore": 82,
-    "sampleSize": 21900,
+    "pickRate": 5.2,
+    "metaScore": 65,
+    "sampleSize": 1927793,
+    "tier": "S"
+  },
+  {
+    "championId": "lux",
+    "role": "support",
+    "winRate": 50.2,
+    "pickRate": 9.9,
+    "metaScore": 64,
+    "sampleSize": 3629642,
+    "tier": "S"
+  },
+  {
+    "championId": "Morgana",
+    "role": "support",
+    "winRate": 50.7,
+    "pickRate": 6,
+    "metaScore": 63,
+    "sampleSize": 2217507,
+    "tier": "S"
+  },
+  {
+    "championId": "brand",
+    "role": "support",
+    "winRate": 50.9,
+    "pickRate": 4.9,
+    "metaScore": 62,
+    "sampleSize": 1784892,
+    "tier": "S"
+  },
+  {
+    "championId": "Soraka",
+    "role": "support",
+    "winRate": 51.2,
+    "pickRate": 4.6,
+    "metaScore": 62,
+    "sampleSize": 1689270,
+    "tier": "A"
+  },
+  {
+    "championId": "Braum",
+    "role": "support",
+    "winRate": 51.4,
+    "pickRate": 4,
+    "metaScore": 62,
+    "sampleSize": 1463448,
+    "tier": "A"
+  },
+  {
+    "championId": "Blitzcrank",
+    "role": "support",
+    "winRate": 50.6,
+    "pickRate": 5.6,
+    "metaScore": 61,
+    "sampleSize": 2075687,
+    "tier": "S"
+  },
+  {
+    "championId": "Bard",
+    "role": "support",
+    "winRate": 50.6,
+    "pickRate": 5.2,
+    "metaScore": 52,
+    "sampleSize": 1901821,
+    "tier": "A"
+  },
+  {
+    "championId": "Taric",
+    "role": "support",
+    "winRate": 52.9,
+    "pickRate": 1.2,
+    "metaScore": 52,
+    "sampleSize": 452185,
+    "tier": "A"
+  },
+  {
+    "championId": "Velkoz",
+    "role": "support",
+    "winRate": 50.9,
+    "pickRate": 4,
+    "metaScore": 51,
+    "sampleSize": 1465124,
+    "tier": "A"
+  },
+  {
+    "championId": "Rell",
+    "role": "support",
+    "winRate": 51.4,
+    "pickRate": 3,
+    "metaScore": 51,
+    "sampleSize": 1106933,
     "tier": "A"
   },
   {
     "championId": "nami",
     "role": "support",
-    "winRate": 51.1,
-    "pickRate": 6.3,
-    "metaScore": 76,
-    "sampleSize": 15330,
+    "winRate": 49.9,
+    "pickRate": 7,
+    "metaScore": 50,
+    "sampleSize": 2581475,
+    "tier": "A"
+  },
+  {
+    "championId": "Pyke",
+    "role": "support",
+    "winRate": 49.6,
+    "pickRate": 6.5,
+    "metaScore": 48,
+    "sampleSize": 2377157,
+    "tier": "A"
+  },
+  {
+    "championId": "Zyra",
+    "role": "support",
+    "winRate": 50.9,
+    "pickRate": 3.4,
+    "metaScore": 48,
+    "sampleSize": 1247907,
+    "tier": "A"
+  },
+  {
+    "championId": "Zilean",
+    "role": "support",
+    "winRate": 51.7,
+    "pickRate": 2.2,
+    "metaScore": 48,
+    "sampleSize": 799451,
+    "tier": "A"
+  },
+  {
+    "championId": "Xerath",
+    "role": "support",
+    "winRate": 50.4,
+    "pickRate": 4.1,
+    "metaScore": 47,
+    "sampleSize": 1489339,
+    "tier": "A"
+  },
+  {
+    "championId": "TahmKench",
+    "role": "support",
+    "winRate": 50.9,
+    "pickRate": 3.4,
+    "metaScore": 47,
+    "sampleSize": 1239247,
+    "tier": "A"
+  },
+  {
+    "championId": "Janna",
+    "role": "support",
+    "winRate": 51.4,
+    "pickRate": 2.5,
+    "metaScore": 47,
+    "sampleSize": 905377,
     "tier": "A"
   },
   {
     "championId": "lulu",
     "role": "support",
-    "winRate": 50.6,
-    "pickRate": 7.1,
-    "metaScore": 75,
-    "sampleSize": 17820,
-    "tier": "B"
-  },
-  {
-    "championId": "nautilus",
-    "role": "support",
-    "winRate": 50.8,
-    "pickRate": 8.4,
-    "metaScore": 79,
-    "sampleSize": 20140,
+    "winRate": 49.4,
+    "pickRate": 7.4,
+    "metaScore": 46,
+    "sampleSize": 2704725,
     "tier": "A"
   },
   {
-    "championId": "lux",
-    "role": "support",
-    "winRate": 50.9,
-    "pickRate": 9.6,
-    "metaScore": 71,
-    "sampleSize": 23210,
-    "tier": "B"
-  },
-  {
-    "championId": "brand",
+    "championId": "Sona",
     "role": "support",
     "winRate": 51.2,
-    "pickRate": 5.8,
-    "metaScore": 73,
-    "sampleSize": 14770,
+    "pickRate": 2.3,
+    "metaScore": 45,
+    "sampleSize": 861199,
     "tier": "B"
   },
   {
-    "championId": "seraphine",
+    "championId": "Rakan",
     "role": "support",
-    "winRate": 50.7,
+    "winRate": 50.3,
     "pickRate": 3.1,
-    "metaScore": 69,
-    "sampleSize": 7840,
+    "metaScore": 42,
+    "sampleSize": 1121716,
+    "tier": "B"
+  },
+  {
+    "championId": "Maokai",
+    "role": "support",
+    "winRate": 51,
+    "pickRate": 2,
+    "metaScore": 42,
+    "sampleSize": 723369,
+    "tier": "B"
+  },
+  {
+    "championId": "Poppy",
+    "role": "support",
+    "winRate": 51,
+    "pickRate": 1.8,
+    "metaScore": 42,
+    "sampleSize": 662592,
+    "tier": "B"
+  },
+  {
+    "championId": "Karma",
+    "role": "support",
+    "winRate": 49.3,
+    "pickRate": 6.2,
+    "metaScore": 41,
+    "sampleSize": 2268422,
+    "tier": "A"
+  },
+  {
+    "championId": "Alistar",
+    "role": "support",
+    "winRate": 50.1,
+    "pickRate": 3.5,
+    "metaScore": 41,
+    "sampleSize": 1273942,
+    "tier": "B"
+  },
+  {
+    "championId": "amumu",
+    "role": "support",
+    "winRate": 51.1,
+    "pickRate": 0.5,
+    "metaScore": 30,
+    "sampleSize": 194365,
+    "tier": "B"
+  },
+  {
+    "championId": "Pantheon",
+    "role": "support",
+    "winRate": 49.1,
+    "pickRate": 3.6,
+    "metaScore": 29,
+    "sampleSize": 1306713,
+    "tier": "B"
+  },
+  {
+    "championId": "Shaco",
+    "role": "support",
+    "winRate": 49.8,
+    "pickRate": 1.5,
+    "metaScore": 29,
+    "sampleSize": 544906,
+    "tier": "B"
+  },
+  {
+    "championId": "Teemo",
+    "role": "support",
+    "winRate": 50.3,
+    "pickRate": 0.8,
+    "metaScore": 28,
+    "sampleSize": 300382,
+    "tier": "B"
+  },
+  {
+    "championId": "Swain",
+    "role": "support",
+    "winRate": 48.7,
+    "pickRate": 3.7,
+    "metaScore": 27,
+    "sampleSize": 1342982,
+    "tier": "B"
+  },
+  {
+    "championId": "Neeko",
+    "role": "support",
+    "winRate": 49.2,
+    "pickRate": 2,
+    "metaScore": 26,
+    "sampleSize": 719861,
+    "tier": "B"
+  },
+  {
+    "championId": "Galio",
+    "role": "support",
+    "winRate": 49.9,
+    "pickRate": 0.9,
+    "metaScore": 26,
+    "sampleSize": 328517,
+    "tier": "B"
+  },
+  {
+    "championId": "Renata",
+    "role": "support",
+    "winRate": 49.9,
+    "pickRate": 0.9,
+    "metaScore": 25,
+    "sampleSize": 340054,
+    "tier": "B"
+  },
+  {
+    "championId": "shen",
+    "role": "support",
+    "winRate": 49.8,
+    "pickRate": 0.9,
+    "metaScore": 24,
+    "sampleSize": 334215,
+    "tier": "B"
+  },
+  {
+    "championId": "Hwei",
+    "role": "support",
+    "winRate": 49.9,
+    "pickRate": 0.8,
+    "metaScore": 24,
+    "sampleSize": 305463,
+    "tier": "B"
+  },
+  {
+    "championId": "Yuumi",
+    "role": "support",
+    "winRate": 47.7,
+    "pickRate": 5.2,
+    "metaScore": 23,
+    "sampleSize": 1897011,
+    "tier": "B"
+  },
+  {
+    "championId": "Leblanc",
+    "role": "support",
+    "winRate": 49.6,
+    "pickRate": 0.7,
+    "metaScore": 22,
+    "sampleSize": 239968,
+    "tier": "B"
+  },
+  {
+    "championId": "Mel",
+    "role": "support",
+    "winRate": 43.8,
+    "pickRate": 2.9,
+    "metaScore": 20,
+    "sampleSize": 1075243,
+    "tier": "C"
+  },
+  {
+    "championId": "ashe",
+    "role": "support",
+    "winRate": 44.8,
+    "pickRate": 1.2,
+    "metaScore": 20,
+    "sampleSize": 423797,
+    "tier": "C"
+  },
+  {
+    "championId": "Camille",
+    "role": "support",
+    "winRate": 48.1,
+    "pickRate": 1.2,
+    "metaScore": 20,
+    "sampleSize": 451740,
+    "tier": "B"
+  },
+  {
+    "championId": "malphite",
+    "role": "support",
+    "winRate": 46.6,
+    "pickRate": 0.8,
+    "metaScore": 20,
+    "sampleSize": 288814,
+    "tier": "C"
+  },
+  {
+    "championId": "Zoe",
+    "role": "support",
+    "winRate": 47.6,
+    "pickRate": 0.7,
+    "metaScore": 20,
+    "sampleSize": 265487,
+    "tier": "B"
+  },
+  {
+    "championId": "Anivia",
+    "role": "support",
+    "winRate": 47.5,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 237543,
+    "tier": "C"
+  },
+  {
+    "championId": "Veigar",
+    "role": "support",
+    "winRate": 47.6,
+    "pickRate": 0.6,
+    "metaScore": 20,
+    "sampleSize": 207518,
+    "tier": "C"
+  },
+  {
+    "championId": "Fiddlesticks",
+    "role": "support",
+    "winRate": 49.9,
+    "pickRate": 0.5,
+    "metaScore": 20,
+    "sampleSize": 193869,
     "tier": "B"
   }
 ]

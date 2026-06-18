@@ -118,7 +118,9 @@ function canExpandChampionForRole(champion: Champion, role: Role): boolean {
 }
 
 export function getRoleStats(role: Role, championMap?: Map<string, Champion>): RoleStat[] {
-  const manualStats = roleStats.filter((stat) => stat.role === role);
+  const manualStats = roleStats.filter(
+    (stat) => stat.role === role && (!championMap || championMap.has(stat.championId)),
+  );
 
   if (!championMap || championMap.size === 0) {
     return manualStats;
@@ -149,6 +151,10 @@ export function getRoleStat(championId: string, role: Role, championMap?: Map<st
   const manualStat = getManualRoleStat(championId, role);
 
   if (manualStat) {
+    if (championMap && !championMap.has(championId)) {
+      return undefined;
+    }
+
     return manualStat;
   }
 

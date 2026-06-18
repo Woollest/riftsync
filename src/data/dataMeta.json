@@ -1,8 +1,8 @@
 {
-  "patch": "sample",
+  "patch": "16.12.1",
   "rankRange": "Gold+",
-  "region": "World",
-  "source": "Sample data based on the RiftSync requirements",
-  "updatedAt": "2026-06-17",
-  "isSample": true
+  "region": "Global",
+  "source": "OP.GG Champion Tier List Global Gold+ Ranked Solo/Duo",
+  "updatedAt": "2026-06-18",
+  "isSample": false
 }
