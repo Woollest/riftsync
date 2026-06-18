@@ -15,7 +15,7 @@ RiftSync のおすすめ結果は、`data/manual/` 配下のCSVを編集し、`p
   - おすすめ理由の表示文を管理する
 - `data/manual/dataMeta.csv` -> `src/data/dataMeta.json`
   - パッチ、ランク帯、地域、データ出典、仮データかどうかを管理する
-- `src/roleCatalog.ts`
+- `src/domain/roleCatalog.ts`
   - 味方チャンピオン一覧で「ロールにマッチ」へ上げる分類を管理する
 
 ## championId のルール
@@ -176,9 +176,9 @@ pnpm validate:data
 ## 注意点
 
 - `pairSynergies.json` にデータがない組み合わせでも、アプリはロール別データから仮のコンボ相性を計算する
-- `roleStats.json` に候補が少ないロールでも、Data Dragonと `src/roleCatalog.ts` の分類から補完候補を表示する
+- `roleStats.json` に候補が少ないロールでも、Data Dragonと `src/domain/roleCatalog.ts` の分類から補完候補を表示する
 - 補完候補は「補完データ」「データ少」ラベルを付け、スコア上も強いデータ不足ペナルティを受ける
-- 味方チャンピオン一覧の「ロールにマッチ」は `src/roleCatalog.ts` で管理する
+- 味方チャンピオン一覧の「ロールにマッチ」は `src/domain/roleCatalog.ts` で管理する
 - 味方チャンピオン一覧には全チャンピオンを出し、おすすめ候補は `roleStats.json` の実データを優先しつつ、未登録分を補完候補として広げる
 - `pnpm update:opgg:synergies` は `pairSynergies.csv` をOP.GG取り込み結果で上書きするため、手作業の追記を残したい場合は別ファイルに控えてから実行する
 - CSV内でカンマを含む文章を入れる場合は `"..."` で囲む

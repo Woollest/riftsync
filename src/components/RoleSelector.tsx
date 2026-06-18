@@ -1,6 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { roles } from "../data";
-import type { Role } from "../types";
+import type { Role } from "../domain/types";
 
 interface RoleSelectorProps {
   title: string;

@@ -1,4 +1,4 @@
-import { champions, reasonTemplates, roleStats } from "./data";
+import { champions, reasonTemplates, roleStats } from "../data";
 import { roleChampionImageIds } from "./roleCatalog";
 import { getSynergyTraits, getTraitCompatibilityScore } from "./synergyProfiles";
 import type { Champion, DifficultyLabel, PairSynergy, Recommendation, Role, RoleStat } from "./types";

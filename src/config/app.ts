@@ -1,4 +1,4 @@
-import type { Role } from "./types";
+import type { Role } from "../domain/types";
 
 export const DEFAULT_DDRAGON_VERSION = "15.24.1";
 export const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";

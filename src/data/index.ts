@@ -1,7 +1,7 @@
-import dataMetaJson from "./data/dataMeta.json";
-import reasonTemplatesJson from "./data/reasonTemplates.json";
-import roleStatsJson from "./data/roleStats.json";
-import type { Champion, DataMeta, ReasonType, RoleOption, RoleStat } from "./types";
+import dataMetaJson from "./dataMeta.json";
+import reasonTemplatesJson from "./reasonTemplates.json";
+import roleStatsJson from "./roleStats.json";
+import type { Champion, DataMeta, ReasonType, RoleOption, RoleStat } from "../domain/types";
 
 export const roles: RoleOption[] = [
   { id: "top", label: "トップ", shortLabel: "TOP" },

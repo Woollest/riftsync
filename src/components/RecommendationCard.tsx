@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Flame } from "lucide-react";
-import type { Recommendation } from "../types";
+import type { Recommendation } from "../domain/types";
 
 interface RecommendationCardProps {
   iconUrl: string;

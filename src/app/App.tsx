@@ -10,15 +10,13 @@ import {
   Swords,
   Users,
 } from "lucide-react";
-import { ChampionGrid } from "./components/ChampionGrid";
-import { DataFact } from "./components/DataFact";
-import { AvoidCard, CandidateCard, RecommendationCard } from "./components/RecommendationCard";
-import { RoleSelector } from "./components/RoleSelector";
-import { type CopyState, ShareActions } from "./components/ShareActions";
-import { dataMeta, roles } from "./data";
-import { useDataDragonChampions } from "./hooks/useDataDragonChampions";
-import { usePairSynergies } from "./hooks/usePairSynergies";
-import { roleChampionImageIds } from "./roleCatalog";
+import { ChampionGrid } from "../components/ChampionGrid";
+import { DataFact } from "../components/DataFact";
+import { AvoidCard, CandidateCard, RecommendationCard } from "../components/RecommendationCard";
+import { RoleSelector } from "../components/RoleSelector";
+import { type CopyState, ShareActions } from "../components/ShareActions";
+import { dataMeta, roles } from "../data";
+import { roleChampionImageIds } from "../domain/roleCatalog";
 import {
   createPairSynergyLookup,
   getAvailableAllyChampionIds,
@@ -26,10 +24,12 @@ import {
   getDirectPairSynergyCount,
   getRecommendationPool,
   getRoleStats,
-} from "./scoring";
-import type { Role } from "./types";
-import { copyTextToClipboard } from "./utils/clipboard";
-import { buildShareUrl, getFallbackSelfRole, getInitialSelection, syncSelectionToUrl } from "./utils/shareState";
+} from "../domain/scoring";
+import type { Role } from "../domain/types";
+import { useDataDragonChampions } from "../hooks/useDataDragonChampions";
+import { usePairSynergies } from "../hooks/usePairSynergies";
+import { copyTextToClipboard } from "../utils/clipboard";
+import { buildShareUrl, getFallbackSelfRole, getInitialSelection, syncSelectionToUrl } from "../utils/shareState";
 
 function App() {
   const [initialSelection] = useState(getInitialSelection);

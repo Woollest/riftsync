@@ -1,5 +1,5 @@
 import { Check, Copy, ExternalLink, Link2, MessageSquare } from "lucide-react";
-import { FEEDBACK_URL } from "../constants";
+import { FEEDBACK_URL } from "../config/app";
 
 export type CopyState = "idle" | "copied" | "failed";
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import pairSynergyDataUrl from "../data/pairSynergies.json?url";
-import type { PairSynergy } from "../types";
+import type { PairSynergy } from "../domain/types";
 
 export function usePairSynergies() {
   const [pairSynergies, setPairSynergies] = useState<PairSynergy[]>([]);

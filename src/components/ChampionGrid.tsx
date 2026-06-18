@@ -1,4 +1,4 @@
-import type { Champion } from "../types";
+import type { Champion } from "../domain/types";
 
 interface ChampionGridProps {
   championIds: string[];

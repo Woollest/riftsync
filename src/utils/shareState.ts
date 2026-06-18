@@ -1,6 +1,6 @@
-import { DEFAULT_SELECTION } from "../constants";
+import { DEFAULT_SELECTION } from "../config/app";
 import { roles } from "../data";
-import type { Role } from "../types";
+import type { Role } from "../domain/types";
 
 export interface PickSelection {
   allyChampionId: string;

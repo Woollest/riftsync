@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { DDRAGON_VERSIONS_URL, DEFAULT_DDRAGON_VERSION } from "../constants";
+import { DDRAGON_VERSIONS_URL, DEFAULT_DDRAGON_VERSION } from "../config/app";
 import { champions } from "../data";
-import type { Champion } from "../types";
+import type { Champion } from "../domain/types";
 
 interface DataDragonChampion {
   id: string;

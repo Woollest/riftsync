@@ -1,4 +1,4 @@
-# RiftSync 共有手順
+# RiftSync デプロイ手順
 
 友人にRiftSyncを共有するための公開前チェックとGitHub Pages公開手順。
 
