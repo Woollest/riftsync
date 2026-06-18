@@ -175,6 +175,25 @@ function App() {
         : getDirectPairSynergyCount(pairSynergyLookup, allyChampionId, allyRole, selfRole),
     [allyChampionId, allyRole, isLoadingPairSynergies, pairSynergyLookup, selfRole],
   );
+  const recommendationModeLabel = useMemo(() => {
+    if (isLoadingPairSynergies) {
+      return "読込中";
+    }
+
+    if (pairSynergyError) {
+      return "推定補完";
+    }
+
+    if (selectedPairCount >= 3) {
+      return "直接相性優先";
+    }
+
+    if (selectedPairCount > 0) {
+      return "直接+推定";
+    }
+
+    return "推定補完";
+  }, [isLoadingPairSynergies, pairSynergyError, selectedPairCount]);
   const lowDataCount = useMemo(
     () => candidateStats.filter((stat) => stat.sampleSize < 500).length,
     [candidateStats],
@@ -199,7 +218,11 @@ function App() {
         recommendation.isLowData ? "データ少" : "",
       ].filter(Boolean);
 
-      return `${index + 1}. ${recommendation.champion.nameJa} / ${recommendation.champion.nameEn} - コンボ${Math.round(
+      const sourceLabel = recommendation.synergySource === "pair" ? "OP.GG直接" : "推定補完";
+
+      return `${index + 1}. ${recommendation.champion.nameJa} / ${recommendation.champion.nameEn} - ${sourceLabel} / ${
+        recommendation.confidenceLabel
+      } / コンボ${Math.round(
         recommendation.comboScore,
       )}% / 勝率${recommendation.displayWinRate.toFixed(1)}% / ${labels.join(", ")}`;
     });
@@ -286,6 +309,11 @@ function App() {
             label="直接相性"
             tone={!isLoadingPairSynergies && selectedPairCount >= 3 ? "good" : "warn"}
             value={isLoadingPairSynergies ? "読込中" : `${selectedPairCount}件`}
+          />
+          <DataFact
+            label="採用方式"
+            tone={!isLoadingPairSynergies && selectedPairCount >= 3 && !pairSynergyError ? "good" : "warn"}
+            value={recommendationModeLabel}
           />
           <DataFact
             label="補完候補"

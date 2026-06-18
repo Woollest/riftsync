@@ -603,6 +603,51 @@ h1 {
   text-shadow: 0 0 10px rgba(255, 215, 106, 0.34);
 }
 
+.source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 24px;
+}
+
+.source-pill,
+.confidence-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 950;
+}
+
+.source-pill.is-direct {
+  color: #021419;
+  background: var(--cyan);
+  box-shadow: 0 0 14px rgba(57, 231, 255, 0.24);
+}
+
+.source-pill.is-estimated {
+  color: #eefaff;
+  border: 1px solid rgba(159, 245, 255, 0.28);
+  background: rgba(72, 108, 126, 0.54);
+}
+
+.confidence-pill.is-high {
+  color: #031711;
+  background: var(--green);
+}
+
+.confidence-pill.is-medium {
+  color: #171101;
+  background: var(--gold);
+}
+
+.confidence-pill.is-low {
+  color: #fff5f7;
+  background: rgba(255, 91, 127, 0.82);
+}
+
 .reason {
   color: var(--cyan-soft);
   font-size: 0.82rem;

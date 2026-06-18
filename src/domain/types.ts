@@ -2,6 +2,8 @@ export type Role = "top" | "jungle" | "mid" | "adc" | "support";
 
 export type DifficultyLabel = "簡単" | "普通" | "難しい";
 
+export type DataConfidence = "high" | "medium" | "low";
+
 export type ReasonType =
   | "engage_followup"
   | "cc_chain"
@@ -82,6 +84,9 @@ export interface Recommendation {
   };
   metaFlames: number;
   reason: string;
+  confidence: DataConfidence;
+  confidenceLabel: string;
+  confidenceReason: string;
   difficulty: DifficultyLabel;
   isBeginnerFriendly: boolean;
   isExpandedData: boolean;

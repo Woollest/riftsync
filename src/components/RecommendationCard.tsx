@@ -21,6 +21,12 @@ export function RecommendationCard({ iconUrl, index, recommendation }: Recommend
           </div>
           <StarRating score={recommendation.totalScore} />
         </div>
+        <div className="source-row" title={recommendation.confidenceReason}>
+          <span className={`source-pill ${recommendation.synergySource === "pair" ? "is-direct" : "is-estimated"}`}>
+            {recommendation.synergySource === "pair" ? "OP.GG直接" : "推定補完"}
+          </span>
+          <span className={`confidence-pill is-${recommendation.confidence}`}>{recommendation.confidenceLabel}</span>
+        </div>
         <p className="reason">{recommendation.reason}</p>
         <div className="metric-grid">
           <Metric label="コンボ相性" value={`${Math.round(recommendation.comboScore)}%`} />
@@ -67,7 +73,8 @@ export function CandidateCard({ iconUrl, recommendation }: AvoidCardProps) {
           {recommendation.champion.nameJa} / {recommendation.champion.nameEn}
         </strong>
         <span>
-          コンボ {Math.round(recommendation.comboScore)}% ・ 勝率 {recommendation.displayWinRate.toFixed(1)}%
+          {recommendation.synergySource === "pair" ? "OP.GG直接" : "推定補完"} ・ コンボ{" "}
+          {Math.round(recommendation.comboScore)}% ・ 勝率 {recommendation.displayWinRate.toFixed(1)}%
         </span>
       </div>
       <LabelRow recommendation={recommendation} compact />

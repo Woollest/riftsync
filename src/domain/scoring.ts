@@ -1,7 +1,7 @@
 import { champions, reasonTemplates, roleStats } from "../data";
 import { roleChampionImageIds } from "./roleCatalog";
 import { getSynergyTraits, getTraitCompatibilityScore } from "./synergyProfiles";
-import type { Champion, DifficultyLabel, PairSynergy, Recommendation, Role, RoleStat } from "./types";
+import type { Champion, DataConfidence, DifficultyLabel, PairSynergy, Recommendation, Role, RoleStat } from "./types";
 
 export const OFF_META_PICK_RATE = 1.0;
 export const LOW_DATA_SAMPLE_SIZE = 500;
@@ -330,6 +330,55 @@ function getDataPenalty(sampleSize: number): number {
   return 0;
 }
 
+function getDataConfidence(
+  synergy: PairSynergy | undefined,
+  roleStat: RoleStat,
+  sampleSize: number,
+  isExpandedData: boolean,
+): {
+  confidence: DataConfidence;
+  confidenceLabel: string;
+  confidenceReason: string;
+} {
+  if (synergy && sampleSize >= 1000) {
+    return {
+      confidence: "high",
+      confidenceLabel: "信頼度 高",
+      confidenceReason: "OP.GGの直接相性データが十分あります",
+    };
+  }
+
+  if (synergy && sampleSize >= LOW_DATA_SAMPLE_SIZE) {
+    return {
+      confidence: "medium",
+      confidenceLabel: "信頼度 中",
+      confidenceReason: "OP.GGの直接相性データがあります",
+    };
+  }
+
+  if (synergy) {
+    return {
+      confidence: "low",
+      confidenceLabel: "信頼度 低",
+      confidenceReason: "直接相性データはありますが試合数が少なめです",
+    };
+  }
+
+  if (!isExpandedData && roleStat.sampleSize >= 5000) {
+    return {
+      confidence: "medium",
+      confidenceLabel: "信頼度 中",
+      confidenceReason: "ロール統計とチャンピオン特性から推定しています",
+    };
+  }
+
+  return {
+    confidence: "low",
+    confidenceLabel: "信頼度 低",
+    confidenceReason: isExpandedData ? "ロール分類で補完した候補です" : "直接相性データがないため推定しています",
+  };
+}
+
 function toRecommendation(
   roleStat: RoleStat,
   allyChampionId: string,
@@ -347,6 +396,7 @@ function toRecommendation(
   const displayWinRate = synergy?.pairWinRate ?? roleStat.winRate;
   const sampleSize = synergy?.sampleSize ?? roleStat.sampleSize;
   const dataPenalty = getDataPenalty(sampleSize);
+  const confidence = getDataConfidence(synergy, roleStat, sampleSize, isExpandedData);
   const scoreBreakdown = {
     combo: comboScore * SCORE_WEIGHT.combo,
     winRate: winRateScore * SCORE_WEIGHT.winRate,
@@ -368,6 +418,7 @@ function toRecommendation(
     scoreBreakdown,
     metaFlames: getMetaFlames(roleStat.metaScore),
     reason: synergy ? getPairReason(synergy) : `推定相性。${getFallbackReason(roleStat)}`,
+    ...confidence,
     difficulty,
     isBeginnerFriendly: difficulty === "簡単",
     isExpandedData,
