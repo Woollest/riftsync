@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { ShieldCheck } from "lucide-react";
 import { roles } from "../data";
 import type { Role } from "../domain/types";
@@ -9,7 +10,7 @@ interface RoleSelectorProps {
   disabledRole?: Role;
 }
 
-export function RoleSelector({ title, value, onChange, disabledRole }: RoleSelectorProps) {
+export const RoleSelector = memo(function RoleSelector({ title, value, onChange, disabledRole }: RoleSelectorProps) {
   return (
     <div className="field-block">
       <div className="section-title">
@@ -36,4 +37,4 @@ export function RoleSelector({ title, value, onChange, disabledRole }: RoleSelec
       </div>
     </div>
   );
-}
+});

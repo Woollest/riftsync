@@ -12,7 +12,13 @@ export function RecommendationCard({ iconUrl, index, recommendation }: Recommend
   return (
     <article className="recommendation-card">
       <div className="rank-badge">{index}</div>
-      <img className="champion-portrait" src={iconUrl} alt="" />
+      <img
+        className="champion-portrait"
+        src={iconUrl}
+        alt=""
+        decoding="async"
+        loading={index === 1 ? "eager" : "lazy"}
+      />
       <div className="card-main">
         <div className="card-heading">
           <div>
@@ -50,7 +56,7 @@ interface AvoidCardProps {
 export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
   return (
     <article className="avoid-card">
-      <img src={iconUrl} alt="" />
+      <img src={iconUrl} alt="" decoding="async" loading="lazy" />
       <div>
         <strong>
           {recommendation.champion.nameJa} / {recommendation.champion.nameEn}
@@ -67,7 +73,7 @@ export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
 export function CandidateCard({ iconUrl, recommendation }: AvoidCardProps) {
   return (
     <article className="candidate-card">
-      <img src={iconUrl} alt="" />
+      <img src={iconUrl} alt="" decoding="async" loading="lazy" />
       <div>
         <strong>
           {recommendation.champion.nameJa} / {recommendation.champion.nameEn}
@@ -78,6 +84,24 @@ export function CandidateCard({ iconUrl, recommendation }: AvoidCardProps) {
         </span>
       </div>
       <LabelRow recommendation={recommendation} compact />
+    </article>
+  );
+}
+
+export function RecommendationSkeletonCard() {
+  return (
+    <article className="recommendation-card is-skeleton" aria-label="おすすめを読み込み中">
+      <div className="skeleton-portrait" />
+      <div className="card-main">
+        <div className="skeleton-line is-title" />
+        <div className="skeleton-line is-short" />
+        <div className="skeleton-line" />
+        <div className="skeleton-metric-grid">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <span className="skeleton-metric" key={index} />
+          ))}
+        </div>
+      </div>
     </article>
   );
 }

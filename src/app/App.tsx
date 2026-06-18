@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   BarChart3,
@@ -12,7 +12,12 @@ import {
 } from "lucide-react";
 import { ChampionGrid } from "../components/ChampionGrid";
 import { DataFact } from "../components/DataFact";
-import { AvoidCard, CandidateCard, RecommendationCard } from "../components/RecommendationCard";
+import {
+  AvoidCard,
+  CandidateCard,
+  RecommendationCard,
+  RecommendationSkeletonCard,
+} from "../components/RecommendationCard";
 import { RoleSelector } from "../components/RoleSelector";
 import { type CopyState, ShareActions } from "../components/ShareActions";
 import { dataMeta, roles } from "../data";
@@ -40,6 +45,7 @@ function App() {
   const [showAvoids, setShowAvoids] = useState(false);
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const [linkCopyState, setLinkCopyState] = useState<CopyState>("idle");
+  const deferredQuery = useDeferredValue(query);
   const { allChampions, dragonVersion, isLoadingChampions } = useDataDragonChampions();
   const { isLoadingPairSynergies, pairSynergies, pairSynergyError } = usePairSynergies();
 
@@ -55,6 +61,16 @@ function App() {
 
   const allyChampionById = useMemo(
     () => new Map(allChampions.map((champion) => [champion.id, champion])),
+    [allChampions],
+  );
+  const championSearchTextById = useMemo(
+    () =>
+      new Map(
+        allChampions.map((champion) => [
+          champion.id,
+          `${champion.nameJa.toLowerCase()} ${champion.nameEn.toLowerCase()}`,
+        ]),
+      ),
     [allChampions],
   );
   const pairSynergyLookup = useMemo(() => createPairSynergyLookup(pairSynergies), [pairSynergies]);
@@ -108,32 +124,31 @@ function App() {
   }, [allyChampionId, allAllyChampionIds, isLoadingChampions]);
 
   const selectedAllyChampion = allyChampionId ? allyChampionById.get(allyChampionId) : undefined;
-  const normalizedQuery = query.trim().toLowerCase();
-  const filterChampionIds = (championIds: string[]) =>
-    championIds.filter((championId) => {
-      const champion = allyChampionById.get(championId);
+  const normalizedQuery = deferredQuery.trim().toLowerCase();
+  const isSearchPending = query !== deferredQuery;
+  const filterChampionIds = useCallback(
+    (championIds: string[]) =>
+      championIds.filter((championId) => {
+        if (!allyChampionById.has(championId)) {
+          return false;
+        }
 
-      if (!champion) {
-        return false;
-      }
+        if (!normalizedQuery) {
+          return true;
+        }
 
-      if (!normalizedQuery) {
-        return true;
-      }
-
-      return (
-        champion.nameJa.toLowerCase().includes(normalizedQuery) ||
-        champion.nameEn.toLowerCase().includes(normalizedQuery)
-      );
-    });
+        return championSearchTextById.get(championId)?.includes(normalizedQuery) ?? false;
+      }),
+    [allyChampionById, championSearchTextById, normalizedQuery],
+  );
 
   const filteredRoleMatchedAllyChampionIds = useMemo(
     () => filterChampionIds(roleMatchedAllyChampionIds),
-    [allyChampionById, roleMatchedAllyChampionIds, normalizedQuery],
+    [filterChampionIds, roleMatchedAllyChampionIds],
   );
   const filteredOtherAllyChampionIds = useMemo(
     () => filterChampionIds(otherAllyChampionIds),
-    [allyChampionById, otherAllyChampionIds, normalizedQuery],
+    [filterChampionIds, otherAllyChampionIds],
   );
 
   const recommendationPool = useMemo(
@@ -199,8 +214,10 @@ function App() {
     [candidateStats],
   );
 
-  const iconUrl = (imageId: string) =>
-    `https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/img/champion/${imageId}.png`;
+  const iconUrl = useCallback(
+    (imageId: string) => `https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/img/champion/${imageId}.png`,
+    [dragonVersion],
+  );
 
   const buildPickSummary = () => {
     const allyRoleLabel = roles.find((role) => role.id === allyRole)?.shortLabel ?? allyRole;
@@ -361,6 +378,11 @@ function App() {
               value={query}
             />
           </label>
+          {isLoadingChampions || isSearchPending ? (
+            <div className="search-hint">
+              {isLoadingChampions ? "チャンピオン情報を更新中" : "検索候補を整理中"}
+            </div>
+          ) : null}
 
           <div className="champion-groups">
             <ChampionGrid
@@ -387,7 +409,7 @@ function App() {
 
       {selectedAllyChampion ? (
         <section className="sync-summary" aria-label="選択中の味方">
-          <img src={iconUrl(selectedAllyChampion.imageId)} alt="" />
+          <img src={iconUrl(selectedAllyChampion.imageId)} alt="" decoding="async" />
           <div>
             <span>選択中</span>
             <strong>
@@ -410,7 +432,14 @@ function App() {
             onCopySummary={handleCopySummary}
           />
         </div>
-        {isLoadingPairSynergies ? <div className="results-placeholder">相性データを読み込み中</div> : null}
+        {isLoadingPairSynergies ? (
+          <>
+            <div className="results-placeholder">相性データを読み込み中</div>
+            {Array.from({ length: 3 }).map((_, index) => (
+              <RecommendationSkeletonCard key={index} />
+            ))}
+          </>
+        ) : null}
         {recommendations.map((recommendation, index) => (
           <RecommendationCard
             iconUrl={iconUrl(recommendation.champion.imageId)}

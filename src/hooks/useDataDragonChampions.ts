@@ -20,6 +20,72 @@ interface DataDragonChampionResponse {
 }
 
 const localChampionByImageId = new Map(champions.map((champion) => [champion.imageId, champion]));
+let latestVersionRequest: Promise<string> | null = null;
+const championDataRequests = new Map<string, Promise<Champion[]>>();
+
+function getLatestDragonVersion(): Promise<string> {
+  latestVersionRequest ??= fetch(DDRAGON_VERSIONS_URL)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load Data Dragon versions: ${response.status}`);
+      }
+
+      return response.json() as Promise<string[]>;
+    })
+    .then((versions) => versions[0] ?? DEFAULT_DDRAGON_VERSION)
+    .catch(() => DEFAULT_DDRAGON_VERSION);
+
+  return latestVersionRequest;
+}
+
+function getChampionData(dragonVersion: string): Promise<Champion[]> {
+  const cachedRequest = championDataRequests.get(dragonVersion);
+
+  if (cachedRequest) {
+    return cachedRequest;
+  }
+
+  const request = Promise.all([
+    fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/ja_JP/champion.json`),
+    fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/en_US/champion.json`),
+  ])
+    .then(async ([jaResponse, enResponse]) => {
+      if (!jaResponse.ok || !enResponse.ok) {
+        throw new Error("Failed to load Data Dragon champion data");
+      }
+
+      const jaData = (await jaResponse.json()) as DataDragonChampionResponse;
+      const enData = (await enResponse.json()) as DataDragonChampionResponse;
+
+      return Object.values(jaData.data)
+        .map((jaChampion) => {
+          const localChampion = localChampionByImageId.get(jaChampion.id);
+          const enChampion = enData.data[jaChampion.id];
+
+          return {
+            id: localChampion?.id ?? jaChampion.id,
+            nameJa: jaChampion.name,
+            nameEn: localChampion?.nameEn ?? enChampion?.name ?? jaChampion.id,
+            imageId: jaChampion.id,
+            tags: jaChampion.tags,
+            combatProfile: {
+              attack: jaChampion.info.attack,
+              defense: jaChampion.info.defense,
+              magic: jaChampion.info.magic,
+            },
+            riotDifficulty: jaChampion.info.difficulty,
+          };
+        })
+        .sort((a, b) => a.nameJa.localeCompare(b.nameJa, "ja"));
+    })
+    .catch((error) => {
+      championDataRequests.delete(dragonVersion);
+      throw error;
+    });
+
+  championDataRequests.set(dragonVersion, request);
+  return request;
+}
 
 export function useDataDragonChampions() {
   const [dragonVersion, setDragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
@@ -27,58 +93,37 @@ export function useDataDragonChampions() {
   const [isLoadingChampions, setIsLoadingChampions] = useState(true);
 
   useEffect(() => {
-    fetch(DDRAGON_VERSIONS_URL)
-      .then((response) => response.json())
-      .then((versions: string[]) => {
-        if (versions[0]) {
-          setDragonVersion(versions[0]);
-        }
-      })
-      .catch(() => setDragonVersion(DEFAULT_DDRAGON_VERSION));
-  }, []);
+    let isMounted = true;
 
-  useEffect(() => {
     const loadChampions = async () => {
       setIsLoadingChampions(true);
 
       try {
-        const [jaResponse, enResponse] = await Promise.all([
-          fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/ja_JP/champion.json`),
-          fetch(`https://ddragon.leagueoflegends.com/cdn/${dragonVersion}/data/en_US/champion.json`),
-        ]);
-        const jaData = (await jaResponse.json()) as DataDragonChampionResponse;
-        const enData = (await enResponse.json()) as DataDragonChampionResponse;
-        const loadedChampions = Object.values(jaData.data)
-          .map((jaChampion) => {
-            const localChampion = localChampionByImageId.get(jaChampion.id);
-            const enChampion = enData.data[jaChampion.id];
+        const loadedDragonVersion = await getLatestDragonVersion();
+        const loadedChampions = await getChampionData(loadedDragonVersion);
 
-            return {
-              id: localChampion?.id ?? jaChampion.id,
-              nameJa: jaChampion.name,
-              nameEn: localChampion?.nameEn ?? enChampion?.name ?? jaChampion.id,
-              imageId: jaChampion.id,
-              tags: jaChampion.tags,
-              combatProfile: {
-                attack: jaChampion.info.attack,
-                defense: jaChampion.info.defense,
-                magic: jaChampion.info.magic,
-              },
-              riotDifficulty: jaChampion.info.difficulty,
-            };
-          })
-          .sort((a, b) => a.nameJa.localeCompare(b.nameJa, "ja"));
-
-        setAllChampions(loadedChampions);
+        if (isMounted) {
+          setDragonVersion(loadedDragonVersion);
+          setAllChampions(loadedChampions);
+        }
       } catch {
-        setAllChampions(champions);
+        if (isMounted) {
+          setDragonVersion(DEFAULT_DDRAGON_VERSION);
+          setAllChampions(champions);
+        }
       } finally {
-        setIsLoadingChampions(false);
+        if (isMounted) {
+          setIsLoadingChampions(false);
+        }
       }
     };
 
     void loadChampions();
-  }, [dragonVersion]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return {
     allChampions,

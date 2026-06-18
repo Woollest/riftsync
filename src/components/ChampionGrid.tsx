@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { Champion } from "../domain/types";
 
 interface ChampionGridProps {
@@ -9,7 +10,7 @@ interface ChampionGridProps {
   title: string;
 }
 
-export function ChampionGrid({
+export const ChampionGrid = memo(function ChampionGrid({
   championIds,
   championMap,
   iconUrl,
@@ -38,7 +39,7 @@ export function ChampionGrid({
                 title={`${champion.nameJa} / ${champion.nameEn}`}
                 type="button"
               >
-                <img src={iconUrl(champion.imageId)} alt="" />
+                <img src={iconUrl(champion.imageId)} alt="" decoding="async" loading="lazy" />
                 <span>{champion.nameJa}</span>
               </button>
             );
@@ -49,4 +50,4 @@ export function ChampionGrid({
       )}
     </div>
   );
-}
+});

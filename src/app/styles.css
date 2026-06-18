@@ -382,6 +382,13 @@ h1 {
   color: rgba(154, 203, 219, 0.62);
 }
 
+.search-hint {
+  margin-top: -4px;
+  color: var(--cyan-soft);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
 .champion-groups {
   display: grid;
   gap: 12px;
@@ -499,6 +506,7 @@ h1 {
 }
 
 .results-placeholder {
+  grid-column: 1 / -1;
   padding: 18px;
   color: var(--cyan-soft);
   border: 1px solid rgba(96, 226, 255, 0.18);
@@ -507,6 +515,65 @@ h1 {
   font-size: 0.84rem;
   font-weight: 900;
   text-align: center;
+}
+
+.is-skeleton {
+  pointer-events: none;
+}
+
+.is-skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(100deg, transparent 18%, rgba(159, 245, 255, 0.08) 36%, transparent 54%);
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+.skeleton-portrait,
+.skeleton-line,
+.skeleton-metric {
+  overflow: hidden;
+  border: 1px solid rgba(99, 206, 255, 0.12);
+  border-radius: 7px;
+  background: rgba(99, 206, 255, 0.12);
+}
+
+.skeleton-portrait {
+  width: 74px;
+  height: 74px;
+}
+
+.skeleton-line {
+  height: 13px;
+}
+
+.skeleton-line.is-title {
+  width: min(72%, 180px);
+  height: 20px;
+}
+
+.skeleton-line.is-short {
+  width: min(44%, 120px);
+}
+
+.skeleton-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.skeleton-metric {
+  min-height: 48px;
+}
+
+@keyframes skeleton-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .recommendation-card {
@@ -851,6 +918,8 @@ h1 {
   padding: 8px;
   background: linear-gradient(145deg, rgba(7, 27, 43, 0.86), rgba(5, 15, 26, 0.78));
   box-shadow: none;
+  content-visibility: auto;
+  contain-intrinsic-size: 70px;
 }
 
 .candidate-card img {
@@ -924,6 +993,8 @@ h1 {
   padding: 9px;
   border-color: rgba(255, 91, 127, 0.28);
   background: linear-gradient(145deg, rgba(38, 12, 25, 0.88), rgba(8, 15, 24, 0.92));
+  content-visibility: auto;
+  contain-intrinsic-size: 78px;
 }
 
 .avoid-card img {
