@@ -15,6 +15,7 @@ RiftSync の仕様変更と実装内容を記録する。
 - PWA向けのservice worker、スマホ用PNGアイコン、Appleホーム画面用メタ情報を追加
 - push / pull request / 手動実行で検証するGitHub Actions CIを追加
 - PWA manifest、アイコン、service workerを検証する `pnpm check:pwa` を追加
+- READMEを利用者向けに拡充し、使い方、判断のコツ、共有方法、FAQを追加
 - 相性データ読み込み中のスケルトン表示を追加
 - Data Dragonとロール分類を使って、CSV未登録チャンピオンも補完候補として推薦プールに含める仕組みを追加
 - おすすめ3体の下に追加候補を最大5体表示する機能を追加
