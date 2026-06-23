@@ -28,6 +28,10 @@
   - 開発、データ更新、デプロイ手順
 - `docs/product/`
   - 要件定義などプロダクト寄りの資料
+- `mkdocs.yml`
+  - `docs/` 配下をドキュメントサイトとしてビルドするMkDocs設定
+- `requirements-docs.txt`
+  - MkDocsとテーマのPython依存
 
 ## データの流れ
 
@@ -41,3 +45,21 @@
 おすすめ順位は `src/domain/scoring.ts` に集約する。UI側ではスコア計算の詳細を持たず、`Recommendation` として整形された結果だけを表示する。
 
 直接相性データが3件以上ある場合は、OP.GGのシナジー表示順を優先する。直接相性が足りない場合は、ロール別統計とチャンピオンのタグ/戦闘プロフィールから推定候補を補う。
+
+## ドキュメントサイト
+
+READMEは利用者向け、`docs/` 配下は開発・運用向けの資料として分ける。
+
+MkDocsはGitHub Pagesのアプリ本体を上書きしないよう、`dist/docs/` にビルドする。
+
+```text
+アプリ: dist/
+Docs : dist/docs/
+```
+
+公開後のURLは以下の形になる。
+
+```text
+https://woollest.github.io/riftsync/
+https://woollest.github.io/riftsync/docs/
+```

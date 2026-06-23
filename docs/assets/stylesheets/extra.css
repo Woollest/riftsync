@@ -1,0 +1,17 @@
+:root {
+  --md-primary-fg-color: #00d5ff;
+  --md-accent-fg-color: #58f0ff;
+}
+
+.md-typeset a {
+  font-weight: 600;
+}
+
+.md-header,
+.md-tabs {
+  background: linear-gradient(90deg, #051923 0%, #05344a 100%);
+}
+
+.md-typeset code {
+  border: 1px solid rgba(88, 240, 255, 0.18);
+}

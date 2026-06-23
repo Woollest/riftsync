@@ -59,5 +59,6 @@ assert(serviceWorker.includes("CACHE_NAME"), "service worker must define a cache
 assert(serviceWorker.includes("./site.webmanifest"), "service worker must cache the web manifest");
 assert(serviceWorker.includes("./icon-192.png"), "service worker must cache the 192px icon");
 assert(serviceWorker.includes("./maskable-icon-512.png"), "service worker must cache the maskable icon");
+assert(serviceWorker.includes("./docs/"), "service worker must leave MkDocs pages outside the PWA cache handler");
 
 console.log("RiftSync PWA asset validation passed.");

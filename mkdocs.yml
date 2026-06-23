@@ -1,0 +1,47 @@
+site_name: RiftSync Docs
+site_description: RiftSyncの仕様、設計、データ更新、デプロイ手順
+site_url: https://woollest.github.io/riftsync/docs/
+repo_url: https://github.com/Woollest/riftsync
+repo_name: Woollest/riftsync
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site
+use_directory_urls: true
+
+theme:
+  name: material
+  language: ja
+  palette:
+    scheme: slate
+    primary: cyan
+    accent: cyan
+  features:
+    - content.code.copy
+    - navigation.footer
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.suggest
+
+nav:
+  - Home: index.md
+  - Product:
+      - Requirements: product/requirements.md
+  - Developer:
+      - Architecture: developer/architecture.md
+      - Data Update: developer/data-update.md
+      - Deployment: developer/deployment.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+
+extra_css:
+  - assets/stylesheets/extra.css

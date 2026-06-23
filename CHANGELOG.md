@@ -17,6 +17,8 @@ RiftSync の仕様変更と実装内容を記録する。
 - PWA manifest、アイコン、service workerを検証する `pnpm check:pwa` を追加
 - READMEを利用者向けに拡充し、使い方、判断のコツ、共有方法、FAQを追加
 - 型定義、推薦ロジック、データ取得hook、共有ユーティリティにTSDocを追加
+- MkDocsを導入し、仕様・開発ドキュメントを `/docs/` としてGitHub Pagesに同居公開できるようにした
+- service workerが `/docs/` 配下のMkDocsページをPWAキャッシュ対象にしないよう調整
 - 相性データ読み込み中のスケルトン表示を追加
 - Data Dragonとロール分類を使って、CSV未登録チャンピオンも補完候補として推薦プールに含める仕組みを追加
 - おすすめ3体の下に追加候補を最大5体表示する機能を追加

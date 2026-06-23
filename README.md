@@ -83,6 +83,10 @@ RiftSyncは、OP.GGのGlobal / Gold+ / Ranked Solo/Duoの統計と、Riot Data D
 
 直接相性データが少ない組み合わせでは、推定補完の候補も表示されます。これは候補を空にしないための仕組みですが、直接データよりは慎重に見てください。
 
+## 仕様・運用ドキュメント
+
+要件定義、設計メモ、データ更新手順、デプロイ手順は [RiftSync Docs](https://woollest.github.io/riftsync/docs/) にまとめています。
+
 ## よくある質問
 
 ### 敵のピックやBANは考慮されますか？

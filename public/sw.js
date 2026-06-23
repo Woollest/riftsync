@@ -1,4 +1,4 @@
-const CACHE_NAME = "riftsync-pwa-v2";
+const CACHE_NAME = "riftsync-pwa-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -12,6 +12,12 @@ const APP_SHELL = [
 
 function isSameOrigin(request) {
   return new URL(request.url).origin === self.location.origin;
+}
+
+function isDocsRequest(request) {
+  const docsPath = new URL("./docs/", self.registration.scope).pathname;
+
+  return new URL(request.url).pathname.startsWith(docsPath);
 }
 
 async function putInCache(request, response) {
@@ -47,6 +53,10 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
 
   if (request.method !== "GET" || !isSameOrigin(request)) {
+    return;
+  }
+
+  if (isDocsRequest(request)) {
     return;
   }
 

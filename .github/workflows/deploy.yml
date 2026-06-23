@@ -17,7 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,11 +33,23 @@ jobs:
           node-version: 24
           cache: pnpm
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install documentation dependencies
+        run: python -m pip install -r requirements-docs.txt
+
       - name: Run validation and build
         run: pnpm run verify
+
+      - name: Build documentation
+        run: pnpm run docs:build
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
