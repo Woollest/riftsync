@@ -5,6 +5,9 @@ import type { PairSynergy } from "../domain/types";
 let cachedPairSynergies: PairSynergy[] | null = null;
 let pairSynergyRequest: Promise<PairSynergy[]> | null = null;
 
+/**
+ * 大きな相性JSONを初期JSから分離して、必要になったタイミングで一度だけ読み込む。
+ */
 async function loadPairSynergyData(): Promise<PairSynergy[]> {
   if (cachedPairSynergies) {
     return cachedPairSynergies;
@@ -34,6 +37,9 @@ async function loadPairSynergyData(): Promise<PairSynergy[]> {
   return pairSynergyRequest;
 }
 
+/**
+ * OP.GG個別シナジーページ由来の相性データと、その読み込み状態を提供するhook。
+ */
 export function usePairSynergies() {
   const [pairSynergies, setPairSynergies] = useState<PairSynergy[]>(cachedPairSynergies ?? []);
   const [isLoadingPairSynergies, setIsLoadingPairSynergies] = useState(!cachedPairSynergies);

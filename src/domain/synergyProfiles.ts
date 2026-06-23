@@ -102,6 +102,11 @@ const synergyPairs: Array<[SynergyTrait, SynergyTrait, number]> = [
   ["roam", "burst", 9],
 ];
 
+/**
+ * チャンピオン固有データ、Data Dragonタグ、戦闘プロフィールから相性推定用traitを作る。
+ *
+ * チャンピオン情報がまだ読み込めない場合は、ロールの代表traitで最低限の推定を続ける。
+ */
 export function getSynergyTraits(champion: Champion | undefined, role: Role): Set<SynergyTrait> {
   const traits = new Set<SynergyTrait>();
 
@@ -142,6 +147,9 @@ export function getSynergyTraits(champion: Champion | undefined, role: Role): Se
   return traits;
 }
 
+/**
+ * 味方traitと候補traitのかみ合いを、推定コンボ相性に足すボーナス値として返す。
+ */
 export function getTraitCompatibilityScore(allyTraits: Set<SynergyTrait>, recommendedTraits: Set<SynergyTrait>) {
   let score = 0;
 

@@ -10,6 +10,7 @@ interface ChampionGridProps {
   title: string;
 }
 
+/** ロール一致候補とその他候補の両方で使う、チャンピオン選択グリッド。 */
 export const ChampionGrid = memo(function ChampionGrid({
   championIds,
   championMap,

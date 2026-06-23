@@ -8,6 +8,7 @@ interface RecommendationCardProps {
   recommendation: Recommendation;
 }
 
+/** おすすめ上位3体に使う、スコア詳細つきのメインカード。 */
 export function RecommendationCard({ iconUrl, index, recommendation }: RecommendationCardProps) {
   return (
     <article className="recommendation-card">
@@ -53,6 +54,7 @@ interface AvoidCardProps {
   recommendation: Recommendation;
 }
 
+/** 折りたたみ内に出す、勝率が低めの非推奨候補カード。 */
 export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
   return (
     <article className="avoid-card">
@@ -70,6 +72,7 @@ export function AvoidCard({ iconUrl, recommendation }: AvoidCardProps) {
   );
 }
 
+/** おすすめ3体の次に見るための、軽量な追加候補カード。 */
 export function CandidateCard({ iconUrl, recommendation }: AvoidCardProps) {
   return (
     <article className="candidate-card">
@@ -88,6 +91,7 @@ export function CandidateCard({ iconUrl, recommendation }: AvoidCardProps) {
   );
 }
 
+/** 大きな相性JSONの読み込み中に表示する、レイアウト維持用スケルトン。 */
 export function RecommendationSkeletonCard() {
   return (
     <article className="recommendation-card is-skeleton" aria-label="おすすめを読み込み中">

@@ -1,3 +1,8 @@
+/**
+ * クリップボードへテキストをコピーする。
+ *
+ * Clipboard APIが使えないブラウザでは、非表示textareaを使う古い方法へフォールバックする。
+ */
 export async function copyTextToClipboard(text: string): Promise<boolean> {
   try {
     if (!navigator.clipboard) {

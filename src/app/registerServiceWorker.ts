@@ -1,3 +1,8 @@
+/**
+ * production環境だけでservice workerを登録する。
+ *
+ * GitHub Pagesのサブパス配信でもキャッシュ範囲がずれないよう、ViteのBASE_URLをscopeに使う。
+ */
 export function registerServiceWorker() {
   if (!import.meta.env.PROD || !("serviceWorker" in navigator)) {
     return;

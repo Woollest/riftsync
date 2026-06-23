@@ -5,6 +5,7 @@ import type { Champion, DataConfidence, DifficultyLabel, PairSynergy, Recommenda
 
 export const OFF_META_PICK_RATE = 1.0;
 export const LOW_DATA_SAMPLE_SIZE = 500;
+/** 総合スコアの重み。味方との相性を最優先し、勝率とメタは補助評価に留める。 */
 export const SCORE_WEIGHT = {
   combo: 0.85,
   winRate: 0.1,
@@ -49,6 +50,9 @@ function getGroupKey(allyChampionId: string, allyRole: Role, recommendedRole: Ro
   return [allyChampionId, allyRole, recommendedRole].join(":");
 }
 
+/**
+ * OP.GG由来の直接相性データを、単体検索と条件グループ検索の両方で引ける形に変換する。
+ */
 export function createPairSynergyLookup(pairSynergies: PairSynergy[]): PairSynergyLookup {
   const byGroup = new Map<string, PairSynergy[]>();
   const byPair = new Map<string, PairSynergy>();
@@ -73,6 +77,11 @@ export function createPairSynergyLookup(pairSynergies: PairSynergy[]): PairSyner
   };
 }
 
+/**
+ * 最新Data Dragonで取得したチャンピオンを優先し、なければ同梱データから取得する。
+ *
+ * 未知のIDはデータ不整合として扱うため、呼び出し側で握りつぶさず例外にする。
+ */
 export function getChampion(championId: string, championMap?: Map<string, Champion>): Champion {
   const champion = championMap?.get(championId) ?? championById.get(championId);
 
@@ -83,6 +92,7 @@ export function getChampion(championId: string, championMap?: Map<string, Champi
   return champion;
 }
 
+/** Riot公式の1-10難易度を、初心者向けの3段階表示に変換する。 */
 export function getDifficultyLabel(riotDifficulty: number): DifficultyLabel {
   if (riotDifficulty <= 3) {
     return "簡単";
@@ -160,6 +170,11 @@ function canExpandChampionForRole(champion: Champion, role: Role): boolean {
   return roleChampionImageIds[role].has(champion.imageId);
 }
 
+/**
+ * 指定ロールで推薦候補にできる統計を返す。
+ *
+ * OP.GG統計がある候補を優先し、Data Dragon上のロール適性がある候補は補完データとして後ろに追加する。
+ */
 export function getRoleStats(role: Role, championMap?: Map<string, Champion>): RoleStat[] {
   const manualStats = roleStats.filter(
     (stat) => stat.role === role && (!championMap || championMap.has(stat.championId)),
@@ -183,6 +198,7 @@ export function getRoleStats(role: Role, championMap?: Map<string, Champion>): R
   });
 }
 
+/** 味方チャンピオン一覧でロール一致側に表示するチャンピオンIDを返す。 */
 export function getAvailableAllyChampionIds(role: Role): string[] {
   return getRoleStats(role)
     .slice()
@@ -190,6 +206,9 @@ export function getAvailableAllyChampionIds(role: Role): string[] {
     .map((stat) => stat.championId);
 }
 
+/**
+ * 1体のチャンピオンについて、指定ロールの統計または補完統計を取得する。
+ */
 export function getRoleStat(championId: string, role: Role, championMap?: Map<string, Champion>): RoleStat | undefined {
   const manualStat = getManualRoleStat(championId, role);
 
@@ -224,6 +243,7 @@ function getPairSynergy(
   return pairSynergyLookup.byPair.get(getPairKey(allyChampionId, allyRole, recommendedChampionId, recommendedRole));
 }
 
+/** 選択中の味方と自分ロールに対して、OP.GG直接相性が何件あるかを返す。 */
 export function getDirectPairSynergyCount(
   pairSynergyLookup: PairSynergyLookup,
   allyChampionId: string,
@@ -427,6 +447,11 @@ function toRecommendation(
   };
 }
 
+/**
+ * 自分ロールの全候補をスコアリングし、総合スコア順で返す。
+ *
+ * 直接相性データがある候補はその勝率/試合数/コンボ相性を使い、ない候補はチャンピオン特性から推定する。
+ */
 export function getRecommendations(
   selfRole: Role,
   allyRole: Role,
@@ -502,6 +527,12 @@ function getDirectRecommendations(
     .map((roleStat) => toRecommendation(roleStat, allyChampionId, allyRole, 100, pairSynergyLookup, championMap));
 }
 
+/**
+ * 画面上部に出すおすすめ3体を返す。
+ *
+ * OP.GG直接相性が3件以上ある場合は、その上位3体をそのまま優先する。
+ * 足りない場合は総合スコアとタグ分散で、似た候補ばかりにならないよう補完する。
+ */
 export function getTopRecommendations(
   selfRole: Role,
   allyRole: Role,
@@ -527,6 +558,11 @@ export function getTopRecommendations(
   );
 }
 
+/**
+ * おすすめ3体と追加候補を合わせた推薦プールを返す。
+ *
+ * 上位3体がBAN済み、未所持、または自信がない時でも代替候補を見られるようにする。
+ */
 export function getRecommendationPool(
   selfRole: Role,
   allyRole: Role,
@@ -561,6 +597,11 @@ export function getRecommendationPool(
   return selectDiverseRecommendations(scoredRecommendations, limit);
 }
 
+/**
+ * 非推奨候補として表示する3体を返す。
+ *
+ * 勝率の低い順を基本にしつつ、補完だけのデータが過度に混ざらないよう直接/実統計候補を優先する。
+ */
 export function getAvoidRecommendations(
   selfRole: Role,
   allyRole: Role,

@@ -10,6 +10,7 @@ interface ShareActionsProps {
   onCopySummary: () => void;
 }
 
+/** 結果テキスト、共有URL、フィードバック導線をまとめたアクションバー。 */
 export function ShareActions({ copyState, linkCopyState, onCopyLink, onCopySummary }: ShareActionsProps) {
   return (
     <div className="action-row" aria-label="共有アクション">

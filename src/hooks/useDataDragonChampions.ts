@@ -23,6 +23,11 @@ const localChampionByImageId = new Map(champions.map((champion) => [champion.ima
 let latestVersionRequest: Promise<string> | null = null;
 const championDataRequests = new Map<string, Promise<Champion[]>>();
 
+/**
+ * Data Dragonの最新バージョンを取得する。
+ *
+ * 失敗時は同梱データのバージョンへフォールバックし、アプリの初期表示を止めない。
+ */
 function getLatestDragonVersion(): Promise<string> {
   latestVersionRequest ??= fetch(DDRAGON_VERSIONS_URL)
     .then((response) => {
@@ -38,6 +43,11 @@ function getLatestDragonVersion(): Promise<string> {
   return latestVersionRequest;
 }
 
+/**
+ * 日本語名、英語名、公式難易度、タグ、戦闘プロフィールをData Dragonから読み込む。
+ *
+ * 同じバージョンへのリクエストは共有し、検索や再レンダーで重複取得しないようにする。
+ */
 function getChampionData(dragonVersion: string): Promise<Champion[]> {
   const cachedRequest = championDataRequests.get(dragonVersion);
 
@@ -87,6 +97,11 @@ function getChampionData(dragonVersion: string): Promise<Champion[]> {
   return request;
 }
 
+/**
+ * 画面全体で使うチャンピオン基本情報を提供するhook。
+ *
+ * 読み込みに失敗しても同梱の最小データへ戻し、推薦UIを継続表示できるようにする。
+ */
 export function useDataDragonChampions() {
   const [dragonVersion, setDragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
   const [allChampions, setAllChampions] = useState<Champion[]>(champions);

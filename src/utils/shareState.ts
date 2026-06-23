@@ -8,14 +8,21 @@ export interface PickSelection {
   selfRole: Role;
 }
 
+/** URLクエリから受け取った文字列が、アプリで扱えるロールかどうかを判定する。 */
 export function isRole(value: string | null): value is Role {
   return roles.some((role) => role.id === value);
 }
 
+/** 味方ロールと同じロールを選べない制約に合わせ、代替の自分ロールを返す。 */
 export function getFallbackSelfRole(allyRole: Role): Role {
   return roles.find((role) => role.id !== allyRole)?.id ?? DEFAULT_SELECTION.selfRole;
 }
 
+/**
+ * URLクエリから初期選択を復元する。
+ *
+ * 不正な値や、味方ロールと自分ロールが同じURLは安全なデフォルトに寄せる。
+ */
 export function getInitialSelection(): PickSelection {
   if (typeof window === "undefined") {
     return DEFAULT_SELECTION;
@@ -36,6 +43,11 @@ export function getInitialSelection(): PickSelection {
   };
 }
 
+/**
+ * 現在の選択状態をURLへ反映する。
+ *
+ * ページ遷移ではなく `replaceState` を使い、選択変更だけでブラウザ履歴を増やさない。
+ */
 export function syncSelectionToUrl(selection: PickSelection): void {
   if (typeof window === "undefined") {
     return;
@@ -54,6 +66,7 @@ export function syncSelectionToUrl(selection: PickSelection): void {
   }
 }
 
+/** 友人に送るための、現在の選択条件を再現できる共有URLを作る。 */
 export function buildShareUrl(selection: PickSelection): string {
   if (typeof window === "undefined") {
     return "";

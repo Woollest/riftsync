@@ -1,9 +1,13 @@
+/** Riot/OP.GG由来データと画面選択で共通して使う5ロール。 */
 export type Role = "top" | "jungle" | "mid" | "adc" | "support";
 
+/** Riot公式難易度を初心者向けUIに出すための3段階ラベル。 */
 export type DifficultyLabel = "簡単" | "普通" | "難しい";
 
+/** 推薦結果をユーザーがどの程度信じてよいかを示す内部レベル。 */
 export type DataConfidence = "high" | "medium" | "low";
 
+/** 1行理由テンプレートを選ぶための、構成上の相性タイプ。 */
 export type ReasonType =
   | "engage_followup"
   | "cc_chain"
@@ -22,6 +26,7 @@ export interface RoleOption {
   shortLabel: string;
 }
 
+/** Data Dragonの基本情報に、アプリ内部IDと日本語/英語名を合わせたチャンピオン定義。 */
 export interface Champion {
   id: string;
   nameJa: string;
@@ -36,6 +41,11 @@ export interface Champion {
   };
 }
 
+/**
+ * チャンピオン単体のロール別統計。
+ *
+ * `source: "expanded"` はOP.GG統計がない候補を、Data Dragonとロール分類で補完したことを表す。
+ */
 export interface RoleStat {
   championId: string;
   role: Role;
@@ -47,6 +57,7 @@ export interface RoleStat {
   source?: "manual" | "expanded";
 }
 
+/** 味方1体と自分の候補1体を結ぶ、OP.GG個別シナジーページ由来の直接相性データ。 */
 export interface PairSynergy {
   allyChampionId: string;
   allyRole: Role;
@@ -58,6 +69,7 @@ export interface PairSynergy {
   reasonType: ReasonType;
 }
 
+/** 画面のデータ情報パネルに表示する、現在採用中のデータセット情報。 */
 export interface DataMeta {
   patch: string;
   rankRange: string;
@@ -67,6 +79,7 @@ export interface DataMeta {
   isSample: boolean;
 }
 
+/** 推薦カード、追加候補、非推奨候補で共通利用する表示済みスコア。 */
 export interface Recommendation {
   champion: Champion;
   roleStat: RoleStat;
