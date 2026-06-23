@@ -18,7 +18,19 @@ export type ReasonType =
   | "lane_pressure"
   | "scaling_support"
   | "roam_follow"
-  | "burst_window";
+  | "burst_window"
+  | "support_all_in_setup"
+  | "support_poke_lane"
+  | "support_scaling_cover"
+  | "adc_frontline_follow"
+  | "adc_aoe_wombo"
+  | "mid_jungle_skirmish"
+  | "mid_frontline_aoe"
+  | "jungle_gank_setup"
+  | "jungle_dive_follow"
+  | "top_frontline_balance"
+  | "top_side_pressure"
+  | "damage_type_mix";
 
 export interface RoleOption {
   id: Role;

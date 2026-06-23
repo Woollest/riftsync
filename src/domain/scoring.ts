@@ -289,22 +289,22 @@ function getGenericComboScore(
 
 function getFallbackReason(roleStat: RoleStat): string {
   if (roleStat.role === "adc") {
-    return reasonTemplates.peel_dps;
+    return reasonTemplates.adc_frontline_follow;
   }
 
   if (roleStat.role === "mid") {
-    return reasonTemplates.damage_balance;
+    return reasonTemplates.damage_type_mix;
   }
 
   if (roleStat.role === "jungle") {
-    return reasonTemplates.roam_follow;
+    return reasonTemplates.jungle_gank_setup;
   }
 
   if (roleStat.role === "support") {
-    return reasonTemplates.cc_chain;
+    return reasonTemplates.support_all_in_setup;
   }
 
-  return reasonTemplates.frontline_cover;
+  return reasonTemplates.top_frontline_balance;
 }
 
 function getPairReason(synergy: PairSynergy): string {

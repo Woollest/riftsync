@@ -169,48 +169,52 @@ function toComboScore(row) {
   return Math.round(clamp(winScore + pickScore + tierScore - samplePenalty, 35, 96));
 }
 
-function toReasonType(recommendedRole, tags) {
+function toReasonType(recommendedRole, tags, allyRole) {
   if (recommendedRole === "support") {
     if (tags.includes("Tank")) {
-      return "cc_chain";
+      return "support_all_in_setup";
     }
 
     if (tags.includes("Mage")) {
-      return "lane_pressure";
+      return "support_poke_lane";
     }
 
-    return "peel_dps";
+    return allyRole === "adc" ? "support_scaling_cover" : "peel_dps";
   }
 
   if (recommendedRole === "jungle") {
-    if (tags.includes("Tank")) {
-      return "engage_followup";
+    if (allyRole === "top" || allyRole === "mid") {
+      return "jungle_gank_setup";
     }
 
-    return "roam_follow";
+    return "jungle_dive_follow";
   }
 
   if (recommendedRole === "mid") {
+    if (allyRole === "jungle") {
+      return "mid_jungle_skirmish";
+    }
+
     if (tags.includes("Assassin")) {
       return "burst_window";
     }
 
-    return "damage_balance";
+    return allyRole === "top" || allyRole === "support" ? "mid_frontline_aoe" : "damage_type_mix";
   }
 
   if (recommendedRole === "adc") {
     if (tags.includes("Mage")) {
-      return "teamfight_aoe";
+      return "adc_aoe_wombo";
     }
 
-    return "peel_dps";
+    return "adc_frontline_follow";
   }
 
   if (tags.includes("Tank")) {
-    return "frontline_cover";
+    return "top_frontline_balance";
   }
 
-  return "engage_followup";
+  return "top_side_pressure";
 }
 
 function toOpggSynergyUrl(opggChampionKey, role) {
@@ -326,6 +330,7 @@ async function fetchTargetSynergies(target, championMaps, roleStatKeys) {
           reasonType: toReasonType(
             section.synergyPosition,
             championMaps.tagsByChampionId.get(recommendedChampionId) ?? [],
+            target.role,
           ),
           recommendedChampionId,
           recommendedRole: section.synergyPosition,

@@ -15,6 +15,7 @@ pnpm run verify
 - CSVと生成JSONが同期しているか
 - Data Dragon上にチャンピオンIDが存在するか
 - `reasonType` やロール指定にミスがないか
+- おすすめ上位3体がロール単位で固定化しすぎていないか
 - TypeScriptが通るか
 - production build が成功するか
 - PWA manifest、アイコン、service workerが揃っているか
