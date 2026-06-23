@@ -7,7 +7,7 @@
 まずローカルで以下を実行する。
 
 ```bash
-pnpm share:check
+pnpm run verify
 ```
 
 確認される内容:
@@ -17,10 +17,14 @@ pnpm share:check
 - `reasonType` やロール指定にミスがないか
 - TypeScriptが通るか
 - production build が成功するか
+- PWA manifest、アイコン、service workerが揃っているか
 
 ## 2. GitHubにpushする
 
-`main` ブランチにpushすると、`.github/workflows/deploy.yml` が自動で実行される。
+`main` ブランチにpushすると、`.github/workflows/ci.yml` と `.github/workflows/deploy.yml` が自動で実行される。
+
+- `ci.yml`: push、pull request、手動実行で検証する
+- `deploy.yml`: `main` へのpush後、検証とbuildを通してGitHub Pagesへ公開する
 
 ```bash
 git add .
@@ -63,7 +67,7 @@ CSVを更新したら、毎回以下を実行してからpushする。
 ```bash
 pnpm validate:csv
 pnpm import:data
-pnpm share:check
+pnpm run verify
 ```
 
-`share:check` が成功してからpushすれば、GitHub Pages側でも同じチェックを通して公開される。
+`pnpm run verify` が成功してからpushすれば、GitHub Pages側でも同じチェックを通して公開される。

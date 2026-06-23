@@ -13,6 +13,8 @@ RiftSync の仕様変更と実装内容を記録する。
 - おすすめカードに「OP.GG直接 / 推定補完」と信頼度ラベルを追加
 - データ情報パネルに現在の採用方式を表示する項目を追加
 - PWA向けのservice worker、スマホ用PNGアイコン、Appleホーム画面用メタ情報を追加
+- push / pull request / 手動実行で検証するGitHub Actions CIを追加
+- PWA manifest、アイコン、service workerを検証する `pnpm check:pwa` を追加
 - 相性データ読み込み中のスケルトン表示を追加
 - Data Dragonとロール分類を使って、CSV未登録チャンピオンも補完候補として推薦プールに含める仕組みを追加
 - おすすめ3体の下に追加候補を最大5体表示する機能を追加
@@ -23,6 +25,7 @@ RiftSync の仕様変更と実装内容を記録する。
 - `roleStats.csv` をOP.GG Global / Gold+ / Ranked Solo/Duo / Patch 16.12.1 の259件へ更新し、サンプルデータ扱いを解除
 - `pairSynergies.csv` をOP.GG個別シナジーページ由来の3108件へ更新し、1036個の味方/味方ロール/自分ロール組み合わせを直接相性データでカバー
 - `pnpm update:opgg` はロール別統計とシナジーの両方を更新するよう変更
+- GitHub Pagesデプロイ前チェックを `pnpm run verify` に統一
 - 初期JSから大きなシナジーJSONを外し、production buildのメインJSを約833kBから約259kBへ削減
 - 直接相性の理由文にOP.GG上位、ペア勝率、試合数を含めるよう変更
 - READMEをWebアプリ利用者向けに書き換え、開発コマンドやクローン手順を削除
