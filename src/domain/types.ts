@@ -77,7 +77,12 @@ export interface PairSynergy {
   recommendedRole: Role;
   comboScore: number;
   pairWinRate: number;
+  expectedWinRate: number;
+  winRateLift: number;
+  adjustedLift: number;
   sampleSize: number;
+  sourceCount: number;
+  sourceAgreementBonus: number;
   reasonType: ReasonType;
 }
 
@@ -98,6 +103,10 @@ export interface Recommendation {
   comboScore: number;
   displayWinRate: number;
   sampleSize: number;
+  sourceCount: number;
+  winRateLift?: number;
+  adjustedLift?: number;
+  sourceAgreementBonus?: number;
   totalScore: number;
   dataPenalty: number;
   synergySource: "pair" | "profile";

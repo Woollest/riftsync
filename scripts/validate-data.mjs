@@ -177,8 +177,28 @@ function validatePairSynergies(pairSynergies, roleStats, reasonTemplates, knownC
       pushError(errors, row, "pairWinRate must be 0-100");
     }
 
+    if (!isNumberInRange(synergy.expectedWinRate, 0, 100)) {
+      pushError(errors, row, "expectedWinRate must be 0-100");
+    }
+
+    if (!isNumberInRange(synergy.winRateLift, -30, 30)) {
+      pushError(errors, row, "winRateLift must be -30-30");
+    }
+
+    if (!isNumberInRange(synergy.adjustedLift, -30, 30)) {
+      pushError(errors, row, "adjustedLift must be -30-30");
+    }
+
     if (!Number.isInteger(synergy.sampleSize) || synergy.sampleSize < 0) {
       pushError(errors, row, "sampleSize must be a non-negative integer");
+    }
+
+    if (!Number.isInteger(synergy.sourceCount) || synergy.sourceCount < 1 || synergy.sourceCount > 3) {
+      pushError(errors, row, "sourceCount must be an integer from 1 to 3");
+    }
+
+    if (!isNumberInRange(synergy.sourceAgreementBonus, 0, 20)) {
+      pushError(errors, row, "sourceAgreementBonus must be 0-20");
     }
 
     if (!Object.hasOwn(reasonTemplates, synergy.reasonType)) {

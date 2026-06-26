@@ -59,8 +59,8 @@ ahri,mid,51.6,9.4,86,24180,S
 味方1体と、自分が選ぶ候補チャンピオンの相性データを入れる。
 
 ```csv
-allyChampionId,allyRole,recommendedChampionId,recommendedRole,comboScore,pairWinRate,sampleSize,reasonType
-malphite,top,orianna,mid,94,54.1,1320,teamfight_aoe
+allyChampionId,allyRole,recommendedChampionId,recommendedRole,comboScore,pairWinRate,expectedWinRate,winRateLift,adjustedLift,sampleSize,sourceCount,sourceAgreementBonus,reasonType
+malphite,top,orianna,mid,84,54.1,51.2,2.9,1.5,1320,2,8,teamfight_aoe
 ```
 
 項目:
@@ -71,10 +71,15 @@ malphite,top,orianna,mid,94,54.1,1320,teamfight_aoe
 - `recommendedRole`: 自分のロール
 - `comboScore`: コンボ相性。0から100
 - `pairWinRate`: その組み合わせの勝率
+- `expectedWinRate`: 候補チャンピオン単体の同ロール勝率
+- `winRateLift`: ペア勝率から単体勝率を引いた相性リフト
+- `adjustedLift`: 相性リフトを試合数で補正した値
 - `sampleSize`: その組み合わせの試合数
+- `sourceCount`: 相性判定に使えた確認元の数。OP.GGのみなら1、LoLalyticsの同ロール評価も一致すれば2
+- `sourceAgreementBonus`: 複数サイト一致をコンボ相性へ反映するボーナス
 - `reasonType`: `reasonTemplates.json` のキー
 
-同じ `allyChampionId` / `allyRole` / `recommendedRole` の直接相性データが3件以上ある場合、アプリのおすすめ3体はCSVに書いた順番の上位3件をそのまま表示する。`pnpm update:opgg:synergies` はOP.GGの個別シナジーページを巡回し、各自分ロールの上位5体をOP.GGの表示順に取り込む。
+同じ `allyChampionId` / `allyRole` / `recommendedRole` の直接相性データが3件以上ある場合、アプリのおすすめ3体は補正後ペア強度の高い上位3件を優先する。`pnpm update:opgg:synergies` はOP.GGの個別シナジーページを巡回し、各自分ロールの候補を相性リフト、試合数補正、LoLalytics同ロール一致ボーナスで並べ替えて上位5件を取り込む。
 
 ## データ更新の流れ
 
@@ -100,7 +105,7 @@ pnpm update:opgg:stats
 pnpm update:opgg:synergies
 ```
 
-`pnpm update:opgg:synergies` は現在の `roleStats.csv` に載っているチャンピオン/ロールを対象に、`https://op.gg/lol/champions/{champion}/synergies/{role}?region=global&tier=emerald_plus&mode=ranked` を取得する。各ページ内の自分ロール別シナジー表から上位5件を取り込み、試合数を `sampleSize`、ペア勝率を `pairWinRate` として保存する。
+`pnpm update:opgg:synergies` は現在の `roleStats.csv` に載っているチャンピオン/ロールを対象に、`https://op.gg/lol/champions/{champion}/synergies/{role}?region=global&tier=emerald_plus&mode=ranked` を取得する。各ページ内の自分ロール別シナジー表から候補を集め、候補単体のロール勝率に対するペア勝率の伸びを `winRateLift`、試合数補正後の伸びを `adjustedLift` として保存する。LoLalyticsのレーン別Tier Listで同じチャンピオン/ロールが上位に確認できる場合は `sourceCount` と `sourceAgreementBonus` に反映する。
 
 CSVだけ先に確認したい場合は、以下を使う。
 
@@ -115,7 +120,9 @@ pnpm validate:csv
 - ロール名が `top` / `jungle` / `mid` / `adc` / `support` のいずれかか
 - Tierが `S` / `A` / `B` / `C` / `D` のいずれかか
 - 勝率、使用率、コンボ相性、メタ評価が0から100の範囲か
+- 相性リフト、補正リフトが妥当な範囲か
 - `sampleSize` が0以上の整数か
+- `sourceCount` が1から3の整数か
 - `reasonType` が `reasonTemplates.csv` に存在するか
 - 同じチャンピオン/ロール、同じ相性データが重複していないか
 - おすすめ候補に対応する `roleStats.csv` の行が存在しない場合は警告を出す。アプリ側では補完候補として扱う

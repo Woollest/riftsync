@@ -7,6 +7,7 @@ import {
   dataRegion,
   dataTier,
   extractNextFlightText,
+  fetchLolalyticsText,
   fetchOpggText,
   findMatchingBracket,
   getChampionMaps,
@@ -30,6 +31,14 @@ const limitPages = getNumberArg("--limit-pages", 0);
 const minSampleSize = getNumberArg("--min-sample", 0);
 const isDryRun = process.argv.includes("--dry-run");
 const validRoleSet = new Set(validRoles);
+const lolalyticsTierUrl = "https://lolalytics.com/lol/tierlist/?tier=emerald_plus";
+const lolalyticsLaneRoleMap = new Map([
+  ["bottom", "adc"],
+  ["jungle", "jungle"],
+  ["middle", "mid"],
+  ["support", "support"],
+  ["top", "top"],
+]);
 
 function getNumberArg(name, fallback) {
   const exactArg = process.argv.find((arg) => arg.startsWith(`${name}=`));
@@ -49,6 +58,16 @@ function getNumberArg(name, fallback) {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function toRoundedStat(value) {
+  return Math.round(value * 10) / 10;
+}
+
+function toNumber(value, fallback = 0) {
+  const numericValue = Number(value);
+
+  return Number.isFinite(numericValue) ? numericValue : fallback;
 }
 
 function parseCsv(text, fileLabel) {
@@ -163,16 +182,122 @@ function extractSynergySections(html) {
   return sections;
 }
 
-function toComboScore(row) {
-  const winRate = row.win_rate * 100;
-  const pickRate = row.pick_rate * 100;
-  const tierRank = Number.isFinite(row.tier_rank) ? row.tier_rank : 3;
-  const winScore = 60 + (winRate - 50) * 4.5;
-  const pickScore = Math.min(10, pickRate * 1.1);
-  const tierScore = Math.max(-4, 8 - tierRank * 2);
-  const samplePenalty = row.play < 500 ? 10 : row.play < 1000 ? 4 : 0;
+function parseLolalyticsRoleIndex(html, championMaps) {
+  const rows = html.split('<div class="flex h-[52px]').slice(1);
+  const roleIndex = new Map();
 
-  return Math.round(clamp(winScore + pickScore + tierScore - samplePenalty, 35, 96));
+  for (const row of rows) {
+    const slug = row.match(/\/lol\/([^/]+)\/build\//)?.[1];
+    const lane = row.match(/alt="([^"]+) lane"/)?.[1];
+    const role = lolalyticsLaneRoleMap.get(lane ?? "");
+    const championId = slug ? championMaps.championIdByOpggKey.get(slug) : undefined;
+    const rank = toNumber(row.match(/q:key="0">([0-9]+)/)?.[1], Number.MAX_SAFE_INTEGER);
+    const tier = row.match(/q:key="3"[\s\S]*?<!--t=[^>]+-->([^<]+)</)?.[1]?.trim() ?? "D";
+    const winRate = toNumber(row.match(/q:key="5"[\s\S]*?<span[^>]*>([0-9.]+)/)?.[1], NaN);
+    const pickRate = toNumber(row.match(/q:key="6">([0-9.]+)/)?.[1], NaN);
+
+    if (!championId || !role || !Number.isFinite(winRate) || !Number.isFinite(pickRate)) {
+      continue;
+    }
+
+    const key = `${championId}:${role}`;
+    const current = roleIndex.get(key);
+    const stat = { pickRate, rank, tier, winRate };
+
+    if (!current || stat.rank < current.rank) {
+      roleIndex.set(key, stat);
+    }
+  }
+
+  return roleIndex;
+}
+
+async function loadSecondaryRoleIndex(championMaps) {
+  const lanes = ["top", "jungle", "middle", "bottom", "support"];
+  const roleIndex = new Map();
+
+  try {
+    const pages = await Promise.all(
+      lanes.map(async (lane) => fetchLolalyticsText(`${lolalyticsTierUrl}&lane=${lane}`)),
+    );
+
+    for (const page of pages) {
+      for (const [key, stat] of parseLolalyticsRoleIndex(page, championMaps)) {
+        const current = roleIndex.get(key);
+
+        if (!current || stat.rank < current.rank) {
+          roleIndex.set(key, stat);
+        }
+      }
+    }
+
+    return roleIndex;
+  } catch (error) {
+    console.warn(`LoLalytics role agreement skipped: ${error.message}`);
+    return new Map();
+  }
+}
+
+function getSourceAgreement(roleStat, lolalyticsStat) {
+  if (!lolalyticsStat) {
+    return {
+      sourceAgreementBonus: 0,
+      sourceCount: 1,
+    };
+  }
+
+  let bonus = 2;
+
+  if (lolalyticsStat.tier.startsWith("S")) {
+    bonus += 3;
+  } else if (lolalyticsStat.tier.startsWith("A")) {
+    bonus += 2;
+  } else if (lolalyticsStat.tier.startsWith("B")) {
+    bonus += 1;
+  }
+
+  if (lolalyticsStat.rank <= 20) {
+    bonus += 2;
+  } else if (lolalyticsStat.rank <= 50) {
+    bonus += 1;
+  }
+
+  if (lolalyticsStat.winRate >= roleStat.winRate - 0.8) {
+    bonus += 2;
+  } else if (lolalyticsStat.winRate >= 50) {
+    bonus += 1;
+  }
+
+  return {
+    sourceAgreementBonus: Math.round(clamp(bonus, 0, 8)),
+    sourceCount: 2,
+  };
+}
+
+function getPairMetrics(row, roleStat, lolalyticsStat) {
+  const pairWinRate = toPercent(row.win_rate * 100);
+  const expectedWinRate = toPercent(roleStat.winRate);
+  const winRateLift = toRoundedStat(pairWinRate - expectedWinRate);
+  const sampleSize = Math.max(0, Math.round(row.play));
+  const reliability = sampleSize / (sampleSize + 1200);
+  const adjustedLift = toRoundedStat(winRateLift * reliability);
+  const sampleBonus = clamp(Math.log10(sampleSize + 1) * 1.4 - 2.8, 0, 4);
+  const lowSamplePenalty = sampleSize < 500 ? 10 : sampleSize < 1000 ? 4 : 0;
+  const { sourceAgreementBonus, sourceCount } = getSourceAgreement(roleStat, lolalyticsStat);
+  const pairStrength =
+    adjustedLift * 9 + (pairWinRate - 50) * 1.2 + sampleBonus + sourceAgreementBonus - lowSamplePenalty;
+
+  return {
+    adjustedLift,
+    comboScore: Math.round(clamp(50 + pairStrength, 35, 96)),
+    expectedWinRate,
+    pairStrength,
+    pairWinRate,
+    sampleSize,
+    sourceAgreementBonus,
+    sourceCount,
+    winRateLift,
+  };
 }
 
 function toReasonType(recommendedRole, tags, allyRole) {
@@ -231,14 +356,20 @@ async function loadRoleTargets(championMaps) {
   const roleStats = toRecords(await readFile(roleStatsPath, "utf8"), "data/manual/roleStats.csv");
   const seen = new Set();
   const targets = [];
-  const roleStatKeys = new Set();
+  const roleStatByKey = new Map();
   const missingOpggKeys = new Set();
 
   for (const stat of roleStats) {
     const role = stat.role;
     const key = `${stat.championId}:${role}`;
 
-    roleStatKeys.add(key);
+    roleStatByKey.set(key, {
+      ...stat,
+      metaScore: toNumber(stat.metaScore),
+      pickRate: toNumber(stat.pickRate),
+      sampleSize: Math.round(toNumber(stat.sampleSize)),
+      winRate: toNumber(stat.winRate),
+    });
 
     if (!validRoleSet.has(role) || seen.has(key)) {
       continue;
@@ -261,7 +392,7 @@ async function loadRoleTargets(championMaps) {
 
   return {
     missingOpggKeys,
-    roleStatKeys,
+    roleStatByKey,
     targets: limitPages > 0 ? targets.slice(0, limitPages) : targets,
   };
 }
@@ -285,7 +416,7 @@ async function mapWithConcurrency(items, worker, workerCount) {
   return results;
 }
 
-async function fetchTargetSynergies(target, championMaps, roleStatKeys) {
+async function fetchTargetSynergies(target, championMaps, roleStatByKey, secondaryRoleIndex) {
   const url = toOpggSynergyUrl(target.opggChampionKey, target.role);
   const html = await fetchOpggText(url);
   const sections = extractSynergySections(html);
@@ -304,7 +435,6 @@ async function fetchTargetSynergies(target, championMaps, roleStatKeys) {
 
     const sectionRows = section.data
       .slice()
-      .sort((a, b) => b.pick_rate - a.pick_rate || b.play - a.play)
       .map((row) => {
         const recommendedChampionId = championMaps.championIdByOpggKey.get(row.synergy_champion_key);
 
@@ -318,7 +448,9 @@ async function fetchTargetSynergies(target, championMaps, roleStatKeys) {
           return null;
         }
 
-        if (!roleStatKeys.has(`${recommendedChampionId}:${section.synergyPosition}`)) {
+        const roleStat = roleStatByKey.get(`${recommendedChampionId}:${section.synergyPosition}`);
+
+        if (!roleStat) {
           skipped.missingRoleStat += 1;
           return null;
         }
@@ -328,11 +460,20 @@ async function fetchTargetSynergies(target, championMaps, roleStatKeys) {
           return null;
         }
 
+        const metrics = getPairMetrics(
+          row,
+          roleStat,
+          secondaryRoleIndex.get(`${recommendedChampionId}:${section.synergyPosition}`),
+        );
+
         return {
           allyChampionId: target.championId,
           allyRole: target.role,
-          comboScore: toComboScore(row),
-          pairWinRate: toPercent(row.win_rate * 100),
+          adjustedLift: metrics.adjustedLift,
+          comboScore: metrics.comboScore,
+          expectedWinRate: metrics.expectedWinRate,
+          pairStrength: metrics.pairStrength,
+          pairWinRate: metrics.pairWinRate,
           reasonType: toReasonType(
             section.synergyPosition,
             championMaps.tagsByChampionId.get(recommendedChampionId) ?? [],
@@ -340,13 +481,25 @@ async function fetchTargetSynergies(target, championMaps, roleStatKeys) {
           ),
           recommendedChampionId,
           recommendedRole: section.synergyPosition,
-          sampleSize: row.play,
+          sampleSize: metrics.sampleSize,
+          sourceAgreementBonus: metrics.sourceAgreementBonus,
+          sourceCount: metrics.sourceCount,
+          winRateLift: metrics.winRateLift,
         };
       })
       .filter(Boolean)
+      .sort(
+        (a, b) =>
+          b.pairStrength - a.pairStrength ||
+          b.adjustedLift - a.adjustedLift ||
+          b.sourceAgreementBonus - a.sourceAgreementBonus ||
+          b.sampleSize - a.sampleSize ||
+          b.pairWinRate - a.pairWinRate ||
+          a.recommendedChampionId.localeCompare(b.recommendedChampionId),
+      )
       .slice(0, topPerSection);
 
-    rows.push(...sectionRows);
+    rows.push(...sectionRows.map(({ pairStrength, ...row }) => row));
   }
 
   return { rows, skipped, target };
@@ -360,7 +513,12 @@ function toPairSynergiesCsv(rows) {
     "recommendedRole",
     "comboScore",
     "pairWinRate",
+    "expectedWinRate",
+    "winRateLift",
+    "adjustedLift",
     "sampleSize",
+    "sourceCount",
+    "sourceAgreementBonus",
     "reasonType",
   ];
 
@@ -374,7 +532,12 @@ function toPairSynergiesCsv(rows) {
         row.recommendedRole,
         row.comboScore,
         row.pairWinRate,
+        row.expectedWinRate,
+        row.winRateLift,
+        row.adjustedLift,
         row.sampleSize,
+        row.sourceCount,
+        row.sourceAgreementBonus,
         row.reasonType,
       ]
         .map(toCsvValue)
@@ -436,7 +599,10 @@ function printSkippedSummary(results) {
 
 async function main() {
   const championMaps = await getChampionMaps();
-  const { missingOpggKeys, roleStatKeys, targets } = await loadRoleTargets(championMaps);
+  const [{ missingOpggKeys, roleStatByKey, targets }, secondaryRoleIndex] = await Promise.all([
+    loadRoleTargets(championMaps),
+    loadSecondaryRoleIndex(championMaps),
+  ]);
 
   if (missingOpggKeys.size > 0) {
     console.warn(`Skipped roleStats with no OP.GG key: ${[...missingOpggKeys].join(", ")}`);
@@ -445,11 +611,12 @@ async function main() {
   console.log(`Fetching OP.GG synergy pages: ${targets.length}`);
   console.log(`Top rows per role section: ${topPerSection}`);
   console.log(`Concurrency: ${concurrency}`);
+  console.log(`LoLalytics role agreement rows: ${secondaryRoleIndex.size}`);
 
   const results = await mapWithConcurrency(
     targets,
     async (target, index) => {
-      const result = await fetchTargetSynergies(target, championMaps, roleStatKeys);
+      const result = await fetchTargetSynergies(target, championMaps, roleStatByKey, secondaryRoleIndex);
       const current = index + 1;
 
       if (current % 25 === 0 || current === targets.length) {

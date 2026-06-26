@@ -162,6 +162,7 @@ function LabelRow({ compact = false, recommendation }: { compact?: boolean; reco
   return (
     <div className={`label-row ${compact ? "is-compact" : ""}`}>
       {recommendation.isBeginnerFriendly ? <span className="label good">初心者おすすめ</span> : null}
+      {recommendation.sourceCount >= 2 ? <span className="label good">2サイト一致</span> : null}
       {recommendation.synergySource === "profile" ? <span className="label info">推定相性</span> : null}
       {recommendation.isExpandedData ? <span className="label data">補完データ</span> : null}
       {recommendation.isOffMeta ? <span className="label warn">オフメタ</span> : null}

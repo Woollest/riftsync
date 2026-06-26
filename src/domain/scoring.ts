@@ -50,6 +50,17 @@ function getGroupKey(allyChampionId: string, allyRole: Role, recommendedRole: Ro
   return [allyChampionId, allyRole, recommendedRole].join(":");
 }
 
+function comparePairSynergies(a: PairSynergy, b: PairSynergy): number {
+  return (
+    b.comboScore - a.comboScore ||
+    (b.adjustedLift ?? 0) - (a.adjustedLift ?? 0) ||
+    (b.sourceAgreementBonus ?? 0) - (a.sourceAgreementBonus ?? 0) ||
+    b.sampleSize - a.sampleSize ||
+    b.pairWinRate - a.pairWinRate ||
+    a.recommendedChampionId.localeCompare(b.recommendedChampionId)
+  );
+}
+
 /**
  * OP.GG由来の直接相性データを、単体検索と条件グループ検索の両方で引ける形に変換する。
  */
@@ -68,6 +79,10 @@ export function createPairSynergyLookup(pairSynergies: PairSynergy[]): PairSyner
 
     group.push(synergy);
     byGroup.set(groupKey, group);
+  }
+
+  for (const group of byGroup.values()) {
+    group.sort(comparePairSynergies);
   }
 
   return {
@@ -310,8 +325,17 @@ function getFallbackReason(roleStat: RoleStat): string {
 function getPairReason(synergy: PairSynergy): string {
   const reason = reasonTemplates[synergy.reasonType];
   const sampleSize = synergy.sampleSize.toLocaleString("ja-JP");
+  const sourceText = synergy.sourceCount >= 2 ? "・2サイト一致" : "";
 
-  return `OP.GG上位。${reason}（${sampleSize}試合 / 勝率${synergy.pairWinRate.toFixed(1)}%）`;
+  if (Number.isFinite(synergy.winRateLift) && Number.isFinite(synergy.adjustedLift)) {
+    const lift = synergy.winRateLift >= 0 ? `+${synergy.winRateLift.toFixed(1)}` : synergy.winRateLift.toFixed(1);
+    const adjusted =
+      synergy.adjustedLift >= 0 ? `+${synergy.adjustedLift.toFixed(1)}` : synergy.adjustedLift.toFixed(1);
+
+    return `単体比${lift}pt（補正${adjusted}pt）${sourceText}。${reason}（${sampleSize}試合）`;
+  }
+
+  return `OP.GG直接${sourceText}。${reason}（${sampleSize}試合 / 勝率${synergy.pairWinRate.toFixed(1)}%）`;
 }
 
 function normalizeWinRates(items: Array<{ displayWinRate: number }>): number[] {
@@ -432,6 +456,10 @@ function toRecommendation(
     comboScore,
     displayWinRate,
     sampleSize,
+    sourceAgreementBonus: synergy?.sourceAgreementBonus,
+    sourceCount: synergy?.sourceCount ?? (isExpandedData ? 0 : 1),
+    winRateLift: synergy?.winRateLift,
+    adjustedLift: synergy?.adjustedLift,
     totalScore,
     dataPenalty,
     synergySource: synergy ? "pair" : "profile",

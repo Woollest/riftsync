@@ -39,22 +39,44 @@ const expectedHeaders = {
     "recommendedRole",
     "comboScore",
     "pairWinRate",
+    "expectedWinRate",
+    "winRateLift",
+    "adjustedLift",
     "sampleSize",
+    "sourceCount",
+    "sourceAgreementBonus",
     "reasonType",
   ],
   reasonTemplates: ["reasonType", "reasonTextJa"],
   dataMeta: ["patch", "rankRange", "region", "source", "updatedAt", "isSample"],
 };
 
-const numberFields = new Set(["winRate", "pickRate", "metaScore", "sampleSize", "comboScore", "pairWinRate"]);
+const numberFields = new Set([
+  "winRate",
+  "pickRate",
+  "metaScore",
+  "sampleSize",
+  "comboScore",
+  "pairWinRate",
+  "expectedWinRate",
+  "winRateLift",
+  "adjustedLift",
+  "sourceCount",
+  "sourceAgreementBonus",
+]);
 const booleanFields = new Set(["isSample"]);
-const integerFields = new Set(["sampleSize"]);
+const integerFields = new Set(["sampleSize", "sourceCount"]);
 const rangeFields = new Map([
   ["winRate", [0, 100]],
   ["pickRate", [0, 100]],
   ["metaScore", [0, 100]],
   ["comboScore", [0, 100]],
   ["pairWinRate", [0, 100]],
+  ["expectedWinRate", [0, 100]],
+  ["winRateLift", [-30, 30]],
+  ["adjustedLift", [-30, 30]],
+  ["sourceCount", [1, 3]],
+  ["sourceAgreementBonus", [0, 20]],
 ]);
 const validRoles = new Set(["top", "jungle", "mid", "adc", "support"]);
 const validTiers = new Set(["S", "A", "B", "C", "D"]);
