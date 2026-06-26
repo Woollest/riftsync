@@ -152,6 +152,7 @@ export const roleChampionImageIds: Record<Role, Set<string>> = {
     "Leblanc",
     "Lissandra",
     "Lucian",
+    "Locke",
     "Lux",
     "Malzahar",
     "Mel",
@@ -264,4 +265,3 @@ export const roleChampionImageIds: Record<Role, Set<string>> = {
     "Zyra",
   ]),
 };
-

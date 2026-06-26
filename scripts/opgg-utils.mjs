@@ -4,6 +4,13 @@ const requestHeaders = {
   "user-agent": "Mozilla/5.0",
 };
 
+export const dataRegion = "global";
+export const dataTier = "emerald_plus";
+export const dataRankRange = "Emerald+";
+export const dataMode = "ranked";
+export const opggSourceLabel = "OP.GG Champion Tier List and Champion Synergy Pages Global Emerald+ Ranked Solo/Duo";
+export const secondarySourceLabel = "LoLalytics Emerald+ Patch Tier List cross-check";
+
 const localChampionIdByImageId = new Map([
   ["Ahri", "ahri"],
   ["Amumu", "amumu"],
@@ -49,6 +56,16 @@ export async function fetchOpggText(url) {
 
   if (!response.ok) {
     throw new Error(`OP.GG request failed: ${response.status} ${response.statusText} (${url})`);
+  }
+
+  return response.text();
+}
+
+export async function fetchLolalyticsText(url) {
+  const response = await fetch(url, { headers: requestHeaders });
+
+  if (!response.ok) {
+    throw new Error(`LoLalytics request failed: ${response.status} ${response.statusText} (${url})`);
   }
 
   return response.text();
@@ -128,6 +145,27 @@ export function toCsvValue(value) {
 
 export function toPercent(value) {
   return Math.round(value * 10) / 10;
+}
+
+export function toVisibleText(html) {
+  return html
+    .replaceAll(/<!--[\s\S]*?-->/g, "")
+    .replaceAll(/<[^>]+>/g, " ")
+    .replaceAll(/\s+/g, " ")
+    .trim();
+}
+
+export async function getLolalyticsMeta() {
+  const html = await fetchLolalyticsText("https://lolalytics.com/lol/tierlist/?tier=emerald_plus");
+  const text = toVisibleText(html);
+  const analyzedMatch = text.match(/Emerald\+ Champions Analysed:\s*([0-9,]+)/);
+  const patchMatch = text.match(/LEAGUE OF LEGENDS PATCH\s+([0-9.]+)/) ?? text.match(/Patch\s+([0-9.]+)/);
+
+  return {
+    analyzedChampions: analyzedMatch ? Number(analyzedMatch[1].replaceAll(",", "")) : null,
+    hasLocke: /\bLocke\b/.test(text),
+    patch: patchMatch?.[1] ?? null,
+  };
 }
 
 export async function getChampionMaps() {

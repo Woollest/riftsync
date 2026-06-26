@@ -2,11 +2,18 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  dataMode,
+  dataRankRange,
+  dataRegion,
+  dataTier,
   extractNextFlightText,
   fetchOpggText,
   findMatchingBracket,
   getChampionMaps,
+  getLolalyticsMeta,
   opggRoleMap,
+  opggSourceLabel,
+  secondarySourceLabel,
   toCsvValue,
   toPercent,
 } from "./opgg-utils.mjs";
@@ -15,7 +22,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const dataDir = path.join(rootDir, "data", "manual");
 
-const opggUrl = "https://op.gg/lol/champions?region=global&tier=gold_plus&mode=ranked";
+const opggUrl = `https://op.gg/lol/champions?region=${dataRegion}&tier=${dataTier}&mode=${dataMode}`;
 
 function extractChampionRows(html) {
   const flightText = extractNextFlightText(html);
@@ -72,9 +79,13 @@ function toMetaScore(positionTier, positionRank, winRate, pickRate) {
 }
 
 async function main() {
-  const [html, championMap] = await Promise.all([
+  const [html, championMap, lolalyticsMeta] = await Promise.all([
     fetchOpggText(opggUrl),
     getChampionMaps(),
+    getLolalyticsMeta().catch((error) => {
+      console.warn(`LoLalytics secondary check skipped: ${error.message}`);
+      return null;
+    }),
   ]);
   const totalSamples = extractTotalSamples(html);
   const rows = extractChampionRows(html);
@@ -138,13 +149,19 @@ async function main() {
     "",
   ].join("\n");
 
+  const sourceParts = [opggSourceLabel];
+
+  if (lolalyticsMeta) {
+    sourceParts.push(secondarySourceLabel);
+  }
+
   const dataMetaCsv = [
     "patch,rankRange,region,source,updatedAt,isSample",
     [
       championMap.version,
-      "Gold+",
+      dataRankRange,
       "Global",
-      "OP.GG Champion Tier List Global Gold+ Ranked Solo/Duo",
+      sourceParts.join("; "),
       new Date().toISOString().slice(0, 10),
       "false",
     ]
@@ -161,6 +178,14 @@ async function main() {
   console.log(`Updated roleStats.csv with ${roleStats.length} OP.GG rows.`);
   console.log(`Total analyzed samples: ${totalSamples.toLocaleString("en-US")}`);
   console.log(`Data Dragon version: ${championMap.version}`);
+
+  if (lolalyticsMeta) {
+    console.log(
+      `LoLalytics cross-check: patch ${lolalyticsMeta.patch ?? "unknown"}, Emerald+ champions analyzed ${
+        lolalyticsMeta.analyzedChampions?.toLocaleString("en-US") ?? "unknown"
+      }, Locke ${lolalyticsMeta.hasLocke ? "present" : "not found"}`,
+    );
+  }
 
   if (missingChampionKeys.size > 0) {
     console.warn(`Skipped unknown OP.GG champion keys: ${[...missingChampionKeys].join(", ")}`);

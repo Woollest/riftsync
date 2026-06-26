@@ -2,10 +2,16 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  dataMode,
+  dataRankRange,
+  dataRegion,
+  dataTier,
   extractNextFlightText,
   fetchOpggText,
   findMatchingBracket,
   getChampionMaps,
+  opggSourceLabel,
+  secondarySourceLabel,
   toCsvValue,
   toPercent,
   validRoles,
@@ -18,7 +24,7 @@ const roleStatsPath = path.join(dataDir, "roleStats.csv");
 const pairSynergiesPath = path.join(dataDir, "pairSynergies.csv");
 const dataMetaPath = path.join(dataDir, "dataMeta.csv");
 
-const topPerSection = getNumberArg("--top", 3);
+const topPerSection = getNumberArg("--top", 5);
 const concurrency = getNumberArg("--concurrency", 4);
 const limitPages = getNumberArg("--limit-pages", 0);
 const minSampleSize = getNumberArg("--min-sample", 0);
@@ -218,7 +224,7 @@ function toReasonType(recommendedRole, tags, allyRole) {
 }
 
 function toOpggSynergyUrl(opggChampionKey, role) {
-  return `https://op.gg/lol/champions/${opggChampionKey}/synergies/${role}?region=global&tier=gold_plus&mode=ranked`;
+  return `https://op.gg/lol/champions/${opggChampionKey}/synergies/${role}?region=${dataRegion}&tier=${dataTier}&mode=${dataMode}`;
 }
 
 async function loadRoleTargets(championMaps) {
@@ -380,12 +386,12 @@ function toPairSynergiesCsv(rows) {
 
 async function updateDataMetaSource() {
   const [meta] = toRecords(await readFile(dataMetaPath, "utf8"), "data/manual/dataMeta.csv");
-  const source = "OP.GG Champion Tier List and Champion Synergy Pages Global Gold+ Ranked Solo/Duo";
+  const source = [opggSourceLabel, secondarySourceLabel].join("; ");
   const csv = [
     "patch,rankRange,region,source,updatedAt,isSample",
     [
       meta.patch,
-      meta.rankRange,
+      dataRankRange,
       meta.region,
       source,
       new Date().toISOString().slice(0, 10),

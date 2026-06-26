@@ -1,10 +1,17 @@
 # RiftSync 要件定義書
 
 作成日: 2026-06-17  
-更新日: 2026-06-23
-版: v1.2
+更新日: 2026-06-26
+版: v1.3
 
 ## 0. 版管理
+
+### v1.3 更新内容
+
+- 対象ランク帯をGold+からEmerald+へ変更
+- Patch 16.13.1 / 新チャンピオンLockeをデータに反映
+- OP.GG個別シナジーページの取得範囲を各ロール上位3件から上位5件へ拡張
+- LoLalytics Emerald+ Patch Tier Listをセカンダリ確認元として追加
 
 ### v1.2 更新内容
 
@@ -28,7 +35,7 @@ RiftSync は、League of Legends のソロQ通常ランクにおいて、味方1
 
 チャンピオンセレクト中に短時間で使えることを重視し、入力は最小限に抑える。おすすめチャンピオンを3体表示し、追加候補と非推奨候補も確認できるようにする。
 
-現行版では、OP.GGのGlobal / Gold+ / Ranked Solo/Duoのロール別統計と個別シナジーページ、Riot Data Dragonのチャンピオン情報を利用する。直接相性データがある候補と推定補完の候補を区別し、信頼度と試合数を見ながら判断できることを重視する。
+現行版では、OP.GGのGlobal / Emerald+ / Ranked Solo/Duoのロール別統計と個別シナジーページ、LoLalyticsのEmerald+パッチ情報、Riot Data Dragonのチャンピオン情報を利用する。直接相性データがある候補と推定補完の候補を区別し、信頼度と試合数を見ながら判断できることを重視する。
 
 ## 2. 目的
 
@@ -52,7 +59,7 @@ RiftSync は、League of Legends のソロQ通常ランクにおいて、味方1
 - League of Legends
 - ソロQ
 - 通常ランクのBAN/PICK
-- Gold以上のデータ
+- Emerald以上のデータ
 - 地域指定なし
 - チャンピオンセレクト中の利用
 - GitHub Pagesで共有できるWebアプリ
@@ -610,12 +617,14 @@ RiftSync は、League of Legends のソロQ通常ランクにおいて、味方1
 参照元:
 
 - OP.GG
+- LoLalytics
 - Riot Data Dragon
 
 用途:
 
 - OP.GG Champion Tier List: ロール別勝率、使用率、Tier、解析数
 - OP.GG個別シナジーページ: 味方チャンピオンとの直接相性上位候補
+- LoLalytics Tier List: パッチ、ランク帯、新チャンピオン存在確認のセカンダリ確認
 - Riot Data Dragon: チャンピオン名、アイコン、公式難易度などの静的データ
 
 注意:
@@ -635,10 +644,10 @@ RiftSync は、League of Legends のソロQ通常ランクにおいて、味方1
 
 現行データ:
 
-- ロール別統計: 259件
-- 味方相性データ: 3108件
-- 味方/味方ロール/自分ロールの直接相性グループ: 1036組
-- 対象: OP.GG Global / Gold+ / Ranked Solo/Duo
+- ロール別統計: 267件
+- 味方相性データ: 5340件
+- 味方/味方ロール/自分ロールの直接相性グループ: 1068組
+- 対象: OP.GG Global / Emerald+ / Ranked Solo/Duo
 
 ### 13.3 チャンピオン基本データ
 
@@ -691,7 +700,7 @@ reason_text_ja
 ### 13.7 データ作成・更新方針
 
 - コンボ相性データはOP.GGの個別シナジーページから取り込む
-- OP.GGのシナジー欄の上位3体を `pairSynergies.csv` に表示順で登録し、その3体をおすすめとして優先表示する
+- OP.GGのシナジー欄の上位5体を `pairSynergies.csv` に表示順で登録し、上位3体をおすすめとして優先表示する
 - ロール別勝率、使用率、Tier、解析数はOP.GG Champion Tier Listから取り込む
 - チャンピオンアイコンと公式難易度はRiot Data Dragonを利用する
 - CSV未登録の候補は、Riot Data Dragonのタグ/難易度/戦闘プロフィールとロール分類から補完候補として表示し、補完データであることを明示する

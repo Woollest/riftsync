@@ -1,6 +1,6 @@
 import type { Role } from "../domain/types";
 
-export const DEFAULT_DDRAGON_VERSION = "15.24.1";
+export const DEFAULT_DDRAGON_VERSION = "16.13.1";
 export const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 export const FEEDBACK_URL = "https://github.com/Woollest/riftsync/issues";
 
